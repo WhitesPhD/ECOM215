@@ -1,0 +1,272 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{xcolor}
+
+% Page geometry
+\geometry{margin=2.5cm, headheight=14pt}
+
+% Color definitions
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{DarkGray}{RGB}{51, 51, 51}
+\definecolor{AccentOrange}{RGB}{214, 96, 77}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ImperialBlue,
+    urlcolor=ImperialBlue,
+    citecolor=ImperialBlue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{ImperialBlue}{\small Blockchain Economics and Digital Assets}}
+\fancyhead[R]{\textcolor{ImperialBlue}{\small Lecture 9 Notes}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section formatting
+\titleformat{\section}
+  {\Large\bfseries\color{ImperialBlue}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{ImperialBlue}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{DarkGray}}
+  {\thesubsubsection}{1em}{}
+
+% Custom commands
+\newcommand{\keyword}[1]{\textbf{\textcolor{AccentOrange}{#1}}}
+
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries\textcolor{ImperialBlue}{Blockchain Economics and Digital Assets}}\\[0.5em]
+    {\Large Lecture 9: Blockchain in Traditional Finance}\\[0.3em]
+    {\large Settlement, Institutional Initiatives, and Wholesale CBDCs}\\[1em]
+    {\large Dr Daniele Bianchi}\\[0.5em]
+    {\normalsize Queen Mary, University of London}\\[0.3em]
+    {\normalsize Semester B, 2025/2026}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\tableofcontents
+
+\vspace{2cm}
+
+%----------------------------------------------------------------------------------------
+\section*{Overview}
+\addcontentsline{toc}{section}{Overview}
+%----------------------------------------------------------------------------------------
+
+Previous lectures examined blockchain's crypto-native applications---DeFi, stablecoins, tokenization, and cryptocurrency investment. This lecture shifts focus to a different question: can blockchain technology improve the \textit{existing} financial system? Specifically, can it make the infrastructure that banks, exchanges, and central banks use to move money and securities faster, cheaper, and more reliable?
+
+The lecture begins by explaining what financial infrastructure actually is---the payment networks, clearing houses, settlement systems, and custodians that operate behind the scenes of every financial transaction. We then examine how securities settlement works today, why it takes one or two business days, and what blockchain-based settlement would change (and what it would not). We survey major institutional blockchain initiatives, assess wholesale CBDCs as a solution to the cross-border payments problem, and confront the strategic question of whether institutional adoption will happen on public or permissioned networks. The lecture concludes with a sober assessment of timelines and integration challenges.
+
+Throughout, the emphasis is on economic reasoning rather than technological enthusiasm. The question is not whether blockchain \textit{can} be used in traditional finance, but whether it \textit{should} be---and for which specific problems it offers genuine improvement over existing solutions.
+
+%----------------------------------------------------------------------------------------
+\section{Why Traditional Finance Cares About Blockchain}
+%----------------------------------------------------------------------------------------
+
+\subsection{What is Financial Infrastructure?}
+
+\keyword{Financial infrastructure} refers to the systems and institutions that make financial transactions possible. It is not the transactions themselves---the buying and selling of securities, the lending and borrowing of money---but the operational machinery that ensures these transactions are executed, recorded, and settled correctly.
+
+The key components of financial infrastructure are: \keyword{payment systems}, which move money from one bank account to another (examples include CHAPS in the UK, Fedwire in the US, and SWIFT for international messaging); \keyword{securities settlement systems}, which transfer ownership of shares and bonds after a trade is agreed (examples include CREST in the UK and the DTCC in the US); \keyword{clearing houses} (also called central counterparties or CCPs), which sit between buyer and seller to guarantee that both sides honour the trade; and \keyword{custodians}, which are banks that hold assets on behalf of investors and maintain records of ownership.
+
+Most of this infrastructure was designed in the 1970s through 1990s and has been incrementally modernised since. It is reliable, but it is also complex, expensive, and slow by the standards of modern technology.
+
+\subsection{The Cost of the Current System}
+
+The time gap between a trade being agreed and the trade being finally settled creates costs and risks. \keyword{Counterparty risk} exists throughout the settlement window: between trade and settlement, either party could default, and the longer the gap, the greater the exposure. \keyword{Capital requirements} arise because regulators require banks and brokers to hold capital against unsettled trades; faster settlement would free up this capital for other uses. \keyword{Operational cost} is substantial because multiple intermediaries---brokers, clearing houses, depositories, custodians---each maintain their own records, and reconciling these records is expensive and error-prone. When records disagree, trades ``fail'' and must be corrected manually; this is surprisingly common.
+
+Global post-trade costs are estimated at \$15--20 billion per year. Not all of this is avoidable, but a significant fraction is attributable to the complexity and duplication inherent in the current multi-intermediary model.
+
+%----------------------------------------------------------------------------------------
+\section{Settlement and Clearing}
+%----------------------------------------------------------------------------------------
+
+\subsection{How Securities Settlement Works}
+
+When an investor buys 100 shares through a broker, several steps follow. First, \keyword{execution}: the broker finds a seller on an exchange, and the trade is agreed. But at this point, nothing has actually moved---it is simply a promise to exchange securities for cash.
+
+Second, \keyword{clearing}: the trade is sent to a clearing house, also known as a \keyword{central counterparty (CCP)}. The CCP becomes the buyer to every seller and the seller to every buyer. Its purpose is to eliminate bilateral counterparty risk: if one party defaults before settlement, the CCP guarantees the other side's trade. The CCP manages this risk by collecting margin (collateral) from both sides.
+
+Third, \keyword{settlement}: on the settlement date---currently one business day after the trade (T+1) in the US, and two business days (T+2) in the UK and much of Europe (with a planned move to T+1)---the actual exchange occurs. Cash is debited from the buyer's account, credited to the seller's account, and ownership of the securities is transferred in the \keyword{central securities depository (CSD)}. In the UK, the CSD is CREST (operated by Euroclear UK). In the US, it is the DTCC.
+
+Fourth, \keyword{custody}: the investor's broker or custodian bank holds the securities on the investor's behalf and maintains the record of ownership.
+
+\subsection{What T+1 Means and Why It Exists}
+
+\keyword{T+1} refers to the convention that securities trades settle one business day after the trade date. The US moved from T+2 to T+1 in May 2024; the UK and EU are planning similar moves.
+
+The settlement delay exists for several practical reasons. \keyword{Netting} is the most important. Clearing houses wait until the end of the trading day to calculate net positions among participants. If Bank A owes Bank B \pounds 100 million and Bank B owes Bank A \pounds 80 million, only \pounds 20 million needs to actually change hands. This massively reduces the total cash and securities that must move, lowering liquidity demands across the system. The delay also provides time for error correction (catching and fixing mistakes before settlement is final), funding (arranging payment and locating securities), and time zone coordination (when counterparties are in different countries).
+
+\subsection{What Blockchain Could Change}
+
+Blockchain-based settlement proposes two fundamental improvements. First, \keyword{atomic settlement}: cash and securities move simultaneously on a shared ledger. If one side of the trade fails, neither side executes. This eliminates settlement risk by design---there is no window during which one party has paid but not received securities. Second, a \keyword{single source of truth}: all participants see the same ledger, eliminating the need for each institution to maintain separate records and reconcile them.
+
+Additional benefits include programmable compliance (smart contracts can enforce transfer restrictions, KYC requirements, and regulatory rules automatically) and reduced intermediation (fewer parties in the chain means lower cost and fewer points of failure).
+
+However, the reality is more complicated. Netting benefits are lost if every trade settles individually in gross terms---the worked example in the lecture slides shows that gross flows can be three to five times larger than net flows, meaning banks would need to hold substantially more liquidity. Legal finality is not automatic: most legal systems were designed for paper-based or centralised electronic settlement, and do not yet clearly recognise when a blockchain transaction becomes legally irreversible. Interoperability is a major challenge: any new system must connect to existing infrastructure during transition, and banks cannot switch overnight. And governance is unresolved: who controls the shared ledger?
+
+\subsection{The Netting Trade-off}
+
+The netting problem deserves emphasis because it is the most important economic objection to instant blockchain settlement and is often overlooked by technology advocates.
+
+Consider a simple example with three banks trading with each other during a single day. Bank A pays Bank B \pounds 100 million; Bank B pays Bank C \pounds 80 million; Bank C pays Bank A \pounds 60 million; Bank B pays Bank A \pounds 70 million. The total gross flows are \pounds 310 million. With end-of-day netting, the clearing house calculates that A owes B \pounds 30 million net, B owes C \pounds 10 million net, and C owes A \pounds 60 million net. Total net flows: \pounds 100 million---less than one-third of the gross amount.
+
+If each trade settled atomically on a blockchain, all \pounds 310 million would need to be available in real time. This is a real economic cost---holding that much additional liquidity has an opportunity cost. Any practical blockchain settlement system must address this trade-off, and every proposed solution involves compromise: batching trades reintroduces delay, pre-funding pools add cost, and intraday netting cycles reduce but do not eliminate the liquidity problem.
+
+%----------------------------------------------------------------------------------------
+\section{Institutional Blockchain Initiatives}
+%----------------------------------------------------------------------------------------
+
+\subsection{Permissioned vs.\ Public Blockchains in This Context}
+
+Major financial institutions are overwhelmingly building on \keyword{permissioned} (private) blockchains, where only approved, identified participants can join. This contrasts with public blockchains like Ethereum, where anyone can participate. Permissioned systems offer privacy (transactions are not visible to the world), regulatory comfort (all participants are known and accountable), and performance (no congestion from unrelated transactions). However, they are less decentralised, less composable, and sometimes amount to shared databases with blockchain branding.
+
+\subsection{JPMorgan Kinexys}
+
+\keyword{Kinexys} (formerly Onyx) is JPMorgan's blockchain platform and one of the most operationally advanced institutional deployments. Its core product, JPM Coin, is a digital token representing US dollars held at JPMorgan, used for instant 24/7 interbank payments between JPMorgan clients. Each token is backed one-to-one by dollar deposits at the bank. Kinexys also supports intraday repo---short-term borrowing and lending settled on-chain, allowing clients to borrow against Treasury collateral and repay within hours rather than overnight.
+
+Kinexys processes approximately \$2 billion per day in transactions. It is a real product handling real money. However, it is a closed system available only to JPMorgan clients, making it an internal efficiency improvement rather than a market-wide transformation. JPMorgan controls the ledger, so it is functionally centralised. The economic benefit---faster settlement within one bank's network---is incremental rather than revolutionary.
+
+\subsection{DTCC Digital Securities Management}
+
+The \keyword{Depository Trust \& Clearing Corporation (DTCC)} processes virtually all US equity and bond trades, making it the most important piece of securities infrastructure in the United States. DTCC's Project Ion is a blockchain-based alternative settlement system for US equities that has been running in parallel with the existing system since 2022. Its Digital Securities Management platform provides infrastructure for issuing, transferring, and settling tokenized securities.
+
+The significance is that if the incumbent infrastructure provider adopts blockchain, the impact is far greater than any startup or bank consortium acting alone. However, progress has been cautious: Project Ion remains in pilot with limited throughput, and full migration is not imminent. The key question is whether blockchain will replace DTCC's existing systems or simply be absorbed as an internal upgrade.
+
+\subsection{Canton Network and Fnality}
+
+The \keyword{Canton Network} is a privacy-preserving blockchain designed for institutional finance, founded by Digital Asset with participants including Goldman Sachs, BNP Paribas, and Deloitte. Its key feature is that participants can transact with each other without revealing their data to other network members---essential for banks with confidentiality requirements. It is still in relatively early deployment.
+
+\keyword{Fnality} is a consortium of 17 major banks building a utility settlement coin (USC)---a digital token backed by central bank reserves. Its purpose is to provide the ``cash leg'' for on-chain settlement: one can tokenize a bond, but if the cash payment still goes through traditional banking, settlement has not truly improved. Fnality was approved by the Bank of England as a payment system in 2023 but is not yet operating at scale.
+
+\subsection{What Has Actually Shipped}
+
+A pattern emerges from surveying institutional blockchain initiatives. The projects that are operationally live tend to be narrow in scope (serving one bank's clients or one asset class) and centralised in governance. The broader, more ambitious visions---multi-bank settlement networks, tokenized capital markets infrastructure---remain in pilot or early deployment. BlackRock's BUIDL fund, covered in Week 6, is a notable exception because it uses a public blockchain (Ethereum) rather than a private one, representing a different bet on where institutional finance is heading.
+
+%----------------------------------------------------------------------------------------
+\section{Wholesale CBDCs and Cross-Border Payments}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Cross-Border Payments Problem}
+
+Sending money internationally through the banking system is slow, expensive, and opaque. To understand why, one must understand the \keyword{correspondent banking} model.
+
+When a UK company wants to pay a supplier in Japan, its bank (say, Barclays) probably does not have a direct relationship with the supplier's bank (say, MUFG). Instead, Barclays sends a message through the \keyword{SWIFT} network---which is a messaging system, not a payment system---to a correspondent bank in Japan, an intermediary bank that has relationships with both sides. The correspondent forwards the payment to MUFG. Each bank in the chain takes a fee, processes the transaction during its own business hours, and performs its own compliance checks.
+
+The result: a payment that should take seconds involves two to five intermediary banks, takes two to five business days, costs one to five percent of the transaction value in fees, and offers limited visibility on where the money is at any given moment. The number of correspondent banking relationships globally has been declining, as compliance costs (anti-money-laundering requirements) make maintaining these relationships increasingly expensive for smaller banks and corridors.
+
+\subsection{What is a Wholesale CBDC?}
+
+In Week 5, we discussed \keyword{retail CBDCs}---digital money issued by a central bank for use by the general public. A \keyword{wholesale CBDC} is different: it is digital central bank money available only to financial institutions such as banks, clearing houses, and other regulated entities.
+
+Banks already hold reserves at the central bank, but these reserves operate on legacy systems with limited hours. A wholesale CBDC would represent central bank reserves as digital tokens on a shared ledger, enabling faster, programmable, and potentially 24/7 interbank settlement. Crucially, a wholesale CBDC provides the \keyword{tokenized cash leg} needed for blockchain-based securities settlement: if both the security and the cash exist as tokens on a shared ledger, atomic delivery-versus-payment becomes possible.
+
+Wholesale CBDCs are less politically controversial than retail CBDCs because they do not change the relationship between citizens and the central bank. They upgrade the settlement infrastructure between financial institutions without affecting individuals directly.
+
+\subsection{Cross-Border CBDC Experiments}
+
+Several central bank experiments are testing whether wholesale CBDCs can address the correspondent banking problem. \keyword{Project mBridge}, coordinated by the Bank for International Settlements (BIS) with participation from the central banks of China, Hong Kong, Thailand, and the UAE, is a shared platform where participating central banks issue their own wholesale CBDCs. Banks on the platform can exchange currencies directly, bypassing correspondent banking entirely. The project reached ``minimum viable product'' stage in 2024 and has the potential to dramatically reduce the cost and time of cross-border payments.
+
+\keyword{Project Dunbar}, involving the BIS, the Reserve Bank of Australia, Bank Negara Malaysia, the Monetary Authority of Singapore, and the South African Reserve Bank, tested a similar multi-CBDC settlement platform and demonstrated that direct transfers between currencies are technically feasible.
+
+Whether wholesale CBDCs will actually replace correspondent banking depends on more than technology. Geopolitical considerations (Project mBridge involves China, creating hesitation among some Western countries), governance (who controls the shared platform and whose rules apply?), compliance (faster payments may make it harder to screen for illicit transactions), and incumbent adaptation (SWIFT has launched its own modernisation initiatives) all create barriers. Wholesale CBDCs are the most promising institutional blockchain application, but deployment at scale is likely years away.
+
+%----------------------------------------------------------------------------------------
+\section{Public vs.\ Permissioned: The Strategic Question}
+%----------------------------------------------------------------------------------------
+
+\subsection{Two Visions}
+
+The financial industry is divided on whether institutional blockchain infrastructure should be built on public networks (like Ethereum) or permissioned networks (like Canton or Kinexys).
+
+Public chains offer network effects (the largest developer ecosystem and the deepest liquidity), composability (a tokenized Treasury on Ethereum can interact with DeFi protocols, creating new financial products impossible in closed systems), neutrality (no single company controls Ethereum, which may be preferable for consortia of competing banks), and proven security (Ethereum has secured hundreds of billions in value over years).
+
+Permissioned chains offer regulatory clarity (identifiable, accountable participants), privacy (transactions are not visible to competitors), performance (no gas fees or congestion), and control (a governance structure can intervene if something goes wrong).
+
+\subsection{The Hybrid Outcome}
+
+The emerging consensus is that the distinction is less binary than it appears. Institutions are moving toward hybrid architectures: public chains for settlement, composability, and global liquidity; permissioned layers built on top for privacy and compliance, where only KYC-verified parties can transact; and bridges and interoperability protocols connecting different systems.
+
+The analogy is the internet: a public network underneath, with private intranets and VPNs where organisations need confidentiality. Financial blockchains may follow the same pattern. However, interoperability carries risks---cross-chain bridges have been the source of some of the largest hacks in crypto history, and connecting institutional systems creates new attack surfaces that must be carefully managed.
+
+%----------------------------------------------------------------------------------------
+\section{Integration Challenges and Reality Check}
+%----------------------------------------------------------------------------------------
+
+\subsection{Practical Barriers}
+
+Even if blockchain technology works perfectly in a laboratory setting, integrating it into existing financial infrastructure is enormously difficult. Legacy systems present the most immediate challenge: many banks still run core processes on systems built in the 1970s and 1980s. New blockchain systems must interface with these legacy platforms during any transition period, and running old and new systems in parallel is expensive and complex.
+
+Legal recognition is another barrier. When a blockchain transaction is recorded on a ledger, is it legally final? Most legal systems were designed for paper-based or centralised electronic settlement and do not yet clearly answer this question for distributed ledgers. The UK Law Commission recommended in 2023 that digital assets be recognised as a distinct category of property, which is a positive step, but legislation has not yet followed. The EU's DLT Pilot Regime, effective since 2023, allows limited experimentation with distributed ledger technology for securities issuance and settlement, but within strict limits on the size and type of securities involved.
+
+There is also a coordination problem. No single bank can switch to blockchain settlement unilaterally---the benefit comes from many participants using the same system. This is a classic network effect problem with a chicken-and-egg dynamic: the system is only valuable if many participants join, but participants will only join if the system is already valuable.
+
+\subsection{Realistic Timelines}
+
+Some applications are already live: tokenized treasuries and money market funds (BlackRock BUIDL, Franklin Templeton), intraday repo and interbank payments (JPMorgan Kinexys), and pilot programmes for securities settlement (DTCC, SIX Digital Exchange in Switzerland). Within three to five years, broader tokenized bond markets, wholesale CBDC systems in selected corridors, and more asset managers issuing on public blockchains are plausible. Full replacement of existing settlement infrastructure, a global interoperable CBDC network, and equities settling on-chain at scale are unlikely within five years.
+
+Blockchain will not replace traditional financial infrastructure overnight. The more likely path is gradual adoption, starting with specific asset classes and use cases where the benefits are clearest, expanding as regulation, interoperability, and institutional comfort develop.
+
+%----------------------------------------------------------------------------------------
+\section{Summary and Looking Ahead}
+%----------------------------------------------------------------------------------------
+
+This lecture has examined how blockchain technology might improve traditional financial infrastructure.
+
+\textbf{Traditional securities settlement is slow and costly by design.} Multiple intermediaries maintain separate records, settlement takes one to two business days, and reconciliation failures are common. But netting---the process of offsetting obligations to reduce total flows---provides real economic value that instant gross settlement would sacrifice.
+
+\textbf{Institutional blockchain initiatives are real but narrow.} JPMorgan Kinexys, DTCC Ion, Canton Network, and Fnality each solve specific problems, but most are closed systems with limited participants. The gap between press releases and production-scale deployment remains significant.
+
+\textbf{Wholesale CBDCs could transform cross-border payments.} Correspondent banking is expensive and shrinking. Shared multi-CBDC platforms could enable direct bank-to-bank settlement across borders. But geopolitical complexity, governance questions, and compliance concerns create barriers.
+
+\textbf{The public vs.\ permissioned debate is converging toward hybrid solutions.} Public chains for openness and composability, permissioned layers for privacy and compliance.
+
+\textbf{The biggest barrier is integration, not technology.} Legacy systems, legal recognition of on-chain finality, and the coordination problem of getting enough participants onto a shared platform matter more than blockchain performance or consensus mechanism design.
+
+In the final lecture, we take stock of the entire course: scaling solutions and the Ethereum roadmap, the future of money, career paths in blockchain and digital assets, and preparation for the exam.
+
+%----------------------------------------------------------------------------------------
+\section*{Readings}
+\addcontentsline{toc}{section}{Readings}
+%----------------------------------------------------------------------------------------
+
+\textbf{Required:}
+\begin{itemize}
+    \item Bank for International Settlements (2023). ``Blueprint for the Future Monetary System: Improving the Old, Enabling the New.'' BIS Annual Economic Report, Chapter III.
+\end{itemize}
+
+\textbf{Supplementary:}
+\begin{itemize}
+    \item Auer, R., Haslhofer, B., Kitzler, S., Lio, P., and Matthes, F. (2023). ``The Technology of Decentralized Finance (DeFi).'' \textit{Digital Finance}, 5, 55--95.
+    \item DTCC (2022). ``Project Ion: Building the Settlement System of the Future.'' White paper.
+    \item MBridge Project (2024). ``Connecting Economies Through CBDC.'' BIS Innovation Hub report.
+    \item Bech, M. and Garratt, R. (2017). ``Central Bank Cryptocurrencies.'' BIS Quarterly Review, September 2017.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

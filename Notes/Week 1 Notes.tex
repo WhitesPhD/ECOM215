@@ -1,0 +1,431 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{xcolor}
+
+% Page geometry
+\geometry{margin=2.5cm, headheight=14pt}
+
+% Color definitions
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{DarkGray}{RGB}{51, 51, 51}
+\definecolor{AccentOrange}{RGB}{214, 96, 77}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ImperialBlue,
+    urlcolor=ImperialBlue,
+    citecolor=ImperialBlue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{ImperialBlue}{\small Blockchain Economics and Digital Assets}}
+\fancyhead[R]{\textcolor{ImperialBlue}{\small Lecture 1 Notes}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section formatting
+\titleformat{\section}
+  {\Large\bfseries\color{ImperialBlue}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{ImperialBlue}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{DarkGray}}
+  {\thesubsubsection}{1em}{}
+
+% Custom commands
+\newcommand{\keyword}[1]{\textbf{\textcolor{AccentOrange}{#1}}}
+
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries\textcolor{ImperialBlue}{Blockchain Economics and Digital Assets}}\\[0.5em]
+    {\Large Lecture 1: Foundations of Blockchain Technology}\\[1em]
+    {\large Dr Daniele Bianchi}\\[0.5em]
+    {\normalsize Queen Mary, University of London}\\[0.3em]
+    {\normalsize Semester B, 2025/2026}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\tableofcontents
+
+\vspace{2cm}
+
+%----------------------------------------------------------------------------------------
+\section*{Overview}
+\addcontentsline{toc}{section}{Overview}
+%----------------------------------------------------------------------------------------
+
+This lecture introduces the fundamental concepts of blockchain technology and sets the stage for understanding its economic implications. We begin by asking a simple question: why does blockchain matter? The answer lies in a fundamental problem that has shaped economic activity for millennia---the problem of trust.
+
+Every day, we engage in transactions that require trusting strangers. When you send money abroad, you trust banks to transfer it correctly. When you buy something online, you trust payment processors to handle the transaction honestly. When you sign a contract, you trust legal systems to enforce it. These trusted intermediaries---banks, lawyers, notaries, governments---form the invisible infrastructure of modern commerce.
+
+Blockchain proposes something radical: a system where this trust is not placed in institutions, but in a transparent, cryptographically-secured, decentralised network. Whether this proposition delivers genuine economic value, or merely shifts trust from one place to another, is the central question of this course.
+
+This lecture is organised as follows. We first examine why intermediaries exist and what problems they create. We then define blockchain precisely and explore its core components: cryptographic building blocks, the chain-of-blocks data structure, and the distributed network that maintains it. Finally, we examine different types of blockchains and survey use cases beyond cryptocurrency.
+
+%----------------------------------------------------------------------------------------
+\section{Why Blockchain Matters}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Problem of Trust in Economic Exchange}
+
+Consider a simple problem: you want to send £1,000 to a relative in another country. What happens when you initiate this transfer through traditional banking?
+
+Your bank first verifies your identity and checks your balance. It then contacts one or more correspondent banks---intermediaries that facilitate cross-border transactions. Each intermediary verifies the transaction, updates its own ledger, and extracts a fee for its services. The entire process typically takes two to five business days and costs between 5\% and 10\% of the transfer amount.
+
+This inefficiency stems from a fundamental issue: each institution maintains its own private ledger, and reconciling information across these ledgers requires trust, time, and money. Your bank does not know the balance at the recipient's bank; correspondent banks do not know whether either party is creditworthy; everyone must trust everyone else to record transactions honestly.
+
+This is not unique to international transfers. Most economic transactions rely on \keyword{trusted third parties} to function:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Intermediary} & \textbf{Function} \\
+\midrule
+Banks & Verify balances, process payments \\
+Credit card networks & Guarantee merchant payments \\
+Lawyers and notaries & Certify contracts \\
+Governments & Maintain registries (land, identity, vehicles) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These intermediaries provide genuine value, but they also introduce costs: processing fees, compliance overhead, settlement delays, and the potential for single points of failure. Roughly 1.4 billion adults worldwide lack access to banking services entirely, excluded from formal economic participation.
+
+\subsection{The Blockchain Proposition}
+
+Blockchain offers an alternative architecture. What if a single shared ledger recorded all transactions? What if anyone could verify that ledger's accuracy independently, without trusting any particular institution? What if no single party could control or manipulate the records? What if transactions settled in minutes rather than days, and the system operated continuously without institutional downtime?
+
+This is the core idea: replace \keyword{trust in institutions} with \keyword{trust in a transparent, decentralised system}. The question we will explore throughout this course is when this proposition delivers real economic value---and when it is merely hype.
+
+\subsection{From Experiment to Infrastructure}
+
+Blockchain is no longer an emerging technology confined to enthusiasts. Since Bitcoin's launch in 2009, the technology has matured considerably:
+
+\begin{center}
+\begin{tabular}{cl}
+\toprule
+\textbf{Year} & \textbf{Development} \\
+\midrule
+2009 & Bitcoin launches (peer-to-peer electronic cash) \\
+2015 & Ethereum introduces programmable smart contracts \\
+2017--20 & Enterprise pilots in supply chain and trade finance \\
+2020--23 & DeFi growth; stablecoins reach \$100B+ market cap \\
+2024 & Bitcoin and Ethereum spot ETFs approved in the US \\
+2024 & MiCA regulation enters force in the EU \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Today, the cryptocurrency market exceeds \$2 trillion in capitalisation. Major financial institutions offer custody solutions. Regulated investment products trade on traditional exchanges. Comprehensive legal frameworks govern digital assets in major jurisdictions. Whatever one thinks of cryptocurrencies as investments, the underlying technology has achieved a level of institutional acceptance that was unthinkable a decade ago.
+
+%----------------------------------------------------------------------------------------
+\section{What is Blockchain?}
+%----------------------------------------------------------------------------------------
+
+\subsection{A Precise Definition}
+
+\begin{quote}
+A \keyword{blockchain} is a distributed digital ledger that records transactions in linked groups (blocks), secured by cryptography, maintained by a network of computers without central control.
+\end{quote}
+
+This definition contains four foundational components that we will examine in turn:
+
+\begin{enumerate}
+    \item \textbf{Cryptography}: Secures data and verifies identity
+    \item \textbf{Data structure}: Organises transactions into linked blocks
+    \item \textbf{Distributed network}: Replicates the ledger across many nodes
+    \item \textbf{Economic incentives}: Motivates honest participation
+\end{enumerate}
+
+Think of blockchain as a cleverly designed bookkeeping system where the bookkeepers do not need to trust each other. The ``cleverness'' lies in combining existing technologies---cryptographic hash functions, digital signatures, peer-to-peer networks---in a way that creates new properties none could achieve alone.
+
+\subsection{The Chain of Blocks}
+
+The name ``blockchain'' describes its fundamental data structure. Transactions are grouped into \textit{blocks}, and each block contains a cryptographic link to the previous block, forming a chain.
+
+More precisely, each block contains:
+\begin{itemize}
+    \item A batch of transactions
+    \item A timestamp
+    \item The \textit{hash} of the previous block (a cryptographic fingerprint)
+    \item Its own hash (computed from all the above)
+\end{itemize}
+
+The critical property is that each block's hash depends on the previous block's hash. If someone attempts to modify an old transaction, the hash of that block changes. But this invalidates the reference in the next block, changing its hash as well. The tampering propagates forward, making any modification immediately detectable.
+
+This creates \keyword{immutability}: changing the historical record requires rewriting the entire chain from the point of modification forward. As we shall see in Topic 2, this becomes computationally prohibitive on large networks.
+
+\subsection{Key Terminology}
+
+Several terms recur throughout discussions of blockchain:
+
+A \keyword{distributed ledger} is an append-only database replicated across many network nodes. New records can be added, but existing records cannot be modified or deleted. A blockchain is one type of distributed ledger, distinguished by its block-based structure and cryptographic linking.
+
+A \keyword{block} is a batch of transactions recorded together. Block size and timing vary by blockchain. Ethereum, for instance, produces blocks of variable size approximately every 12 seconds.
+
+A \keyword{node} is a computer participating in the network. \textit{Full nodes} store the complete ledger history and independently validate all transactions. \textit{Light nodes} store only block headers and query full nodes for detailed transaction data as needed.
+
+A \keyword{consensus protocol} defines the rules by which nodes agree on which blocks to add to the chain. Different consensus mechanisms---Proof-of-Work, Proof-of-Stake, and others---represent different approaches to this coordination problem. We examine these in detail in Topic 2.
+
+\subsection{How a Transaction Works}
+
+When a user initiates a blockchain transaction, the following sequence occurs:
+
+\begin{enumerate}
+    \item The user creates and cryptographically signs a transaction (e.g., ``send 1 ETH to address X'')
+    \item The transaction is broadcast to the network
+    \item Nodes validate the transaction (checking signatures, balances, and format)
+    \item Valid transactions enter a ``pending pool'' (mempool)
+    \item A block producer includes the transaction in a new block
+    \item Other nodes verify and append the block to their copy of the chain
+\end{enumerate}
+
+Several properties emerge from this process. \textit{Validation happens before recording}, ensuring only legitimate transactions enter the ledger. \textit{Once recorded, transactions cannot be reversed}---there is no ``undo'' button. \textit{All nodes receive the same updated ledger}, creating transparency. And \textit{no central authority approves transactions}; the network reaches consensus through its protocol rules.
+
+%----------------------------------------------------------------------------------------
+\section{Cryptographic Foundations}
+%----------------------------------------------------------------------------------------
+
+Blockchain relies on cryptographic tools to solve specific problems: ensuring data integrity, authenticating transaction authors, and linking blocks securely. Understanding these tools is essential for grasping both blockchain's capabilities and its limitations.
+
+\subsection{Hash Functions}
+
+A \keyword{hash function} takes input of any size and produces a fixed-length output called a \textit{hash} or \textit{digest}. Bitcoin uses SHA-256, which produces 256-bit outputs regardless of input length. Small input changes produce completely different outputs:
+
+\begin{verbatim}
+    SHA-256("Hello")  → 185f8db32271fe25f561a6fc938b2e26...
+    SHA-256("Hello.") → f52fbd32b2b3b86ff88ef6c490628285...
+\end{verbatim}
+
+A single character change---adding a period---transforms the hash entirely. This is the \keyword{avalanche effect}.
+
+Cryptographic hash functions have several crucial properties:
+
+\begin{itemize}
+    \item \textbf{Deterministic}: The same input always produces the same output
+    \item \textbf{One-way}: Given a hash, you cannot recover the input (computationally infeasible)
+    \item \textbf{Collision-resistant}: It is practically impossible to find two different inputs that produce the same hash
+    \item \textbf{Avalanche effect}: Tiny input changes produce completely different hashes
+\end{itemize}
+
+In blockchain, hashes serve multiple purposes. Each block header is hashed to produce a \textit{block hash}, which is then included in the next block's header---this is how blocks are cryptographically linked. Each transaction is hashed to produce a unique \textit{transaction ID}. All transaction hashes in a block are combined into a \textit{Merkle tree}, whose root is included in the block header, committing the block to every transaction it contains.
+
+\subsection{Public-Key Cryptography}
+
+Traditional cryptography requires parties to share a secret key before communicating securely. \keyword{Public-key cryptography} solves this with asymmetric key pairs.
+
+Each user generates two mathematically related keys:
+\begin{itemize}
+    \item A \textbf{public key}: Shared openly, like an email address
+    \item A \textbf{private key}: Kept secret, like a password
+\end{itemize}
+
+These keys enable two operations:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Operation} & \textbf{Use with} & \textbf{Verify/Decrypt with} \\
+\midrule
+Encryption & Recipient's public key & Recipient's private key \\
+Signing & Sender's private key & Sender's public key \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Digital Signatures in Blockchain}
+
+When you send cryptocurrency, you create a transaction message (``send 1 BTC to address X'') and sign it with your private key. The network verifies this signature using your public key.
+
+This provides three guarantees:
+\begin{itemize}
+    \item \textbf{Authentication}: Only the private key holder could have created the signature
+    \item \textbf{Integrity}: Any modification to the transaction invalidates the signature
+    \item \textbf{Non-repudiation}: The signer cannot later deny having authorised the transaction
+\end{itemize}
+
+The critical implication is that private keys are the sole proof of ownership. If you lose your private key, you lose access to your assets permanently. If someone steals your private key, they control your assets completely. There is no ``forgot password'' mechanism, no customer service to call, no way to reverse fraudulent transactions. This is a feature of the system, not a bug---but it represents a fundamental shift in how we think about asset security.
+
+%----------------------------------------------------------------------------------------
+\section{Core Properties of Blockchain}
+%----------------------------------------------------------------------------------------
+
+Different blockchains achieve these properties to varying degrees, but the following represent the ideals the technology aspires to:
+
+\subsection{Immutability and Irreversibility}
+
+\keyword{Immutability} means the ledger's history cannot be rewritten. Hash-linking ensures that changing any historical data requires re-computing all subsequent block hashes. On large networks with substantial computational resources devoted to maintaining the chain, this becomes economically prohibitive.
+
+\keyword{Irreversibility} means confirmed transactions cannot be ``undone.'' Unlike credit card payments (which allow chargebacks) or bank transfers (which can sometimes be recalled), blockchain transactions are final. This is valuable for settlement finality but creates challenges when errors occur. If you send funds to the wrong address, no mechanism exists to reverse the transfer.
+
+\subsection{Transparency and Decentralisation}
+
+\keyword{Transparency} means all transactions are visible to all participants. Anyone can audit the complete transaction history of a public blockchain. This builds trust without requiring trust in any particular party---you can verify rather than trust.
+
+The privacy trade-off is significant: public blockchains are \textit{pseudonymous}, not anonymous. Transactions are linked to addresses (public keys), not legal identities. But once an address is linked to a real identity---through an exchange, a payment, or data analysis---all associated transactions become attributable.
+
+\keyword{Decentralisation} means no single party controls the network. Thousands of independent nodes maintain the ledger, with decisions made through protocol rules and consensus rather than central authority. This eliminates single points of failure and censorship, but introduces coordination challenges for upgrades and dispute resolution.
+
+\subsection{The Blockchain Trilemma}
+
+These properties exist in tension. Vitalik Buterin, Ethereum's co-founder, articulated this as the \keyword{blockchain trilemma}: a blockchain can optimise for at most two of three properties---decentralisation, security, and scalability.
+
+More decentralised networks (with more nodes validating transactions) achieve greater censorship resistance but slower throughput due to communication overhead. Higher security (requiring more computational work or economic stake) provides stronger guarantees against attacks but consumes more resources. Greater scalability (processing more transactions per second) typically requires either larger blocks (which price out smaller validators) or fewer validators (which reduces decentralisation).
+
+We will examine this trilemma in depth in Topic 2, along with Layer 2 solutions that attempt to work around these constraints.
+
+%----------------------------------------------------------------------------------------
+\section{Types of Blockchains}
+%----------------------------------------------------------------------------------------
+
+Not all blockchains are created equal. They differ fundamentally in who can participate, who validates transactions, and what trade-offs they accept.
+
+\subsection{Public Blockchains}
+
+\keyword{Public blockchains} are open networks where anyone can participate, validate transactions, and audit the ledger. Bitcoin and Ethereum are the primary examples.
+
+\textbf{Advantages}:
+\begin{itemize}
+    \item Maximum decentralisation and censorship resistance
+    \item Trustless operation: security derives from the protocol, not institutional reputation
+    \item Permissionless innovation: anyone can build applications on top
+\end{itemize}
+
+\textbf{Disadvantages}:
+\begin{itemize}
+    \item Scalability constraints (Bitcoin processes roughly 7 transactions per second)
+    \item Resource consumption (Proof-of-Work) or capital requirements (Proof-of-Stake)
+    \item Governance challenges when protocol changes are needed
+\end{itemize}
+
+\subsection{Private and Consortium Blockchains}
+
+\keyword{Private blockchains} are controlled by a single organisation. They offer speed and efficiency---fewer nodes mean simpler consensus---but require trusting the operator. Critics argue that a private blockchain is ``just a database'' since it lacks the trust-minimisation properties that make public blockchains distinctive.
+
+\keyword{Consortium blockchains} are controlled by a group of organisations. They represent a middle ground: shared infrastructure without full public exposure. Examples include R3 Corda for financial services and Hyperledger Fabric for enterprise applications.
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+& \textbf{Public} & \textbf{Consortium} & \textbf{Private} \\
+\midrule
+Access & Open to all & Invited organisations & Single organisation \\
+Consensus & Permissionless & Pre-selected nodes & Centralised \\
+Speed & Slower & Medium & Fastest \\
+Decentralisation & High & Medium & Low \\
+Trust model & Protocol & Consortium members & Operator \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The choice depends on the use case. Public chains maximise trust minimisation but sacrifice throughput. Private chains maximise efficiency but require trusting the operator. Consortium chains attempt a middle ground suitable for scenarios where multiple parties need coordination but full public transparency is undesirable.
+
+%----------------------------------------------------------------------------------------
+\section{Use Cases Beyond Cryptocurrency}
+%----------------------------------------------------------------------------------------
+
+\subsection{When Does Blockchain Add Value?}
+
+Blockchain is most useful when:
+\begin{itemize}
+    \item Multiple parties need a \textbf{shared record}
+    \item Those parties do not fully \textbf{trust each other}
+    \item A trusted intermediary is \textbf{costly, slow, or unavailable}
+    \item \textbf{Auditability} and \textbf{tamper-evidence} are valuable
+\end{itemize}
+
+Conversely, blockchain adds little value when:
+\begin{itemize}
+    \item A single organisation controls all data
+    \item Participants already trust each other
+    \item Speed is critical and finality can wait
+    \item Data needs to be frequently modified or deleted
+\end{itemize}
+
+The rule of thumb: if a traditional database solves the problem, use a database. Blockchain adds value through trust minimisation, not raw performance.
+
+\subsection{Supply Chain Management}
+
+Supply chains involve tracking goods across multiple parties---manufacturers, shippers, customs officials, retailers---with no single trusted record-keeper. Blockchain can provide a shared ledger recording provenance and chain of custody, with each handoff cryptographically signed.
+
+Examples include IBM Food Trust (Walmart tracing produce from farm to shelf), TradeLens (container shipping documentation), and De Beers' Tracr platform (diamond provenance verification).
+
+The limitation is significant: blockchain guarantees data integrity \textit{on-chain} but cannot verify that off-chain inputs are accurate. If someone falsely records that goods were inspected, the blockchain dutifully preserves this false record. The principle of ``garbage in, garbage out'' applies---immutably.
+
+\subsection{Financial Services}
+
+Several financial applications benefit from blockchain's properties:
+
+\textbf{Settlement and clearing}: Traditional securities settlement operates on T+2 (trade date plus two days). Blockchain-based settlement could be near-instant, reducing counterparty risk and capital requirements.
+
+\textbf{Trade finance}: Letters of credit and bills of lading remain largely paper-based. Consortium blockchains can digitise and automate this documentation.
+
+\textbf{Cross-border payments}: Correspondent banking is slow and expensive. Stablecoins and central bank digital currencies offer alternatives, which we examine in Topic 5.
+
+\subsection{Identity and Government Services}
+
+Blockchain enables new approaches to digital identity. \textit{Self-sovereign identity} allows users to control their own credentials without relying on centralised identity providers. Verifiable credentials can be shared without revealing underlying data---proving you are over 18 without revealing your birthdate, for instance.
+
+Land registries benefit from immutable records of property ownership, reducing fraud and disputes. Georgia, Sweden, and Dubai have piloted blockchain-based property registries, particularly valuable in jurisdictions with unreliable traditional record-keeping.
+
+Voting applications remain more speculative. While transparent, auditable vote records are appealing, significant security and privacy challenges remain. Corporate shareholder voting may be more tractable than political elections, where the stakes and attack surfaces are higher.
+
+%----------------------------------------------------------------------------------------
+\section{Summary and Looking Ahead}
+%----------------------------------------------------------------------------------------
+
+This lecture has covered substantial ground. The key takeaways are:
+
+\textbf{Blockchain enables coordination without trusted intermediaries.} Its value proposition is clearest when multiple parties need shared, tamper-evident records and no single party can be trusted to maintain them.
+
+\textbf{The core mechanism is cryptographically linked blocks.} Hash functions ensure integrity; digital signatures ensure authenticity; the chain structure ensures that historical modifications are detectable.
+
+\textbf{Key properties are immutability, transparency, and decentralisation.} But these exist in tension with each other and with scalability---the blockchain trilemma.
+
+\textbf{Different blockchains serve different purposes.} Public chains maximise trust minimisation; private and consortium chains trade decentralisation for efficiency.
+
+\textbf{Use cases extend beyond cryptocurrency.} Supply chain, financial settlement, identity, and governance all represent potential applications---though the ``oracle problem'' (verifying off-chain data) limits what blockchain can guarantee.
+
+In the next lecture, we turn to the economics of blockchain: how consensus mechanisms work, why they consume resources, and what trade-offs different approaches embody. We will examine Proof-of-Work and Proof-of-Stake in detail, understand the blockchain trilemma more precisely, and explore how Layer 2 solutions attempt to circumvent scalability constraints.
+
+%----------------------------------------------------------------------------------------
+\section*{Readings}
+\addcontentsline{toc}{section}{Readings}
+%----------------------------------------------------------------------------------------
+
+\textbf{Required:}
+\begin{itemize}
+    \item Nakamoto, S. (2008). ``Bitcoin: A Peer-to-Peer Electronic Cash System.'' Read Sections 1--5 for the original articulation of blockchain's core concepts.
+\end{itemize}
+
+\textbf{Supplementary:}
+\begin{itemize}
+    \item Catalini, C., \& Gans, J. S. (2020). ``Some Simple Economics of the Blockchain.'' \textit{Communications of the ACM}, 63(7), 80--90. An accessible economic perspective on blockchain's value proposition.
+    \item Narayanan, A., Bonneau, J., Felten, E., Miller, A., \& Goldfeder, S. (2016). \textit{Bitcoin and Cryptocurrency Technologies}. Princeton University Press. Chapters 1--2 provide excellent technical background.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECOM215 — Course Chat</title>
+<style>
+  :root {
+    --imperial: #003e74;
+    --imperial-dark: #002a52;
+    --dark: #2b2b2b;
+    --muted: #6b6b6b;
+    --light: #f5f6f8;
+    --border: #e4e7ec;
+    --accent: #d6604d;
+    --user-bg: #003e74;
+    --user-fg: #ffffff;
+    --bot-bg: #f3f4f6;
+    --bot-fg: #1f2937;
+    --danger: #b42318;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--dark);
+    background: #fafbfc;
+  }
+  button { font-family: inherit; }
+
+  /* ---------- App shell ---------- */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 0 1px var(--border);
+  }
+  header {
+    padding: 14px 20px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  header .title h1 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--imperial);
+    font-weight: 600;
+  }
+  header .title p {
+    margin: 2px 0 0 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  header .actions { display: flex; gap: 8px; }
+  header .actions button {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--dark);
+  }
+  header .actions button:hover { background: var(--light); }
+
+  main { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+
+  /* ---------- Sidebar ---------- */
+  #sidebar {
+    width: 240px;
+    background: white;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 18px;
+    flex-shrink: 0;
+  }
+  #sidebar h3 {
+    margin: 0 0 8px 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  #sidebar .group { margin-bottom: 20px; }
+  #sidebar label {
+    display: block;
+    padding: 4px 0;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--dark);
+  }
+  #sidebar label input { margin-right: 8px; vertical-align: middle; }
+  #sidebar .sidebar-btn {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    color: var(--dark);
+    font-size: 12.5px;
+    cursor: pointer;
+    text-align: left;
+  }
+  #sidebar .sidebar-btn:hover { background: var(--light); border-color: var(--imperial); }
+  #sidebar .status {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 10px 0 0 0;
+    border-top: 1px solid var(--border);
+    margin-top: 12px;
+  }
+
+  /* ---------- Chat area ---------- */
+  #chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    min-width: 0;
+    min-height: 0;
+  }
+  #messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 24px 28px;
+  }
+  .msg {
+    margin-bottom: 18px;
+    max-width: 85%;
+    clear: both;
+  }
+  .msg.user {
+    margin-left: auto;
+    text-align: right;
+  }
+  .msg.assistant {
+    margin-right: auto;
+  }
+  .msg .bubble {
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 14px;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    font-size: 14.5px;
+  }
+  .msg.user .bubble {
+    background: var(--user-bg);
+    color: var(--user-fg);
+    border-bottom-right-radius: 4px;
+  }
+  .msg.assistant .bubble {
+    background: var(--bot-bg);
+    color: var(--bot-fg);
+    border-bottom-left-radius: 4px;
+  }
+  .msg .sources {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .msg .sources .label {
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .msg .sources a {
+    color: var(--imperial);
+    text-decoration: none;
+    margin-right: 6px;
+    padding: 2px 7px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    display: inline-block;
+    margin-bottom: 3px;
+    font-size: 11.5px;
+  }
+  .msg .sources a:hover {
+    background: var(--light);
+    border-color: var(--imperial);
+  }
+  .msg.system {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    max-width: 100%;
+    font-style: italic;
+  }
+  .msg.system.error { color: var(--danger); }
+
+  /* ---------- Input ---------- */
+  #input-form {
+    padding: 14px 20px 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    background: #fafbfc;
+    flex-shrink: 0;
+  }
+  #input {
+    flex: 1;
+    min-height: 42px;
+    max-height: 160px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14.5px;
+    resize: none;
+    outline: none;
+    background: white;
+    line-height: 1.4;
+  }
+  #input:focus { border-color: var(--imperial); }
+  #send-btn {
+    background: var(--imperial);
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    min-width: 80px;
+  }
+  #send-btn:hover:not(:disabled) { background: var(--imperial-dark); }
+  #send-btn:disabled {
+    background: #9aa4b2;
+    cursor: not-allowed;
+  }
+
+  /* ---------- Modal ---------- */
+  #key-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 16px;
+  }
+  #key-modal.hidden { display: none; }
+  #key-modal .panel {
+    background: white;
+    border-radius: 14px;
+    padding: 26px 26px 22px 26px;
+    max-width: 460px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  }
+  #key-modal h2 {
+    margin: 0 0 8px 0;
+    font-size: 19px;
+    color: var(--imperial);
+  }
+  #key-modal p {
+    margin: 0 0 18px 0;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  #key-modal label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  #key-modal label span {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--dark);
+  }
+  #key-modal input, #key-modal select {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    background: white;
+  }
+  #key-modal input:focus, #key-modal select:focus { border-color: var(--imperial); }
+  #key-modal .buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  #key-modal .buttons button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    background: white;
+    color: var(--dark);
+  }
+  #key-modal .buttons button.primary {
+    background: var(--imperial);
+    color: white;
+    border-color: var(--imperial);
+  }
+  #key-modal .buttons button.primary:hover { background: var(--imperial-dark); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 720px) {
+    main { flex-direction: column; }
+    #sidebar {
+      width: 100%;
+      max-height: 200px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    #app { max-width: none; }
+    header h1 { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <div class="title">
+      <h1>ECOM215 — Course Chat</h1>
+      <p>Blockchain Economics and Digital Assets · BYOK chat over the course material</p>
+    </div>
+    <div class="actions">
+      <button id="settings-btn" type="button">Settings</button>
+      <button id="clear-btn" type="button">Clear chat</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="sidebar">
+      <div class="group">
+        <h3>Source</h3>
+        <div id="type-filters"></div>
+      </div>
+      <div class="group">
+        <h3>Week</h3>
+        <div id="week-filters"></div>
+      </div>
+      <div class="group">
+        <h3>Chunks file</h3>
+        <button type="button" id="load-file-btn" class="sidebar-btn">Load from file…</button>
+        <input type="file" id="chunks-file-input" accept="application/json,.json" hidden>
+      </div>
+      <div class="status" id="status">Loading course material…</div>
+    </aside>
+
+    <section id="chat">
+      <div id="messages"></div>
+      <form id="input-form">
+        <textarea
+          id="input"
+          rows="1"
+          placeholder="Ask about the course material… (Enter to send, Shift+Enter for newline)"
+          autocomplete="off"
+        ></textarea>
+        <button type="submit" id="send-btn" disabled>Send</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<div id="key-modal" class="hidden">
+  <div class="panel">
+    <h2>API key required</h2>
+    <p>
+      This widget calls the Anthropic or OpenAI API directly from your browser.
+      Your key is stored in <strong>sessionStorage only</strong> — it is wiped
+      when you close the tab and is never sent anywhere except the API provider
+      you choose.
+    </p>
+    <label>
+      <span>Provider</span>
+      <select id="provider-select">
+        <option value="anthropic">Anthropic (Claude)</option>
+        <option value="openai">OpenAI (GPT)</option>
+      </select>
+    </label>
+    <label>
+      <span>Model</span>
+      <input type="text" id="model-input" placeholder="claude-sonnet-4-6">
+    </label>
+    <label>
+      <span>API key</span>
+      <input type="password" id="apikey-input" placeholder="sk-ant-... or sk-...">
+    </label>
+    <div class="buttons">
+      <button type="button" id="cancel-key-btn">Cancel</button>
+      <button type="button" id="clear-key-btn">Clear saved key</button>
+      <button type="button" class="primary" id="save-key-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ============================================================
+  // Config
+  // ============================================================
+
+  const TOP_K = 6;
+  const MAX_CHARS_PER_CHUNK = 2400;  // clip each chunk in the prompt
+  const MAX_HISTORY_TURNS = 6;        // keep last N user/assistant turns
+  const PDF_BASE = "../";             // pdf_path is relative to the repo root
+
+  const PROVIDER_DEFAULTS = {
+    anthropic: {
+      model: "claude-sonnet-4-6",
+      endpoint: "https://api.anthropic.com/v1/messages",
+    },
+    openai: {
+      model: "gpt-4o-mini",
+      endpoint: "https://api.openai.com/v1/chat/completions",
+    },
+  };
+
+  const STORAGE = {
+    provider: "ecom215.provider",
+    model: "ecom215.model",
+    apikey: "ecom215.apikey",
+  };
+
+  // sessionStorage can throw SecurityError in sandboxed iframes (e.g. the
+  // in-app Launch preview). Wrap it in a helper that silently falls back
+  // to an in-memory object so the UI keeps working.
+  const memStore = Object.create(null);
+  let storageBackend = "session";
+  const safeStorage = {
+    getItem(key) {
+      try { return sessionStorage.getItem(key); }
+      catch (_) { storageBackend = "memory"; return key in memStore ? memStore[key] : null; }
+    },
+    setItem(key, value) {
+      try { sessionStorage.setItem(key, value); }
+      catch (_) { storageBackend = "memory"; memStore[key] = value; }
+    },
+    removeItem(key) {
+      try { sessionStorage.removeItem(key); }
+      catch (_) { storageBackend = "memory"; delete memStore[key]; }
+    },
+  };
+
+  // Small English stopword list — good enough for keyword retrieval
+  // against a ~500-chunk corpus.
+  const STOPWORDS = new Set([
+    "a","an","and","or","the","is","are","was","were","be","been","being",
+    "to","in","on","of","for","with","by","from","as","at","it","its",
+    "this","that","these","those","i","you","he","she","we","they","them",
+    "do","does","did","have","has","had","having","but","not","no","nor",
+    "if","then","so","what","how","why","when","where","which","who","whom",
+    "whose","can","could","should","would","may","might","will","shall",
+    "about","into","onto","upon","than","too","very","just","there","here",
+    "my","your","our","their","his","her","me","us","him","mine","yours",
+    "ours","theirs","any","all","some","each","every","both","most","more",
+    "less","only","own","same","such","through","between","among","over",
+    "under","again","further","once","now","also","up","down","out","off",
+    "because","while","until","before","after","above","below"
+  ]);
+
+  // ============================================================
+  // State
+  // ============================================================
+
+  let chunks = [];
+  let index = null; // { chunkTokens: Set[], idf: Map }
+  const filters = { types: new Set(), weeks: new Set() };
+  const history = []; // array of { role: "user"|"assistant", content: string }
+
+  // ============================================================
+  // DOM helpers
+  // ============================================================
+
+  const $ = (sel) => document.querySelector(sel);
+  const el = (tag, attrs, ...children) => {
+    const node = document.createElement(tag);
+    if (attrs) {
+      for (const k in attrs) {
+        if (k === "class") node.className = attrs[k];
+        else if (k === "text") node.textContent = attrs[k];
+        else if (k.startsWith("on") && typeof attrs[k] === "function") {
+          node.addEventListener(k.slice(2), attrs[k]);
+        } else {
+          node.setAttribute(k, attrs[k]);
+        }
+      }
+    }
+    for (const c of children) {
+      if (c == null) continue;
+      if (typeof c === "string") node.appendChild(document.createTextNode(c));
+      else node.appendChild(c);
+    }
+    return node;
+  };
+
+  // ============================================================
+  // Chunk loading + indexing
+  // ============================================================
+
+  function applyChunksData(data, sourceLabel) {
+    const arr = Array.isArray(data) ? data : (data.chunks || []);
+    if (!arr.length) throw new Error("course-chunks.json has no chunks");
+    chunks = arr;
+    index = buildIndex(chunks);
+    renderFilters();
+    $("#status").textContent = chunks.length + " chunks loaded"
+      + (sourceLabel ? " (" + sourceLabel + ")" : "");
+    updateSendButton();
+  }
+
+  // Build a list of candidate URLs to try. Resolving against a base URL
+  // can throw (e.g. inside a sandboxed iframe where baseURI is opaque),
+  // so every URL construction is guarded.
+  function candidateChunkURLs() {
+    const list = [];
+    const tried = new Set();
+    const add = (u) => {
+      if (u && !tried.has(u)) {
+        tried.add(u);
+        list.push(u);
+      }
+    };
+    const bases = [];
+    try { bases.push(document.baseURI); } catch (_) {}
+    try { bases.push(location.href); } catch (_) {}
+    const rels = ["../course-chunks.json", "./course-chunks.json", "course-chunks.json"];
+    for (const base of bases) {
+      if (!base) continue;
+      for (const rel of rels) {
+        try { add(new URL(rel, base).href); } catch (_) {}
+      }
+    }
+    // Always include raw relative strings as a last-ditch attempt.
+    for (const rel of rels) add(rel);
+    return list;
+  }
+
+  async function loadChunks() {
+    const urls = candidateChunkURLs();
+    const failures = [];
+    for (const url of urls) {
+      try {
+        const res = await fetch(url, { cache: "no-cache" });
+        if (!res.ok) {
+          failures.push(url + " → HTTP " + res.status);
+          continue;
+        }
+        const data = await res.json();
+        applyChunksData(data, url);
+        return;
+      } catch (err) {
+        failures.push(url + " → " + (err && err.message || String(err)));
+      }
+    }
+    const detail = failures.length ? "\n  " + failures.join("\n  ") : "";
+    throw new Error("Could not fetch course-chunks.json from any candidate." + detail);
+  }
+
+  function loadChunksFromFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          applyChunksData(data, file.name);
+          resolve();
+        } catch (err) {
+          reject(new Error("Invalid JSON in " + file.name + ": " + err.message));
+        }
+      };
+      reader.onerror = () => reject(reader.error || new Error("Could not read file"));
+      reader.readAsText(file);
+    });
+  }
+
+  function tokenize(text) {
+    const toks = (text || "").toLowerCase().match(/[a-z0-9]+/g) || [];
+    const out = [];
+    for (const t of toks) {
+      if (t.length <= 1) continue;
+      if (STOPWORDS.has(t)) continue;
+      out.push(t);
+    }
+    return out;
+  }
+
+  function buildIndex(chunks) {
+    const docFreq = new Map();
+    const chunkTokens = chunks.map((c) => {
+      const text = [
+        c.section, c.subsection, c.title_full, c.tex_text, c.pdf_text
+      ].filter(Boolean).join(" ");
+      return new Set(tokenize(text));
+    });
+    for (const set of chunkTokens) {
+      for (const t of set) docFreq.set(t, (docFreq.get(t) || 0) + 1);
+    }
+    const N = chunks.length;
+    const idf = new Map();
+    for (const [t, df] of docFreq) {
+      // BM25-style IDF (always positive with the +1 offset).
+      idf.set(t, Math.log((N - df + 0.5) / (df + 0.5) + 1));
+    }
+    return { chunkTokens, idf };
+  }
+
+  function searchChunks(query) {
+    if (!index) return [];
+    const { chunkTokens, idf } = index;
+    const qTokens = new Set(tokenize(query));
+    if (!qTokens.size) return [];
+    const scored = [];
+    for (let i = 0; i < chunks.length; i++) {
+      const c = chunks[i];
+      if (filters.types.size && !filters.types.has(c.source_type)) continue;
+      if (filters.weeks.size && !filters.weeks.has(String(c.week))) continue;
+      let score = 0;
+      let hits = 0;
+      for (const t of qTokens) {
+        if (chunkTokens[i].has(t)) {
+          score += idf.get(t) || 0;
+          hits++;
+        }
+      }
+      if (hits > 0) {
+        // Small bonus if the section title contains a query term.
+        const title = ((c.subsection || "") + " " + (c.section || "")).toLowerCase();
+        for (const t of qTokens) {
+          if (title.includes(t)) { score += 0.5; break; }
+        }
+        scored.push({ idx: i, score, hits });
+      }
+    }
+    scored.sort((a, b) => b.score - a.score || b.hits - a.hits);
+    return scored.slice(0, TOP_K).map((s) => chunks[s.idx]);
+  }
+
+  // ============================================================
+  // Filter UI
+  // ============================================================
+
+  function renderFilters() {
+    const typeBox = $("#type-filters");
+    const weekBox = $("#week-filters");
+    typeBox.innerHTML = "";
+    weekBox.innerHTML = "";
+
+    const types = Array.from(new Set(chunks.map((c) => c.source_type))).sort();
+    const weeks = Array.from(new Set(
+      chunks.map((c) => c.week).filter((w) => w !== null && w !== undefined)
+    )).sort((a, b) => a - b);
+
+    for (const t of types) {
+      typeBox.appendChild(el("label", {},
+        el("input", { type: "checkbox", "data-type": t }),
+        t.charAt(0).toUpperCase() + t.slice(1)
+      ));
+    }
+    for (const w of weeks) {
+      weekBox.appendChild(el("label", {},
+        el("input", { type: "checkbox", "data-week": String(w) }),
+        "Week " + w
+      ));
+    }
+
+    typeBox.addEventListener("change", (e) => {
+      const v = e.target && e.target.dataset && e.target.dataset.type;
+      if (!v) return;
+      if (e.target.checked) filters.types.add(v);
+      else filters.types.delete(v);
+    });
+    weekBox.addEventListener("change", (e) => {
+      const v = e.target && e.target.dataset && e.target.dataset.week;
+      if (!v) return;
+      if (e.target.checked) filters.weeks.add(v);
+      else filters.weeks.delete(v);
+    });
+  }
+
+  // ============================================================
+  // API key storage (sessionStorage only)
+  // ============================================================
+
+  function getConfig() {
+    const provider = safeStorage.getItem(STORAGE.provider) || "anthropic";
+    const model = safeStorage.getItem(STORAGE.model) || PROVIDER_DEFAULTS[provider].model;
+    const apikey = safeStorage.getItem(STORAGE.apikey) || "";
+    return { provider, model, apikey };
+  }
+
+  function hasApiKey() {
+    return !!safeStorage.getItem(STORAGE.apikey);
+  }
+
+  function saveConfig(provider, model, apikey) {
+    safeStorage.setItem(STORAGE.provider, provider);
+    safeStorage.setItem(STORAGE.model, model);
+    safeStorage.setItem(STORAGE.apikey, apikey);
+  }
+
+  function clearConfig() {
+    safeStorage.removeItem(STORAGE.provider);
+    safeStorage.removeItem(STORAGE.model);
+    safeStorage.removeItem(STORAGE.apikey);
+  }
+
+  function openKeyModal() {
+    const cfg = getConfig();
+    $("#provider-select").value = cfg.provider;
+    $("#model-input").value = cfg.model;
+    $("#apikey-input").value = cfg.apikey;
+    $("#key-modal").classList.remove("hidden");
+    setTimeout(() => $("#apikey-input").focus(), 50);
+  }
+
+  function closeKeyModal() {
+    $("#key-modal").classList.add("hidden");
+  }
+
+  function updateSendButton() {
+    $("#send-btn").disabled = !(hasApiKey() && chunks.length > 0);
+  }
+
+  // ============================================================
+  // Message rendering
+  // ============================================================
+
+  function labelForChunk(c) {
+    const typeLabel = c.source_type.charAt(0).toUpperCase() + c.source_type.slice(1);
+    const weekPart = (c.week !== null && c.week !== undefined) ? " W" + c.week : "";
+    const sectionPart = c.subsection || c.section || "";
+    return typeLabel + weekPart + (sectionPart ? " — " + sectionPart : "");
+  }
+
+  function addMessage(role, text, sources) {
+    const container = $("#messages");
+    const msg = el("div", { class: "msg " + role });
+    const bubble = el("div", { class: "bubble" });
+    bubble.textContent = text;
+    msg.appendChild(bubble);
+
+    if (sources && sources.length) {
+      const srcDiv = el("div", { class: "sources" });
+      srcDiv.appendChild(el("span", { class: "label" }, "Sources:"));
+      sources.forEach((s, i) => {
+        const pdfHref = PDF_BASE + (s.pdf_path || "").replace(/ /g, "%20");
+        const link = el("a", {
+          href: pdfHref,
+          target: "_blank",
+          rel: "noopener",
+          title: "Open PDF: " + (s.pdf_path || ""),
+        }, "[" + (i + 1) + "] " + labelForChunk(s));
+        srcDiv.appendChild(link);
+      });
+      msg.appendChild(srcDiv);
+    }
+
+    container.appendChild(msg);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function addSystemMessage(text, isError) {
+    const container = $("#messages");
+    const cls = "msg system" + (isError ? " error" : "");
+    const msg = el("div", { class: cls }, text);
+    container.appendChild(msg);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // ============================================================
+  // Prompt building
+  // ============================================================
+
+  function clipChunk(text, maxChars) {
+    if (!text) return "";
+    if (text.length <= maxChars) return text;
+    return text.slice(0, maxChars).trimEnd() + "…";
+  }
+
+  function buildSystemPrompt(retrieved) {
+    const ctx = retrieved.map((c, i) => {
+      const header = "[" + (i + 1) + "] " + labelForChunk(c);
+      const body = clipChunk(c.tex_text || c.pdf_text || "", MAX_CHARS_PER_CHUNK);
+      return header + "\n" + body;
+    }).join("\n\n---\n\n");
+
+    return [
+      "You are a teaching assistant for ECOM215 (Blockchain Economics and Digital Assets) at Queen Mary, University of London.",
+      "",
+      "Answer the student's question using ONLY the course material excerpts below.",
+      "If the excerpts do not contain enough information, say so directly — do not guess or make up facts.",
+      "Be concise and precise. When you use information from a source, cite it inline using its bracketed number, e.g. [1] or [2][3].",
+      "At the end of your answer, do NOT repeat a sources list — the UI will render source links separately.",
+      "",
+      "Course material excerpts:",
+      "",
+      ctx
+    ].join("\n");
+  }
+
+  // ============================================================
+  // API calls
+  // ============================================================
+
+  function recentHistory() {
+    // Keep the last 2*MAX_HISTORY_TURNS messages (user+assistant pairs).
+    return history.slice(-2 * MAX_HISTORY_TURNS);
+  }
+
+  async function callAnthropic(cfg, systemPrompt, convo) {
+    const body = {
+      model: cfg.model,
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: convo.map((m) => ({ role: m.role, content: m.content })),
+    };
+    const res = await fetch(PROVIDER_DEFAULTS.anthropic.endpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": cfg.apikey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error("Anthropic API " + res.status + ": " + truncate(errText, 400));
+    }
+    const data = await res.json();
+    const parts = (data.content || [])
+      .filter((c) => c.type === "text")
+      .map((c) => c.text);
+    return parts.join("").trim();
+  }
+
+  async function callOpenAI(cfg, systemPrompt, convo) {
+    const body = {
+      model: cfg.model,
+      messages: [{ role: "system", content: systemPrompt }, ...convo],
+    };
+    const res = await fetch(PROVIDER_DEFAULTS.openai.endpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": "Bearer " + cfg.apikey,
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error("OpenAI API " + res.status + ": " + truncate(errText, 400));
+    }
+    const data = await res.json();
+    return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content || "").trim();
+  }
+
+  function truncate(s, n) {
+    if (!s) return "";
+    return s.length <= n ? s : s.slice(0, n) + "…";
+  }
+
+  // ============================================================
+  // Ask flow
+  // ============================================================
+
+  async function ask(question) {
+    const cfg = getConfig();
+    if (!cfg.apikey) { openKeyModal(); return; }
+    if (!chunks.length) {
+      addSystemMessage("Course material is still loading. Please wait…", true);
+      return;
+    }
+
+    addMessage("user", question);
+    history.push({ role: "user", content: question });
+
+    const retrieved = searchChunks(question);
+    const systemPrompt = retrieved.length > 0
+      ? buildSystemPrompt(retrieved)
+      : "You are a teaching assistant for ECOM215 (Blockchain Economics and Digital Assets). No relevant course material was found for this question. Tell the student that no matching material was found, and suggest rephrasing or broadening the question. Do not invent content.";
+
+    // Loading indicator
+    const thinking = el("div", { class: "msg assistant" },
+      el("div", { class: "bubble" }, "Thinking…")
+    );
+    $("#messages").appendChild(thinking);
+    $("#messages").scrollTop = $("#messages").scrollHeight;
+
+    const sendBtn = $("#send-btn");
+    sendBtn.disabled = true;
+
+    try {
+      const answer = cfg.provider === "openai"
+        ? await callOpenAI(cfg, systemPrompt, recentHistory())
+        : await callAnthropic(cfg, systemPrompt, recentHistory());
+
+      thinking.remove();
+      if (!answer) {
+        addSystemMessage("The model returned an empty response.", true);
+        history.pop(); // drop the user turn that didn't get a reply
+      } else {
+        history.push({ role: "assistant", content: answer });
+        addMessage("assistant", answer, retrieved);
+      }
+    } catch (err) {
+      thinking.remove();
+      addSystemMessage(String(err && err.message || err), true);
+      history.pop(); // drop the user turn so retry works cleanly
+    } finally {
+      updateSendButton();
+      $("#input").focus();
+    }
+  }
+
+  // ============================================================
+  // Init
+  // ============================================================
+
+  function bindSettings() {
+    $("#settings-btn").addEventListener("click", openKeyModal);
+
+    $("#save-key-btn").addEventListener("click", () => {
+      const provider = $("#provider-select").value;
+      let model = $("#model-input").value.trim();
+      if (!model) model = PROVIDER_DEFAULTS[provider].model;
+      const apikey = $("#apikey-input").value.trim();
+      if (!apikey) {
+        alert("Please paste an API key.");
+        return;
+      }
+      saveConfig(provider, model, apikey);
+      closeKeyModal();
+      updateSendButton();
+      const where = storageBackend === "memory"
+        ? "memory only (sessionStorage is blocked in this context — the key will be lost on reload)"
+        : "sessionStorage (this tab only)";
+      addSystemMessage("API key saved to " + where + ".");
+    });
+
+    $("#cancel-key-btn").addEventListener("click", closeKeyModal);
+
+    $("#clear-key-btn").addEventListener("click", () => {
+      clearConfig();
+      $("#apikey-input").value = "";
+      updateSendButton();
+      addSystemMessage("API key cleared.");
+      closeKeyModal();
+    });
+
+    $("#provider-select").addEventListener("change", (e) => {
+      const p = e.target.value;
+      const current = $("#model-input").value.trim();
+      // Swap default model if the field is empty or matches the other default
+      if (!current
+          || current === PROVIDER_DEFAULTS.anthropic.model
+          || current === PROVIDER_DEFAULTS.openai.model) {
+        $("#model-input").value = PROVIDER_DEFAULTS[p].model;
+      }
+    });
+
+    $("#key-modal").addEventListener("click", (e) => {
+      if (e.target === $("#key-modal")) closeKeyModal();
+    });
+  }
+
+  function bindInput() {
+    const input = $("#input");
+    const form = $("#input-form");
+
+    input.addEventListener("input", () => {
+      input.style.height = "auto";
+      input.style.height = Math.min(160, input.scrollHeight) + "px";
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const question = input.value.trim();
+      if (!question) return;
+      input.value = "";
+      input.style.height = "auto";
+      ask(question);
+    });
+
+    $("#clear-btn").addEventListener("click", () => {
+      history.length = 0;
+      $("#messages").innerHTML = "";
+      addSystemMessage("Chat cleared.");
+    });
+  }
+
+  function bindFileLoader() {
+    const btn = $("#load-file-btn");
+    const input = $("#chunks-file-input");
+    btn.addEventListener("click", () => input.click());
+    input.addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        await loadChunksFromFile(file);
+        addSystemMessage("Loaded " + chunks.length + " chunks from " + file.name + ".");
+      } catch (err) {
+        addSystemMessage(err.message, true);
+      } finally {
+        input.value = ""; // allow re-selecting the same file
+      }
+    });
+  }
+
+  function welcome() {
+    addSystemMessage(
+      "Ask any question about the ECOM215 course material. "
+      + "Use the sidebar to limit the search to specific weeks or source types."
+    );
+  }
+
+  function installGlobalErrorHandler() {
+    window.addEventListener("error", (e) => {
+      try {
+        addSystemMessage("Script error: " + (e.message || e.error || "unknown"), true);
+      } catch (_) { /* ignore */ }
+    });
+    window.addEventListener("unhandledrejection", (e) => {
+      try {
+        const reason = e.reason && e.reason.message ? e.reason.message : String(e.reason);
+        addSystemMessage("Unhandled promise rejection: " + reason, true);
+      } catch (_) { /* ignore */ }
+    });
+  }
+
+  function init() {
+    installGlobalErrorHandler();
+    bindSettings();
+    bindInput();
+    bindFileLoader();
+    welcome();
+
+    loadChunks().catch((err) => {
+      $("#status").textContent = "Auto-load failed — use Load from file…";
+      addSystemMessage(
+        "Couldn't auto-fetch course-chunks.json. "
+        + "On GitHub Pages this works automatically; in a local preview, click "
+        + "\"Load from file…\" in the sidebar and pick course-chunks.json "
+        + "from the ECOM215 folder. "
+        + "(Alternatively, from the ECOM215 directory run `python3 -m http.server` "
+        + "and visit http://localhost:8000/chat/.)",
+        true
+      );
+      console.warn("loadChunks error detail:", err);
+    });
+
+    if (!hasApiKey()) {
+      setTimeout(openKeyModal, 250);
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

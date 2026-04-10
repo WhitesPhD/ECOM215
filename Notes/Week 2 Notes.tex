@@ -1,0 +1,485 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{xcolor}
+
+% Page geometry
+\geometry{margin=2.5cm, headheight=14pt}
+
+% Color definitions
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{DarkGray}{RGB}{51, 51, 51}
+\definecolor{AccentOrange}{RGB}{214, 96, 77}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ImperialBlue,
+    urlcolor=ImperialBlue,
+    citecolor=ImperialBlue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{ImperialBlue}{\small Blockchain Economics and Digital Assets}}
+\fancyhead[R]{\textcolor{ImperialBlue}{\small Lecture 2 Notes}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section formatting
+\titleformat{\section}
+  {\Large\bfseries\color{ImperialBlue}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{ImperialBlue}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{DarkGray}}
+  {\thesubsubsection}{1em}{}
+
+% Custom commands
+\newcommand{\keyword}[1]{\textbf{\textcolor{AccentOrange}{#1}}}
+
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries\textcolor{ImperialBlue}{Blockchain Economics and Digital Assets}}\\[0.5em]
+    {\Large Lecture 2: Blockchain Economics}\\[1em]
+    {\large Dr Daniele Bianchi}\\[0.5em]
+    {\normalsize Queen Mary, University of London}\\[0.3em]
+    {\normalsize Semester B, 2025/2026}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\tableofcontents
+
+\vspace{2cm}
+
+%----------------------------------------------------------------------------------------
+\section*{Overview}
+\addcontentsline{toc}{section}{Overview}
+%----------------------------------------------------------------------------------------
+
+In Topic 1, we established that blockchain is a distributed ledger maintained by a network of computers without central control. But we left a crucial question unanswered: how do these computers agree on what the ledger contains? When thousands of strangers around the world maintain copies of the same database, and some of them might be dishonest, how do they reach agreement?
+
+This is the \keyword{consensus problem}, and solving it is what makes blockchain possible. The solution is not merely technical---it is fundamentally economic. Blockchain networks align incentives so that honest behaviour is profitable and cheating is costly. Understanding these incentive structures is essential for understanding both the value and limitations of blockchain technology.
+
+This lecture examines the two dominant approaches to consensus: Proof-of-Work (PoW) and Proof-of-Stake (PoS). We explore the economic logic underlying each, their trade-offs in terms of security and resource consumption, and the fundamental constraints that limit all blockchain designs. We conclude by examining Layer 2 solutions---attempts to scale blockchain without sacrificing its core properties.
+
+%----------------------------------------------------------------------------------------
+\section{The Consensus Problem}
+%----------------------------------------------------------------------------------------
+
+\subsection{Why Consensus Matters}
+
+Recall from Topic 1 that a blockchain is a shared ledger with no central authority. This immediately raises a fundamental question:
+
+\begin{quote}
+How do strangers agree on the state of a shared database when some of them might be lying?
+\end{quote}
+
+In traditional systems, a central authority---a bank, a clearinghouse, a government registry---maintains the authoritative record. Disputes are resolved by reference to this authority. But blockchain deliberately eliminates this central point of control. The consensus protocol must somehow ensure that all honest participants agree on the same transaction history, even in the presence of adversarial actors.
+
+\subsection{The Double-Spend Problem}
+
+The challenge is particularly acute for digital money. Physical cash has a natural scarcity: you cannot hand the same banknote to two people. Digital information, by contrast, can be copied perfectly.
+
+Consider this scenario: Alice has 1 BTC. She simultaneously sends it to Bob (Transaction A) and to Carol (Transaction B). Both transactions are valid copies---each correctly signed with Alice's private key, each referencing the same unspent output. Which transaction counts?
+
+With physical cash, this is impossible by the laws of physics. With digital cash, both transactions appear equally legitimate. \keyword{Someone must decide which one to accept}, and that decision must be binding on all participants. Without such a mechanism, digital currency is worthless---any recipient might discover their payment was already spent elsewhere.
+
+Traditional payment systems solve this through centralised ledgers. Your bank maintains the authoritative record of your balance; it simply rejects the second transaction. Blockchain's innovation is solving the double-spend problem through decentralised consensus.
+
+\subsection{Byzantine Fault Tolerance}
+
+The consensus problem is a modern instance of what computer scientists call the \keyword{Byzantine Generals Problem}. Imagine generals surrounding a city who must coordinate an attack. They can only communicate by messenger, and some generals may be traitors who send conflicting messages. How can the loyal generals reach agreement?
+
+The blockchain parallel is direct. Thousands of nodes must agree on transaction history. Some nodes might be offline, malfunctioning, or actively malicious. The network must produce a single consistent ledger despite these failures. A consensus protocol that works correctly even when some participants are adversarial is called \keyword{Byzantine fault tolerant}.
+
+The theoretical results are sobering: Byzantine agreement requires that fewer than one-third of participants be malicious in most settings. Blockchain's contribution is creating systems where participating honestly is economically rational, so that the one-third threshold is rarely approached.
+
+\subsection{Properties of Good Consensus}
+
+A well-designed consensus protocol should deliver:
+
+\begin{center}
+\begin{tabular}{lp{9cm}}
+\toprule
+\textbf{Property} & \textbf{Meaning} \\
+\midrule
+Safety & Honest nodes agree on the same transaction history \\
+Fault tolerance & The system continues operating despite some nodes failing or attacking \\
+Decentralisation & No single party can control which transactions are confirmed \\
+Efficiency & Resources are not wasted unnecessarily \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These properties often conflict. Greater security may require more computational work. More decentralisation may slow consensus. The design of a consensus mechanism embodies choices about which trade-offs to accept.
+
+%----------------------------------------------------------------------------------------
+\section{Proof-of-Work}
+%----------------------------------------------------------------------------------------
+
+Before Bitcoin (2009), every attempt at decentralised digital cash had failed because of the double-spend problem. Satoshi Nakamoto's insight was to make adding blocks to the chain \keyword{computationally expensive}.
+
+The basic idea is simple. Participants called ``miners'' compete to solve a cryptographic puzzle. The winner gets to propose the next block and receives a reward---newly minted coins plus transaction fees. Other nodes verify the solution (which is trivial) and append the valid block to their chains.
+
+This is \keyword{Proof-of-Work}: to add a block, you must prove that you expended computational resources. The name is apt---the computational work is the proof.
+
+Why does this solve the double-spend problem? Because attacking the network requires out-computing all honest miners. An attacker who wants to reverse a confirmed transaction must create an alternative version of history that is longer (contains more accumulated work) than the honest chain. If honest miners control the majority of computational power, the honest chain grows faster than any attacker's chain, making successful attacks exponentially less likely as more blocks are added.
+
+\subsection{How Mining Works}
+
+The puzzle miners solve is finding a number (called a ``nonce'') that, when hashed together with the block's data, produces an output below a certain threshold. Since hash outputs are unpredictable, there is no shortcut---miners must try billions of random values until one works.
+
+The process works as follows:
+\begin{enumerate}
+    \item Collect pending transactions from the mempool into a candidate block
+    \item Try random nonces until finding one that produces a valid hash
+    \item Broadcast the winning block to the network
+    \item Other nodes verify the solution (one hash computation) and append the block
+    \item The winner receives the block reward plus all transaction fees in the block
+\end{enumerate}
+
+The asymmetry is crucial: finding a valid nonce requires billions of attempts; verifying requires exactly one. This asymmetry makes the system work---miners invest heavily in security, but anyone can cheaply verify their work.
+
+\subsection{Difficulty Adjustment}
+
+Bitcoin targets one block approximately every 10 minutes. But if more miners join the network, blocks would be found faster, potentially destabilising the system.
+
+The solution is \keyword{difficulty adjustment}. Every 2,016 blocks (roughly two weeks), the protocol automatically adjusts the difficulty target based on how quickly the previous blocks were found. If blocks came too fast, difficulty increases; if too slow, it decreases.
+
+This creates an \keyword{arms race}. Adding more computational power improves your \textit{relative} chance of winning the next block, but it does not increase the total rate of block production. The difficulty simply adjusts to absorb the additional capacity. More hashpower means more security for the network---an attacker needs to overcome more computational power---but no more blocks per hour.
+
+\subsection{Block Rewards and the Halving}
+
+Miners receive two types of compensation:
+\begin{enumerate}
+    \item \textbf{Block subsidy}: Newly created bitcoins (currently 3.125 BTC per block)
+    \item \textbf{Transaction fees}: Payments from users seeking transaction inclusion
+\end{enumerate}
+
+The block subsidy follows a predetermined schedule called the \keyword{halving}. Every 210,000 blocks (approximately four years), the subsidy is cut in half:
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+\textbf{Date} & \textbf{Block Subsidy} & \textbf{Event} \\
+\midrule
+January 2009 & 50 BTC & Genesis \\
+November 2012 & 25 BTC & 1st halving \\
+July 2016 & 12.5 BTC & 2nd halving \\
+May 2020 & 6.25 BTC & 3rd halving \\
+April 2024 & 3.125 BTC & 4th halving \\
+$\sim$2028 & 1.5625 BTC & 5th halving (projected) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This creates a \keyword{deflationary supply schedule}: the total supply asymptotically approaches 21 million BTC, reached around 2140. The economic implications of this fixed supply---and whether transaction fees alone will provide sufficient security incentives as block subsidies decline---remain actively debated.
+
+\subsection{The Longest Chain Rule}
+
+When two miners find valid blocks nearly simultaneously, the network temporarily has two competing versions of the chain---a ``fork.'' Nakamoto's solution is the \keyword{longest chain rule}: nodes follow whichever chain has the most accumulated proof-of-work.
+
+Miners choose which branch to extend. Eventually, one branch gets ahead, and the other is abandoned (``orphaned''). Transactions in orphaned blocks return to the mempool for re-inclusion in the winning chain.
+
+This mechanism handles benign forks from network latency. More importantly, it makes attacks difficult. An attacker trying to reverse a confirmed transaction must build an alternative chain faster than all honest miners combined. If honest miners control more than 50\% of computational power, the probability of success decreases exponentially with each additional block built on the honest chain.
+
+This is why users are advised to wait for multiple \keyword{confirmations} before considering a transaction final. The Bitcoin convention is 6 confirmations (approximately one hour), though fewer may suffice for smaller amounts.
+
+\subsection{The Security Model}
+
+Proof-of-Work protects against specific attacks:
+
+\begin{itemize}
+    \item \textbf{Double-spending}: Would require rewriting confirmed blocks, which becomes exponentially harder over time
+    \item \textbf{Censorship}: Any miner can include any valid transaction; no single miner controls the mempool
+    \item \textbf{Counterfeit coins}: Nodes independently verify all blocks; invalid transactions are rejected regardless of who proposes them
+\end{itemize}
+
+The \keyword{51\% attack} represents the theoretical vulnerability. An attacker controlling majority hashpower could double-spend their own transactions, prevent specific transactions from confirming, and generally disrupt the network. However, they still could not steal others' coins (private keys remain required) or create coins beyond the protocol rules (other nodes would reject such blocks).
+
+The cost of such an attack on Bitcoin is estimated in the billions of dollars for hardware and electricity, making it economically irrational against a well-functioning network. Smaller proof-of-work chains with less hashpower are more vulnerable---several have suffered successful 51\% attacks.
+
+%----------------------------------------------------------------------------------------
+\section{Proof-of-Stake}
+%----------------------------------------------------------------------------------------
+
+\subsection{Beyond Proof-of-Work}
+
+Proof-of-Work achieves security but at significant cost:
+
+\begin{itemize}
+    \item \textbf{Energy consumption}: Bitcoin uses an estimated 100--150 TWh annually, comparable to some countries
+    \item \textbf{Hardware waste}: Mining equipment becomes obsolete rapidly
+    \item \textbf{Centralisation pressure}: Economies of scale favour large operations with access to cheap electricity
+\end{itemize}
+
+These costs prompted a fundamental question: could we achieve similar security without the energy expenditure? \keyword{Proof-of-Stake} offers an alternative approach: instead of proving you expended computational resources, you prove you have ``skin in the game'' by locking up cryptocurrency as collateral.
+
+\subsection{How Proof-of-Stake Works}
+
+The basic mechanism:
+\begin{enumerate}
+    \item Validators deposit (``stake'') cryptocurrency as collateral
+    \item The protocol randomly selects validators to propose blocks, with selection probability proportional to stake size
+    \item Other validators ``attest'' (vote) that the proposed block is valid
+    \item Validators earn rewards for honest participation
+\end{enumerate}
+
+The enforcement mechanism is \keyword{slashing}: if a validator misbehaves---for example, by proposing conflicting blocks or making false attestations---a portion of their stake is automatically destroyed. This makes attacks economically painful without requiring ongoing energy expenditure.
+
+The key insight is that security comes from \textit{economic penalties} rather than \textit{computational cost}. An attacker must risk losing their staked capital, not merely wasting electricity.
+
+\subsection{The Ethereum Merge}
+
+Ethereum's transition from Proof-of-Work to Proof-of-Stake in September 2022---known as ``The Merge''---represents the largest consensus mechanism change in blockchain history.
+
+\textbf{Before (Proof-of-Work)}:
+\begin{itemize}
+    \item Miners competed with specialised hardware (GPUs, then ASICs)
+    \item Energy consumption: approximately 80--100 TWh annually
+    \item Block time: variable, averaging 13 seconds
+\end{itemize}
+
+\textbf{After (Proof-of-Stake)}:
+\begin{itemize}
+    \item Validators stake 32 ETH (roughly \$100,000 at current prices)
+    \item Energy consumption: approximately 0.01 TWh annually---a \textbf{99.95\% reduction}
+    \item Block time: fixed 12-second slots
+\end{itemize}
+
+The Merge demonstrated that a major blockchain can successfully change consensus mechanisms, though the transition required years of development and careful coordination.
+
+\subsection{Staking Economics}
+
+To become an Ethereum validator:
+\begin{itemize}
+    \item Stake exactly 32 ETH (the minimum requirement)
+    \item Run validator software continuously (offline validators face penalties)
+    \item Earn rewards for proposing blocks and making correct attestations
+    \item Current yield: approximately 3--5\% APR, varying with network activity
+\end{itemize}
+
+Barriers to entry include the substantial capital requirement (32 ETH is roughly \$100,000), technical complexity of running validator infrastructure, and historically, the inability to withdraw staked ETH (addressed in 2023).
+
+\keyword{Liquid staking} protocols like Lido and Rocket Pool address these barriers by pooling stake from many users and issuing tradeable tokens representing the staked position. We examine these in Topic 4 on DeFi.
+
+\subsection{Proof-of-Work vs Proof-of-Stake}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+& \textbf{Proof-of-Work} & \textbf{Proof-of-Stake} \\
+\midrule
+Security basis & Computational cost & Economic stake \\
+Energy use & Very high & Minimal \\
+Hardware needs & Specialised (ASICs) & Standard servers \\
+Attack cost & Acquire/rent hashpower & Acquire and risk stake \\
+Barrier to entry & Capital + expertise + electricity & Capital (stake requirement) \\
+Primary example & Bitcoin & Ethereum (post-Merge) \\
+Finality & Probabilistic & Can be deterministic \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Neither approach is strictly superior. Bitcoin maximalists argue that Proof-of-Work's energy expenditure \textit{is} the security---real-world resources that cannot be faked or borrowed cheaply. Proof-of-Stake advocates argue that equivalent security can be achieved more efficiently by making capital, rather than electricity, the thing at risk.
+
+
+Proof-of-Stake is not without criticism:
+
+\textbf{``Rich get richer''}: Validators with more stake earn proportionally more rewards, potentially increasing concentration over time. Unlike mining, where new entrants can purchase hashpower, staking rewards accrue to existing stake.
+
+\textbf{Nothing-at-stake problem}: In theory, validators could costlessly vote for multiple competing chain forks (since voting doesn't consume resources like mining does). This is addressed through slashing, but adds complexity.
+
+\textbf{Long-range attacks}: An attacker with old validator keys could theoretically rewrite history from an early point. This is mitigated through checkpointing and ``weak subjectivity''---new nodes must get a recent trusted checkpoint, not just genesis.
+
+\textbf{Validator centralisation}: Large staking pools (Lido controls approximately 30\% of staked ETH) raise concerns similar to mining pool concentration.
+
+The long-term security properties of Proof-of-Stake at scale are still being validated in production. Ethereum's experience since the Merge provides the most significant real-world test.
+
+%----------------------------------------------------------------------------------------
+\section{The Blockchain Trilemma}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Trade-off}
+
+Vitalik Buterin articulated a fundamental constraint on blockchain design:
+
+\begin{quote}
+A blockchain can optimise for at most two of three properties: \keyword{decentralisation}, \keyword{security}, and \keyword{scalability}.
+\end{quote}
+
+This is not a proven theorem but an observed engineering trade-off that manifests across different design choices.
+
+\subsection{Understanding the Tensions}
+
+\textbf{Decentralisation vs Scalability}: More nodes mean more communication overhead. Every transaction must propagate to all validators; every block must be verified by everyone. Bitcoin's roughly 15,000 nodes can process about 7 transactions per second. Visa's centralised system handles 65,000 transactions per second at peak capacity.
+
+\textbf{Security vs Scalability}: Faster blocks leave less time for propagation, creating more temporary forks and easier attack opportunities. Larger blocks process more transactions but require more storage and bandwidth, pricing out smaller validators and reducing decentralisation.
+
+\textbf{Security vs Decentralisation}: Stronger security often requires more resources (hashpower or stake). Higher costs push participants toward pools to share variance, concentrating power. Both Bitcoin mining and Ethereum staking exhibit significant concentration.
+
+\subsection{Where Different Blockchains Sit}
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Blockchain} & \textbf{Decentralisation} & \textbf{Security} & \textbf{Scalability} \\
+\midrule
+Bitcoin & High & High & Low ($\sim$7 TPS) \\
+Ethereum L1 & High & High & Low ($\sim$15 TPS) \\
+Solana & Lower & Medium & High ($\sim$5,000 TPS) \\
+BNB Chain & Low & Medium & High \\
+Hyperledger & Permissioned & High (within trust model) & High \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The question is not which design is ``best'' but which trade-off suits the application. Bitcoin prioritises security and decentralisation for a store of value. Solana sacrifices some decentralisation for throughput suitable for applications requiring many transactions.
+
+%----------------------------------------------------------------------------------------
+\section{Layer 2 Solutions}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Scaling Approach}
+
+If Layer 1 blockchains face fundamental scalability constraints, can we build additional layers on top that provide greater throughput while inheriting the underlying security?
+
+\begin{quote}
+\keyword{Layer 2 solutions} process transactions off the main chain but inherit security from it by periodically posting proofs or summaries back to Layer 1.
+\end{quote}
+
+The idea is to batch many transactions into a single Layer 1 transaction, amortising the cost and throughput constraints across many users.
+
+\subsection{Bitcoin's Lightning Network}
+
+The \keyword{Lightning Network} enables instant Bitcoin payments through payment channels:
+
+\begin{itemize}
+    \item Two parties lock Bitcoin in a shared address (opening a channel)
+    \item They can transact unlimited times between themselves by exchanging signed messages---no on-chain transactions required
+    \item Either party can close the channel at any time, with final balances settled on-chain
+    \item Channels can be chained: Alice pays Carol through Bob, even without a direct channel
+\end{itemize}
+
+Lightning enables micropayments (fractions of a cent) with instant settlement and near-zero fees. Capacity currently exceeds 5,000 BTC locked in channels, with growing adoption for everyday payments in jurisdictions like El Salvador.
+
+\subsection{Ethereum Rollups}
+
+Ethereum's scaling roadmap centres on \keyword{rollups}---Layer 2 systems that bundle hundreds of transactions and post compressed data to Ethereum:
+
+\textbf{Optimistic Rollups} (Arbitrum, Optimism): Assume transactions are valid by default. Anyone can submit a ``fraud proof'' during a challenge period if they detect invalid transactions. If the fraud proof succeeds, the invalid batch is reverted and the malicious proposer is penalised.
+
+\textbf{ZK-Rollups} (zkSync, StarkNet): Use cryptographic proofs (zero-knowledge proofs) to mathematically guarantee validity. More computationally intensive to generate but provide immediate finality without challenge periods.
+
+\textbf{Current state}:
+\begin{itemize}
+    \item Arbitrum and Optimism together hold over \$10 billion in total value locked
+    \item Fees: Often 10--100x cheaper than Ethereum mainnet
+    \item Speed: Near-instant confirmation for users, with periodic settlement to L1
+\end{itemize}
+
+\subsection{Trade-offs of Layer 2}
+
+Layer 2 does not ``solve'' the trilemma---it shifts the trade-offs:
+
+\begin{itemize}
+    \item Users must trust Layer 2 operators to some degree (though fraud proofs or validity proofs limit this trust)
+    \item Bridging between L1 and L2 introduces complexity and potential attack vectors
+    \item Liquidity fragments across layers
+    \item Different L2s may not interoperate smoothly
+\end{itemize}
+
+Nonetheless, Layer 2 represents the most practical near-term path to scaling blockchain for broader adoption, and understanding these systems is essential for understanding modern blockchain architecture.
+
+%----------------------------------------------------------------------------------------
+\section{Economic Implications}
+%----------------------------------------------------------------------------------------
+
+\subsection{Energy Consumption}
+
+The energy debate around blockchain has evolved significantly:
+
+\textbf{Bitcoin} (Proof-of-Work): Estimated 100--150 TWh annually, comparable to countries like Argentina or Norway. Critics point to the environmental impact and carbon footprint. Defenders note that Bitcoin increasingly uses renewable and otherwise-stranded energy, and that the energy expenditure secures a network worth over \$1 trillion.
+
+\textbf{Ethereum} (post-Merge Proof-of-Stake): Approximately 0.01 TWh annually---a 99.95\% reduction from pre-Merge levels. This is comparable to a few thousand households.
+
+The implication is that energy criticism now applies specifically to Proof-of-Work chains (primarily Bitcoin), not to blockchain technology generally. Whether Bitcoin's energy use is justified depends on how one values Bitcoin's properties---a debate that extends beyond technical considerations into questions of monetary policy and financial sovereignty.
+
+\subsection{Mining and Staking Concentration}
+
+Despite decentralisation goals, both mining and staking exhibit concentration:
+
+\textbf{Bitcoin mining pools}: The top 4 pools control approximately 70\% of hashpower. Foundry USA, AntPool, F2Pool, and ViaBTC dominate, with geographic concentration in the US, China (despite the ban), and Kazakhstan.
+
+\textbf{Ethereum staking}: Lido controls approximately 30\% of staked ETH. Coinbase and Kraken hold another 15\% combined. Independent validators represent a minority.
+
+Why does concentration occur? Economies of scale in hardware and electricity for mining; pooling to reduce variance for both mining and staking; technical barriers that favour sophisticated operators.
+
+Important nuance: pool operators do not directly control miners' or stakers' machines. Participants can switch pools, providing some check on pool behaviour. The concentration is concerning but not equivalent to the pool operators controlling the network.
+
+\subsection{Wealth Concentration}
+
+Cryptocurrency holdings are highly concentrated. Approximately 70\% of Bitcoin addresses hold less than \$1,000, while roughly 0.01\% hold more than \$10 million.
+
+Caveats apply: one person can control many addresses; one address (such as an exchange) can represent many people; early adopters naturally hold more, having purchased at \$1 rather than \$60,000.
+
+Whether this concentration undermines claims of ``democratisation'' is debated. It may simply reflect early-stage adoption patterns, or it may indicate structural features that favour early participants.
+
+%----------------------------------------------------------------------------------------
+\section{Summary and Looking Ahead}
+%----------------------------------------------------------------------------------------
+
+This lecture has covered the economics of blockchain consensus. The key takeaways:
+
+\textbf{Consensus is blockchain's core innovation.} It solves the double-spend problem without trusted intermediaries, using Byzantine fault tolerant protocols that work even when some participants are adversarial.
+
+\textbf{Proof-of-Work achieves security through computational cost.} Battle-tested since 2009, it is energy-intensive but provides robust security guarantees. The halving schedule creates a long-term transition toward fee-based security.
+
+\textbf{Proof-of-Stake achieves security through economic stake.} Ethereum's Merge demonstrated a 99.95\% energy reduction. Different trust assumptions and centralisation risks apply, and long-term security properties are still being validated.
+
+\textbf{The trilemma constrains all blockchain designs.} Decentralisation, security, and scalability exist in tension. Layer 2 solutions shift rather than eliminate these trade-offs.
+
+\textbf{Concentration is real.} Mining pools, staking pools, and wealth holdings all exhibit significant concentration, complicating the decentralisation narrative.
+
+In the next lecture, we turn to smart contracts and decentralised applications---the programmable layer that transforms blockchain from a payment system into a platform for financial innovation.
+
+%----------------------------------------------------------------------------------------
+\section*{Readings}
+\addcontentsline{toc}{section}{Readings}
+%----------------------------------------------------------------------------------------
+
+\textbf{Required:}
+\begin{itemize}
+    \item Nakamoto, S. (2008). ``Bitcoin: A Peer-to-Peer Electronic Cash System.'' Sections 4--6 on Proof-of-Work, timestamps, and incentives.
+\end{itemize}
+
+\textbf{Supplementary:}
+\begin{itemize}
+    \item Buterin, V. (2021). ``Why Proof of Stake.'' Ethereum Foundation blog post explaining the rationale for the Merge.
+    \item Budish, E. (2018). ``The Economic Limits of Bitcoin and the Blockchain.'' NBER Working Paper 24717. A rigorous economic analysis of Proof-of-Work security.
+    \item Saleh, F. (2021). ``Blockchain Without Waste: Proof-of-Stake.'' \textit{Review of Financial Studies}, 34(3), 1156--1190. Economic analysis of Proof-of-Stake incentives.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

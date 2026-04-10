@@ -1,0 +1,491 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{xcolor}
+
+% Page geometry
+\geometry{margin=2.5cm, headheight=14pt}
+
+% Color definitions
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{DarkGray}{RGB}{51, 51, 51}
+\definecolor{AccentOrange}{RGB}{214, 96, 77}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ImperialBlue,
+    urlcolor=ImperialBlue,
+    citecolor=ImperialBlue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{ImperialBlue}{\small Blockchain Economics and Digital Assets}}
+\fancyhead[R]{\textcolor{ImperialBlue}{\small Lecture 5 Notes}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section formatting
+\titleformat{\section}
+  {\Large\bfseries\color{ImperialBlue}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{ImperialBlue}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{DarkGray}}
+  {\thesubsubsection}{1em}{}
+
+% Custom commands
+\newcommand{\keyword}[1]{\textbf{\textcolor{AccentOrange}{#1}}}
+
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries\textcolor{ImperialBlue}{Blockchain Economics and Digital Assets}}\\[0.5em]
+    {\Large Lecture 5: Stablecoins and Central Bank Digital Currencies}\\[1em]
+    {\large Dr Daniele Bianchi}\\[0.5em]
+    {\normalsize Queen Mary, University of London}\\[0.3em]
+    {\normalsize Semester B, 2025/2026}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\tableofcontents
+
+\vspace{2cm}
+
+%----------------------------------------------------------------------------------------
+\section*{Overview}
+\addcontentsline{toc}{section}{Overview}
+%----------------------------------------------------------------------------------------
+
+Bitcoin and other cryptocurrencies suffer from a fundamental problem as media of exchange: they are extraordinarily volatile. A currency that can move 10\% in a day is poorly suited for pricing goods, denominating loans, or settling contracts.
+
+\keyword{Stablecoins} attempt to solve this problem by creating cryptocurrency tokens that maintain a stable value, typically pegged to the US dollar. They combine the programmability and accessibility of crypto with the price stability of traditional currencies. Stablecoins have become critical infrastructure: they exceed \$200 billion in market capitalisation, serve as the primary trading pairs on exchanges, and provide the stable unit of account that DeFi requires.
+
+But stability mechanisms vary enormously in robustness. Some stablecoins are backed by real dollars; others by volatile cryptocurrency collateral; still others by algorithmic mechanisms with no backing at all. The collapse of Terra/Luna in May 2022---which destroyed \$60 billion in value within days---demonstrated that ``stable'' is not always accurate.
+
+This lecture examines the economics of stablecoins and then turns to \keyword{Central Bank Digital Currencies} (CBDCs)---government-issued digital money that represents an alternative response to the same underlying demand for digital value transfer.
+
+%----------------------------------------------------------------------------------------
+\section{Why Stablecoins?}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Volatility Problem}
+
+Cryptocurrencies are volatile. Bitcoin routinely moves 5--10\% in a single day. This creates practical problems for payments (price risk between acceptance and conversion), lending (how do you price a loan in an asset that may halve?), and smart contracts (DeFi needs a stable unit of account).
+
+\subsection{The Solution}
+
+A stablecoin maintains a stable value relative to a reference asset, typically the US dollar. It retains cryptocurrency benefits---programmability, 24/7 availability, global accessibility---while eliminating volatility relative to the dollar.
+
+The market exceeds \$200 billion, dominated by USDT (Tether, $\sim$\$150B) and USDC (Circle, $\sim$\$70B). Together they constitute roughly 90\% of stablecoin market cap.
+
+%----------------------------------------------------------------------------------------
+\section{Types of Stablecoins}
+%----------------------------------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{llp{4cm}}
+\toprule
+\textbf{Type} & \textbf{Backing} & \textbf{Examples} \\
+\midrule
+Fiat-backed & USD in bank accounts, T-bills & USDT, USDC \\
+Crypto-backed & Cryptocurrency (over-collateralised) & DAI \\
+Algorithmic & No collateral; supply adjustments & UST (failed) \\
+Commodity-backed & Gold, other commodities & PAXG \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The key distinction: off-chain collateral requires trusting the custodian; on-chain collateral is verifiable but volatile; algorithmic mechanisms have no fallback when confidence breaks.
+
+%----------------------------------------------------------------------------------------
+\section{Fiat-Backed Stablecoins}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Basic Mechanism}
+
+\textbf{Minting}: User sends \$1 to issuer $\rightarrow$ Issuer creates 1 stablecoin $\rightarrow$ Issuer deposits \$1 in reserves.
+
+\textbf{Redemption}: User sends 1 stablecoin to issuer $\rightarrow$ Issuer burns the stablecoin $\rightarrow$ Issuer sends \$1 from reserves.
+
+The peg is maintained by \keyword{arbitrage}. If market price exceeds \$1, arbitrageurs mint at \$1 and sell on market. If market price falls below \$1, they buy on market and redeem at \$1. This adjusts supply to maintain the peg.
+
+\subsection{Tether (USDT) and USD Coin (USDC)}
+
+Tether is the dominant stablecoin (\$150B+), launched in 2014 by Tether Limited (related to Bitfinex exchange).
+
+\textbf{Controversies}:
+\begin{itemize}
+    \item No full audit---only ``attestations'' (point-in-time snapshots)
+    \item Reserve quality improved over time: from 50\% commercial paper (2021) to 80\% T-bills (2024)
+    \item 2021 CFTC settlement: \$41M for misrepresenting reserves
+\end{itemize}
+
+Despite controversies, USDT has maintained its peg through multiple crises. Users evidently trust redemption ability regardless of transparency concerns.
+
+USDC is issued by Circle (in partnership with Coinbase), positioned as the transparent, regulated alternative:
+\begin{itemize}
+    \item Monthly attestations from Big Four accounting firms
+    \item Reserves in regulated US institutions
+    \item Circle is a licensed money transmitter
+    \item Reserve composition: $\sim$80\% short-dated Treasuries, $\sim$20\% bank deposits
+\end{itemize}
+
+USDC was seen as ``safer''---until March 2023.
+
+\subsection{Case Study: The USDC Depeg (March 2023)}
+
+On March 10, 2023, Silicon Valley Bank collapsed. Circle disclosed that \$3.3 billion of USDC reserves (approximately 8\%) were held at SVB. Panic ensued: if Circle could not access these funds, redemptions at \$1 would be impossible.
+
+USDC dropped to \keyword{\$0.87} on some exchanges over the weekend.
+
+The resolution came when the US government guaranteed all SVB deposits on March 12. Circle confirmed full access to funds, and USDC returned to \$1 within 48 hours.
+
+\textbf{Lessons}:
+\begin{itemize}
+    \item Even ``safe'' stablecoins face bank counterparty risk
+    \item Transparency helped: Circle disclosed exposure quickly
+    \item Government backstop restored confidence
+    \item Fiat-backed stablecoins inherit traditional banking risks
+\end{itemize}
+
+\subsection{The Bank Run Problem}
+
+Fiat-backed stablecoins face classic bank-run dynamics:
+
+\begin{enumerate}
+    \item A confidence shock triggers mass redemptions
+    \item To meet redemptions, the issuer must liquidate reserves
+    \item Fire sales may incur losses, reducing reserve coverage
+    \item Reduced coverage increases fear, triggering more redemptions
+    \item The feedback loop can break the peg even if reserves were initially adequate
+\end{enumerate}
+
+\textbf{Key difference from banks}: No deposit insurance, no central bank backstop. Mitigants include holding only the safest, most liquid assets (T-bills) and maintaining reserves $\geq$ 100\%.
+
+%----------------------------------------------------------------------------------------
+\section{Crypto-Backed Stablecoins}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Mechanism}
+
+If collateral is volatile cryptocurrency, how do you maintain a \$1 peg? The solution is \keyword{over-collateralisation}: require more collateral than stablecoins issued.
+
+\textbf{Example}: To mint \$100 of stablecoins, deposit \$150 of ETH. If ETH drops 20\%, collateral is still worth \$120---sufficient to back the \$100 in stablecoins.
+
+\textbf{Trade-offs}:
+\begin{itemize}
+    \item Transparent: Collateral is on-chain, verifiable by anyone
+    \item No bank counterparty risk
+    \item But capital inefficient: Need \$150 to create \$100
+    \item Inherits crypto volatility risks
+\end{itemize}
+
+\subsection{DAI}
+
+DAI is the leading crypto-backed stablecoin, launched in 2017 by MakerDAO. It is decentralised---no single company controls it---and DAI is essentially a loan against your crypto collateral.
+
+\textbf{How it works}:
+\begin{enumerate}
+    \item Deposit 1 ETH (worth \$3,000) as collateral
+    \item Minimum collateralisation ratio: 150\%
+    \item Maximum DAI you can mint: \$3,000 / 1.5 = \$2,000
+    \item Prudent users mint less (e.g., \$1,500 for 200\% collateralisation)
+\end{enumerate}
+
+\textbf{If ETH drops to \$2,000}:
+\begin{itemize}
+    \item Your collateral ratio falls to \$2,000 / \$1,500 = 133\%
+    \item Below 150\% threshold $\rightarrow$ \keyword{liquidation risk}
+    \item Liquidators can repay part of your debt and seize collateral at a discount
+\end{itemize}
+
+\textbf{Why this maintains the peg}:
+\begin{itemize}
+    \item DAI is always backed by $>$100\% collateral value
+    \item Liquidations ensure undercollateralised positions are closed
+    \item If DAI $<$ \$1: cheaper to repay debt, reducing supply
+    \item If DAI $>$ \$1: profitable to mint more, increasing supply
+\end{itemize}
+
+\textbf{The USDC controversy}: DAI now accepts multiple collateral types, including USDC ($\sim$30\% of backing). This means DAI inherits USDC's risks. During the March 2023 USDC depeg, DAI also dropped briefly. There is tension between stability (accepting stable collateral) and decentralisation (avoiding centralised assets).
+
+%----------------------------------------------------------------------------------------
+\section{Algorithmic Stablecoins}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Idea}
+
+Maintain the peg through supply adjustments rather than collateral:
+\begin{itemize}
+    \item If price $>$ \$1: Increase supply (mint new coins) $\rightarrow$ price falls
+    \item If price $<$ \$1: Decrease supply (remove coins) $\rightarrow$ price rises
+\end{itemize}
+
+The challenge: increasing supply is easy; decreasing supply is hard. Common mechanisms include seigniorage shares (issue ``bonds'' promising future stablecoins), dual-token systems (absorb volatility into a second token), or rebasing (automatically adjust balances).
+
+All require \keyword{continued confidence}. If confidence breaks, there is no collateral to fall back on.
+
+\subsection{Case Study: Terra/Luna (May 2022)}
+
+\textbf{The mechanism}: UST (stablecoin) was paired with LUNA (volatile token). To mint 1 UST, burn \$1 worth of LUNA. To redeem 1 UST, burn UST and receive \$1 worth of LUNA. Arbitrage should maintain the peg.
+
+\textbf{The sweetener}: Anchor Protocol paid \keyword{20\% APY} on UST deposits---unsustainably high yields that attracted massive capital.
+
+\textbf{At peak} (April 2022): UST market cap $\sim$\$18 billion; LUNA market cap $\sim$\$40 billion; LUNA price $\sim$\$80.
+
+\textbf{The death spiral} (May 7--13, 2022):
+\begin{enumerate}
+    \item Large UST withdrawals from Anchor triggered a confidence shock
+    \item UST dropped slightly below \$1
+    \item Holders redeemed UST for LUNA (minting new LUNA)
+    \item LUNA supply increased $\rightarrow$ LUNA price fell
+    \item Now \$1 of LUNA was worth less $\rightarrow$ needed \textit{more} LUNA per UST redeemed
+    \item LUNA supply exploded: 350 million $\rightarrow$ 6.5 \textit{trillion}
+    \item LUNA price: \$80 $\rightarrow$ \$0.0001
+    \item With LUNA worthless, UST had no redemption value
+    \item UST collapsed to \$0.10
+\end{enumerate}
+
+\textbf{Total losses}: Approximately \$60 billion destroyed in one week.
+
+\subsection{Why Algorithmic Stablecoins Are Fragile}
+
+The fundamental problem is \keyword{circular backing}:
+\begin{itemize}
+    \item UST's value depends on ability to redeem for LUNA
+    \item LUNA's value depends on demand for UST
+    \item If one loses confidence, both collapse
+\end{itemize}
+
+Contrast with fiat-backed stablecoins: USDC is backed by T-bills, which have value independent of USDC demand. External collateral breaks the reflexivity.
+
+\textbf{Lesson}: Algorithmic stablecoins can work during good times. The question is whether they survive bad times. Terra did not. No algorithmic stablecoin has achieved both scale and long-term stability.
+
+%----------------------------------------------------------------------------------------
+\section{Stablecoin Risks and Regulation}
+%----------------------------------------------------------------------------------------
+
+\subsection{Summary of Risks}
+
+\begin{center}
+\begin{tabular}{lp{8cm}}
+\toprule
+\textbf{Risk} & \textbf{Description} \\
+\midrule
+Run risk & Mass redemptions exhaust reserves \\
+Reserve quality & Illiquid or risky assets cannot meet redemptions \\
+Counterparty risk & Bank failures, custodian problems \\
+Operational risk & Smart contract bugs, key management failures \\
+Concentration & Few stablecoins dominate; failure is systemic \\
+Regulatory & Legal status uncertain; potential bans \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Stablecoins are deeply embedded in crypto markets. A major stablecoin failure could trigger cascading liquidations across DeFi.
+
+\subsection{Regulatory Landscape}
+
+\textbf{Europe (MiCA)}: The Markets in Crypto-Assets Regulation entered force in 2024. Stablecoin issuers must be authorised as electronic money institutions, hold 1:1 reserves in liquid assets, undergo regular audits, and have EU presence. Tether has been delisted from some EU exchanges; USDC is pursuing compliance.
+
+\textbf{United States}: Fragmented, with no comprehensive stablecoin law. The SEC views some stablecoins as potential securities; the CFTC has brought enforcement actions; various Congressional bills propose bank-like regulation. Regulatory approach may shift significantly depending on political landscape.
+
+%----------------------------------------------------------------------------------------
+\section{Central Bank Digital Currencies}
+%----------------------------------------------------------------------------------------
+
+\subsection{What is a CBDC?}
+
+\begin{quote}
+A \keyword{Central Bank Digital Currency} is a digital form of central bank money, denominated in the national currency and issued as a direct liability of the central bank.
+\end{quote}
+
+A CBDC differs from:
+\begin{itemize}
+    \item \textbf{Physical cash}: Digital, not physical
+    \item \textbf{Bank deposits}: Direct central bank liability, not commercial bank
+    \item \textbf{Stablecoins}: Issued by government, not private companies
+    \item \textbf{Bitcoin}: Centralised issuance, not decentralised
+\end{itemize}
+
+Currently, only banks have direct access to central bank money in digital form (reserves). A CBDC would give the public this access.
+
+CBDCs can be divided into retail and wholesale CBDCs:
+
+\textbf{Retail CBDC}: Available to households and businesses for everyday transactions. Competes with cash and bank deposits. Examples: China's Digital Yuan, Bahamas' Sand Dollar.
+
+\textbf{Wholesale CBDC}: Available only to financial institutions for interbank settlements. Competes with existing reserve systems. Examples: Project Helvetia (Switzerland), various pilots.
+
+Most policy discussion focuses on retail CBDCs, which raise the most significant questions.
+
+\subsection{Why Are Central Banks Interested?}
+
+\textbf{Advanced economies}:
+\begin{itemize}
+    \item Payment system resilience and efficiency
+    \item Declining cash usage (especially in Nordic countries)
+    \item Respond to private stablecoins
+    \item Maintain monetary sovereignty
+\end{itemize}
+
+\textbf{Emerging economies}:
+\begin{itemize}
+    \item Financial inclusion (unbanked populations)
+    \item Reduce cash handling costs
+    \item Combat informal economy
+    \item Improve cross-border payments
+\end{itemize}
+
+Different motivations lead to different designs.
+
+\subsection{CBDC Design Choices}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Choice} & \textbf{Option A} & \textbf{Option B} \\
+\midrule
+Architecture & Direct (CB manages accounts) & Intermediated (banks distribute) \\
+Technology & Account-based (identity) & Token-based (possession) \\
+Interest & Interest-bearing & Non-interest-bearing \\
+Privacy & Anonymous (like cash) & Traceable (like deposits) \\
+Limits & Unlimited holdings & Capped holdings \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Most proposed CBDCs are intermediated (banks handle distribution) and non-anonymous (transactions traceable).
+
+%----------------------------------------------------------------------------------------
+\section{CBDC Trade-offs}
+%----------------------------------------------------------------------------------------
+
+\subsection{Bank Disintermediation}
+
+\textbf{The concern}: If citizens can hold money directly at the central bank, why keep deposits at commercial banks?
+
+\textbf{Potential consequences}:
+\begin{itemize}
+    \item Deposits flow from banks to CBDC
+    \item Banks lose cheap funding source
+    \item Credit availability may decrease
+    \item During crises, ``digital bank runs'' could be instantaneous
+\end{itemize}
+
+\textbf{Proposed mitigants}:
+\begin{itemize}
+    \item Cap CBDC holdings (e.g., €3,000 per person---ECB proposal)
+    \item Make CBDC non-interest-bearing (less attractive than deposits)
+    \item Tiered remuneration (penalty rate above threshold)
+\end{itemize}
+
+\subsection{Privacy vs Surveillance}
+
+CBDCs could offer cash-like privacy or enable unprecedented surveillance.
+
+\textbf{Privacy concerns}:
+\begin{itemize}
+    \item Every transaction could be tracked by the state
+    \item Spending patterns reveal sensitive information
+    \item Potential for political targeting or social control
+    \item ``Programmable money'' could restrict purchases
+\end{itemize}
+
+\textbf{Authority arguments}:
+\begin{itemize}
+    \item Traceability needed for anti-money laundering
+    \item Tax compliance requires visibility
+    \item Tiered privacy possible (anonymous for small amounts)
+\end{itemize}
+
+Design choices here reflect fundamental values about state-citizen relationships.
+
+\subsection{Monetary Policy Implications}
+
+CBDCs could enable new policy tools:
+\begin{itemize}
+    \item \textbf{Direct transmission}: Interest on CBDC goes straight to public
+    \item \textbf{Negative rates}: Could charge for holding CBDC (harder with physical cash)
+    \item \textbf{Helicopter money}: Direct transfers to citizens
+    \item \textbf{Programmability}: Time-limited spending vouchers
+\end{itemize}
+
+Whether central banks should have these powers is a political question beyond technical feasibility.
+
+\subsection{CBDCs vs Stablecoins}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{Stablecoins} & \textbf{CBDCs} \\
+\midrule
+Issuer & Private companies & Central bank \\
+Backing & Reserves (varies) & Full faith of government \\
+Regulation & Evolving & Government-controlled \\
+Privacy & Pseudonymous & Design-dependent \\
+Innovation & Rapid & Slow, deliberate \\
+Risk & Issuer default & Political risk \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Whether CBDCs will replace stablecoins, coexist with them, or serve different use cases remains to be seen.
+
+%----------------------------------------------------------------------------------------
+\section{Summary and Looking Ahead}
+%----------------------------------------------------------------------------------------
+
+This lecture has covered stable value in the crypto ecosystem. Key takeaways:
+
+\textbf{Stablecoins solve the volatility problem.} But stability mechanisms vary dramatically in robustness.
+
+\textbf{Fiat-backed stablecoins dominate but require trust.} USDT is largest but controversial on transparency; USDC is more transparent but the March 2023 depeg showed bank counterparty risk.
+
+\textbf{Crypto-backed stablecoins are transparent but capital-inefficient.} DAI requires over-collateralisation; liquidations maintain the peg.
+
+\textbf{Algorithmic stablecoins are fragile.} Terra/Luna demonstrated catastrophic failure modes when confidence breaks.
+
+\textbf{CBDCs offer government-backed digital money.} But raise significant trade-offs around disintermediation, privacy, and monetary policy power.
+
+In the next lecture, we turn to digital ownership and tokenisation---representing assets as tokens on the blockchain, from speculative NFTs to institutional real-world asset tokenisation.
+
+%----------------------------------------------------------------------------------------
+\section*{Readings}
+\addcontentsline{toc}{section}{Readings}
+%----------------------------------------------------------------------------------------
+
+\textbf{Required:}
+\begin{itemize}
+    \item Gorton, G. B., \& Zhang, J. (2023). ``Taming Wildcat Stablecoins.'' \textit{University of Chicago Law Review}, 90(3), 909--971. Economic analysis of stablecoin regulation.
+\end{itemize}
+
+\textbf{Supplementary:}
+\begin{itemize}
+    \item Bank for International Settlements. (2021). ``CBDCs: An Opportunity for the Monetary System.'' \textit{BIS Annual Economic Report}, Chapter III.
+    \item Liu, Y., Tsyvinski, A., \& Wu, X. (2022). ``The Economics of Non-Fungible Tokens.'' Working paper. Section on stablecoin mechanisms.
+    \item Uhlig, H. (2022). ``A Luna-tic Stablecoin Crash.'' NBER Working Paper 30256. Analysis of Terra/Luna collapse.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

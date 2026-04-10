@@ -1,0 +1,630 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{xcolor}
+
+% Page geometry
+\geometry{margin=2.5cm, headheight=14pt}
+
+% Color definitions
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{DarkGray}{RGB}{51, 51, 51}
+\definecolor{AccentOrange}{RGB}{214, 96, 77}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ImperialBlue,
+    urlcolor=ImperialBlue,
+    citecolor=ImperialBlue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{ImperialBlue}{\small Blockchain Economics and Digital Assets}}
+\fancyhead[R]{\textcolor{ImperialBlue}{\small Lecture 6 Notes}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section formatting
+\titleformat{\section}
+  {\Large\bfseries\color{ImperialBlue}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{ImperialBlue}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{DarkGray}}
+  {\thesubsubsection}{1em}{}
+
+% Custom commands
+\newcommand{\keyword}[1]{\textbf{\textcolor{AccentOrange}{#1}}}
+
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries\textcolor{ImperialBlue}{Blockchain Economics and Digital Assets}}\\[0.5em]
+    {\Large Lecture 6: Digital Ownership and Tokenization}\\[1em]
+    {\large Dr Daniele Bianchi}\\[0.5em]
+    {\normalsize Queen Mary, University of London}\\[0.3em]
+    {\normalsize Semester B, 2025/2026}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\tableofcontents
+
+\vspace{2cm}
+
+%----------------------------------------------------------------------------------------
+\section*{Overview}
+\addcontentsline{toc}{section}{Overview}
+%----------------------------------------------------------------------------------------
+
+Previous lectures focused on blockchain as infrastructure for payments, programmable contracts, and stable-value tokens. This lecture examines a different application: representing \textit{ownership} of assets as tokens on a blockchain.
+
+\keyword{Tokenization} is the process of representing rights to an asset---digital art, real estate, securities, credentials---as tokens on a blockchain. The token becomes a verifiable, transferable representation of ownership that can be traded, fractionalized, and programmed.
+
+The 2021 NFT boom brought tokenization to mainstream attention, with digital images selling for millions of dollars. The subsequent crash exposed the speculative excess: wash trading inflated volumes, utility promises proved empty, and most collections lost nearly all value. But beneath the hype, the underlying technology---provable digital ownership---remains valuable.
+
+Today, institutional interest has shifted toward \keyword{real-world asset} (RWA) tokenization. BlackRock, Franklin Templeton, and JPMorgan are tokenizing Treasury bills, money market funds, and other traditional assets. This represents a potentially more durable application of the same underlying capability.
+
+This lecture covers the technology (token standards, metadata storage), the NFT market's rise and fall (and lessons learned), real-world asset tokenization, security tokens, and practical applications from credentials to supply chain tracking.
+
+%----------------------------------------------------------------------------------------
+\section{What is Tokenization?}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Core Idea}
+
+\keyword{Tokenization} represents ownership of assets as tokens on a blockchain.
+
+What can be tokenized?
+\begin{itemize}
+    \item Digital art and collectibles
+    \item Financial securities (stocks, bonds)
+    \item Real estate
+    \item Commodities
+    \item Credentials and identity
+    \item Virtually any asset with defined ownership
+\end{itemize}
+
+Why put ownership on-chain?
+\begin{itemize}
+    \item \textbf{Programmability}: Automate dividends, royalties, compliance
+    \item \textbf{24/7 trading}: No market hours, instant settlement
+    \item \textbf{Fractional ownership}: Own 0.01\% of a building
+    \item \textbf{Transparency}: Verifiable ownership history
+    \item \textbf{Global access}: Anyone with a wallet can participate
+\end{itemize}
+
+\subsection{Fungible vs Non-Fungible}
+
+\keyword{Fungible} tokens are identical and interchangeable. One unit can be swapped for any other unit of the same type without difference. Examples: Bitcoin, ETH, USDC, company shares.
+
+\keyword{Non-fungible} tokens (NFTs) are unique and not interchangeable. Each token has distinct properties or identifiers. Examples: digital art, event tickets, property deeds, credentials.
+
+The key question is \textit{substitutability}: can you swap one for another without caring which specific one you have?
+
+\subsection{What Does a Token Actually Contain?}
+
+\textbf{On-chain} (stored directly on blockchain):
+\begin{itemize}
+    \item Token ID (unique identifier)
+    \item Owner address
+    \item Contract address
+    \item Transfer history
+\end{itemize}
+
+\textbf{Off-chain} (stored elsewhere, linked via URI):
+\begin{itemize}
+    \item Image/media file
+    \item Description and attributes
+    \item Additional metadata
+\end{itemize}
+
+\keyword{Critical point}: Most NFTs do not store the actual image on-chain---it is too expensive. They store a \textit{link} to the image. If the server hosting the image goes down, you own a broken link.
+
+\subsection{Metadata Storage Options}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Storage} & \textbf{Pros} & \textbf{Cons} \\
+\midrule
+On-chain & Permanent, decentralised & Very expensive, size limits \\
+IPFS & Decentralised, content-addressed & Needs pinning, can disappear \\
+Centralised server & Cheap, flexible & Single point of failure \\
+Arweave & Permanent, one-time payment & Cost, smaller ecosystem \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{IPFS} (InterPlanetary File System) is decentralised storage where files are addressed by their content hash, not location. The same content always produces the same address, but files only persist if someone ``pins'' them.
+
+\textbf{Best practice}: Use IPFS or Arweave for important metadata. Many early NFT projects used centralised servers---some images are already lost.
+
+%----------------------------------------------------------------------------------------
+\section{Token Standards}
+%----------------------------------------------------------------------------------------
+
+\subsection{Why Standards Matter}
+
+Token standards define how tokens are created, how ownership is tracked, how transfers work, and what functions wallets and marketplaces can expect.
+
+\keyword{Interoperability} is the key benefit. A standard means any wallet or marketplace can interact with any token following that standard, without custom integration.
+
+\subsection{ERC-20: Fungible Tokens}
+
+The standard for fungible tokens on Ethereum (2015).
+
+Key functions:
+\begin{itemize}
+    \item \texttt{totalSupply()}: How many tokens exist?
+    \item \texttt{balanceOf(address)}: How many does this address own?
+    \item \texttt{transfer(to, amount)}: Send tokens to another address
+    \item \texttt{approve(spender, amount)}: Allow another contract to spend your tokens
+\end{itemize}
+
+Examples: USDC, USDT, UNI, LINK, most DeFi tokens.
+
+ERC-20 enabled the 2017 ICO boom and DeFi composability---standardised tokens that any protocol could integrate.
+
+\subsection{ERC-721: Non-Fungible Tokens}
+
+The standard for NFTs on Ethereum (2018).
+
+Key differences from ERC-20:
+\begin{itemize}
+    \item Each token has a unique \texttt{tokenId}
+    \item \texttt{ownerOf(tokenId)}: Who owns this specific token?
+    \item \texttt{tokenURI(tokenId)}: Where is this token's metadata?
+    \item Tokens are indivisible---you cannot transfer 0.5 of an NFT
+\end{itemize}
+
+Examples: CryptoPunks, Bored Apes, most digital art NFTs.
+
+Limitation: Each token requires a separate transaction to mint. Creating 10,000 NFTs means 10,000 transactions---expensive.
+
+\subsection{ERC-1155: Multi-Token Standard}
+
+A more efficient standard supporting both fungible and non-fungible tokens in one contract (2019).
+
+Key advantages:
+\begin{itemize}
+    \item Batch transfers: Send multiple token types in one transaction
+    \item Mixed fungibility: Some IDs can be fungible, others unique
+    \item Gas efficient: Significantly cheaper for games and large collections
+\end{itemize}
+
+\textbf{Use case}: Gaming. Token ID 1 might be gold coins (fungible, 1 million exist). Token ID 2 might be health potions (fungible, 10,000 exist). Token ID 3 might be a legendary sword (non-fungible, only 1 exists). All managed in one contract.
+
+\subsection{Comparison}
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+& \textbf{ERC-20} & \textbf{ERC-721} & \textbf{ERC-1155} \\
+\midrule
+Fungibility & Fungible & Non-fungible & Both \\
+Divisible & Yes & No & Configurable \\
+Batch transfer & No & No & Yes \\
+Gas efficiency & Medium & Low & High \\
+Use case & Currencies, shares & Art, collectibles & Gaming, mixed \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%----------------------------------------------------------------------------------------
+\section{The NFT Market: Rise and Fall}
+%----------------------------------------------------------------------------------------
+
+\subsection{The 2021 Boom}
+
+NFT trading volume exploded in 2021--2022, reaching billions of dollars per month. Bored Ape Yacht Club floor prices exceeded \$400,000. Beeple sold digital art for \$69 million at Christie's.
+
+\textbf{What drove the boom}:
+\begin{itemize}
+    \item Crypto bull market creating wealth effect
+    \item Social signalling (profile picture culture)
+    \item Speculation and ``greater fool'' dynamics
+    \item FOMO and media hype
+    \item Genuine novelty of provable digital ownership
+\end{itemize}
+
+\subsection{The 2023 Crash}
+
+Trading volume collapsed by over 90\%. Most collections lost 90\%+ of value. The ``blue chip'' collections (Bored Apes, CryptoPunks) retained some value; most others became worthless.
+
+\textbf{What drove the crash}:
+\begin{itemize}
+    \item Crypto winter reduced speculative capital
+    \item Utility promises (games, metaverse access) did not materialise
+    \item Wash trading exposed---actual volumes were far lower than reported
+    \item Oversupply: Too many collections, not enough genuine collectors
+    \item Royalty enforcement failed---platforms competed by removing creator royalties
+\end{itemize}
+
+\subsection{The Wash Trading Problem}
+
+\keyword{Wash trading} is buying and selling an asset to yourself (or colluding parties) to create fake trading volume.
+
+Why it happened in NFTs:
+\begin{itemize}
+    \item Marketplace rewards (tokens, airdrops) based on volume
+    \item Create appearance of liquidity and demand
+    \item Manipulate ``floor price'' for collections
+    \item Tax loss harvesting (in some jurisdictions)
+\end{itemize}
+
+Studies estimate 40--80\% of NFT volume was wash trading at peak. Detection methods: same wallet on both sides, circular transactions, economically irrational patterns, wallets funded from same source.
+
+\subsection{NFT Valuation Challenges}
+
+How do you value a unique asset with no cash flows?
+
+Traditional valuation does not apply:
+\begin{itemize}
+    \item No dividends $\rightarrow$ No DCF
+    \item No earnings $\rightarrow$ No P/E ratio
+    \item Unique items $\rightarrow$ No exact comparables
+\end{itemize}
+
+What drives NFT prices:
+\begin{itemize}
+    \item Rarity of traits (verifiable on-chain)
+    \item Artist/creator reputation
+    \item Collection brand and community
+    \item Historical sales of similar items
+    \item Social signalling value
+    \item Speculation on future demand
+\end{itemize}
+
+Prices are highly subjective and volatile---more art market than financial market.
+
+\subsection{Lessons from the Bubble}
+
+\textbf{What went wrong}:
+\begin{itemize}
+    \item Speculation overwhelmed utility
+    \item ``Community'' and ``roadmap'' promises were often empty
+    \item Royalties were not technically enforceable
+    \item Legal status of ownership remained unclear
+    \item Most buyers were speculators, not collectors
+\end{itemize}
+
+\textbf{What remains valuable}:
+\begin{itemize}
+    \item The \textit{technology} of provable digital ownership
+    \item Creator royalties as a \textit{concept} (even if enforcement failed)
+    \item On-chain provenance and authenticity verification
+    \item Programmable ownership rights
+\end{itemize}
+
+The infrastructure is useful. The 2021 use case (speculative JPEGs) was not sustainable.
+
+%----------------------------------------------------------------------------------------
+\section{Real-World Asset Tokenization}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Institutional Pivot}
+
+As NFT speculation collapsed, institutional interest shifted to tokenizing traditional assets: Treasury bills, money market funds, corporate bonds, real estate.
+
+\textbf{Key players entering}: BlackRock (BUIDL fund), Franklin Templeton (on-chain money market fund), JPMorgan (Onyx platform), Goldman Sachs (Digital Asset Platform).
+
+This represents a more conservative but potentially durable application of tokenization technology.
+
+\subsection{Tokenized Treasuries}
+
+\textbf{What it is}: US Treasury bills represented as tokens on a blockchain.
+
+\textbf{How it works}:
+\begin{enumerate}
+    \item Issuer (e.g., BlackRock) buys T-bills
+    \item Issues tokens representing shares in the T-bill portfolio
+    \item Token holders receive yield (distributed on-chain)
+    \item Tokens can be transferred 24/7
+\end{enumerate}
+
+\textbf{Why it matters}:
+\begin{itemize}
+    \item DeFi protocols can hold yield-bearing collateral
+    \item 24/7 settlement (vs T+1 for traditional)
+    \item Programmable: Auto-reinvest, use as collateral in smart contracts
+    \item Global access to US government debt
+\end{itemize}
+
+Market size (2024): Approximately \$1.5 billion in tokenized treasuries.
+
+\subsection{Case Study: BlackRock BUIDL}
+
+\textbf{BUIDL} (BlackRock USD Institutional Digital Liquidity Fund) launched March 2024 on Ethereum.
+
+Structure:
+\begin{itemize}
+    \item Invests in T-bills, repos, cash
+    \item Each BUIDL token = \$1 (stable NAV)
+    \item Daily accrued dividends (paid monthly)
+    \item Tokenised by Securitize
+\end{itemize}
+
+Requirements:
+\begin{itemize}
+    \item Qualified purchasers only (\$5M+ investable assets)
+    \item \$5 million minimum investment
+    \item KYC/AML through Securitize
+\end{itemize}
+
+\textbf{Significance}: The world's largest asset manager tokenizing products on a public blockchain signals institutional legitimacy.
+
+\subsection{Why Tokenize Real-World Assets?}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+& \textbf{Traditional} & \textbf{Tokenized} \\
+\midrule
+Settlement & T+1 or T+2 & Near-instant \\
+Trading hours & Market hours & 24/7/365 \\
+Minimum investment & Often \$1,000+ & Can be \$1 \\
+Fractional ownership & Limited & Native \\
+Cross-border & Complex, expensive & Simplified \\
+Transparency & Periodic reports & Real-time on-chain \\
+Programmability & None & Smart contracts \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The promise: more efficient capital markets with lower friction, broader access, and automated compliance.
+
+\subsection{RWA Tokenization Challenges}
+
+\textbf{Legal and regulatory}:
+\begin{itemize}
+    \item What does the token legally represent?
+    \item Securities law compliance
+    \item Cross-jurisdictional recognition
+    \item Bankruptcy treatment of token holders
+\end{itemize}
+
+\textbf{Technical}:
+\begin{itemize}
+    \item Oracle problem: Who verifies the off-chain asset exists?
+    \item Custody of underlying assets
+    \item Blockchain scalability and costs
+    \item Interoperability between chains
+\end{itemize}
+
+\textbf{Market structure}:
+\begin{itemize}
+    \item Liquidity fragmentation across platforms
+    \item Need for qualified custodians
+    \item Integration with existing financial infrastructure
+\end{itemize}
+
+Tokenization does not eliminate counterparty risk---it shifts it to whoever holds and verifies the underlying asset.
+
+%----------------------------------------------------------------------------------------
+\section{Security Tokens}
+%----------------------------------------------------------------------------------------
+
+\subsection{Definition}
+
+A \keyword{security token} represents ownership in a regulated security---equity, debt, or investment contract---and is subject to securities law.
+
+Key distinction:
+\begin{itemize}
+    \item \textbf{Utility token}: Access to a product/service (may not be a security)
+    \item \textbf{Security token}: Investment contract, ownership stake (definitely a security)
+\end{itemize}
+
+\textbf{The Howey Test} (US): Is it an ``investment of money in a common enterprise with expectation of profits from efforts of others''? If yes, it is a security.
+
+\subsection{ICOs and Their Downfall}
+
+\keyword{Initial Coin Offerings} (ICOs) raised over \$6 billion in 2017 by selling tokens directly to investors, often before products existed.
+
+Problems:
+\begin{itemize}
+    \item Most ICO tokens were likely unregistered securities
+    \item Variable-quality whitepapers, no investor protections
+    \item Anyone could participate regardless of sophistication
+\end{itemize}
+
+The SEC cracked down starting with the 2017 DAO Report. Enforcement actions followed: Munchee (\$15M returned), Block.one/EOS (\$24M settlement), Telegram/TON (\$1.2B returned, project cancelled).
+
+Result: The ICO market collapsed. Projects seeking compliant fundraising turned to \keyword{Security Token Offerings} (STOs).
+
+\subsection{STOs vs ICOs}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{ICO (2017)} & \textbf{STO} \\
+\midrule
+Regulatory status & Often unclear & Registered or exempt \\
+Investor requirements & Anyone & Often accredited only \\
+Disclosure & Whitepaper (variable) & Prospectus/offering memo \\
+Investor protection & Minimal & Securities law applies \\
+Secondary trading & Unregulated exchanges & Licensed platforms \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+US exemptions for STOs: Reg D (accredited investors), Reg A+ (mini-IPO up to \$75M), Reg S (non-US investors).
+
+\subsection{Security Token Infrastructure}
+
+Issuance platforms (Securitize, Polymath) provide:
+\begin{itemize}
+    \item KYC/AML verification of all token holders
+    \item Transfer restrictions (only to verified wallets)
+    \item Compliance with holding periods
+    \item Cap table management
+    \item Reporting and disclosure
+\end{itemize}
+
+Technically: whitelists of approved addresses, transfer functions that check compliance before executing, forced transfers for legal requirements, automated dividend distribution.
+
+This is \textit{permissioned} tokenization---not the ``anyone can participate'' ethos of DeFi.
+
+\subsection{Current State}
+
+What has been tokenized: real estate, private company equity, fund shares, corporate bonds, revenue-sharing agreements.
+
+Challenges:
+\begin{itemize}
+    \item Limited secondary market liquidity
+    \item High compliance costs relative to deal size
+    \item Fragmented global regulatory landscape
+    \item Chicken-and-egg: need liquidity to attract issuers, need issuers to build liquidity
+\end{itemize}
+
+Security tokens are growing but remain niche. Institutional adoption (BlackRock, etc.) may catalyse broader growth.
+
+%----------------------------------------------------------------------------------------
+\section{Practical Applications}
+%----------------------------------------------------------------------------------------
+
+\subsection{Digital Art and Collectibles}
+
+Despite the crash, the core use case---provable digital ownership for art---remains valid.
+
+\textbf{What works}: Provenance tracking, direct artist-to-collector sales, global market access.
+
+\textbf{What does not}: Speculation-driven pricing, copyright transfer (usually not included), the ``right-click save'' criticism (though this misunderstands ownership vs copying).
+
+The sustainable use is authentication and provenance---galleries and auction houses integrating NFTs for verification, not speculative trading.
+
+\subsection{Supply Chain and Provenance}
+
+Track products from origin to consumer using tokens as identifiers.
+
+Examples: Food traceability (Walmart + IBM Food Trust), pharmaceutical supply chain, conflict mineral tracking, luxury goods authentication (LVMH's Aura).
+
+How it works: Each product gets a unique token/identifier; each handoff is recorded on-chain; consumers can verify full history.
+
+\textbf{Limitation}: The oracle problem again. Blockchain cannot verify that the physical item matches the digital record. ``Garbage in, garbage out''---immutably recorded.
+
+\subsection{Credentials and Soulbound Tokens}
+
+\keyword{Soulbound tokens} (SBTs) are non-transferable tokens representing credentials, affiliations, or reputation.
+
+Examples: University degrees, professional certifications, proof of attendance, reputation scores.
+
+Unlike NFTs, SBTs cannot be sold or transferred---they are ``bound'' to the recipient's wallet, representing earned or verified attributes rather than tradeable assets.
+
+Challenges: Privacy (credentials visible on public blockchain), recovery (what if you lose wallet access?), adoption (issuers must participate).
+
+\subsection{Fractional Ownership}
+
+Tokenize expensive assets and sell fractions.
+
+Examples: Real estate (own 0.1\% of a building), art (shares in a Picasso), collectibles (fractional sports memorabilia).
+
+Benefits: Lower minimum investment, diversification, liquidity for illiquid assets.
+
+Challenges: Securities law (usually applies), governance (who decides to sell the underlying?), custody and insurance, thin secondary markets.
+
+Reality: Fractionalization existed pre-blockchain (REITs, art funds). Tokenization adds programmability and potentially broader access, but regulatory complexity remains.
+
+%----------------------------------------------------------------------------------------
+\section{Challenges and Future}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Oracle Problem (Again)}
+
+Blockchain can only verify on-chain data. For tokenized real-world assets, someone must verify: Does the asset exist? Is it authentic? Who owns it legally?
+
+This gap between physical and digital worlds requires trusted intermediaries---auditors, custodians, legal systems. Tokenization does not eliminate trust; it shifts it.
+
+\subsection{Legal Status}
+
+Key unresolved questions:
+\begin{itemize}
+    \item Does the token holder have legal title to the underlying?
+    \item What happens in bankruptcy?
+    \item Which jurisdiction's law applies?
+    \item How are disputes resolved?
+\end{itemize}
+
+Current approaches: Token represents contractual claim (not direct ownership), SPV structures (token = shares in entity owning asset), legal wrappers with token as ``digital twin.''
+
+Regulatory developments: MiCA (EU framework), UK Law Commission (recognising digital assets as property), Wyoming (DAO and digital asset laws).
+
+\subsection{The Future}
+
+\textbf{Near-term} (2--5 years):
+\begin{itemize}
+    \item Tokenized treasuries and money market funds scale
+    \item More traditional asset managers enter
+    \item Regulatory clarity improves
+    \item Security token infrastructure matures
+\end{itemize}
+
+\textbf{Medium-term} (5--10 years):
+\begin{itemize}
+    \item Broader asset classes tokenized (private equity, real estate)
+    \item Integration with traditional financial infrastructure
+    \item CBDCs potentially interoperating with tokenized assets
+    \item Credentials and identity (SBTs) gain adoption
+\end{itemize}
+
+\textbf{Key question}: Will tokenization happen on public blockchains (Ethereum) or private/permissioned systems? The answer affects decentralisation, access, and composability.
+
+%----------------------------------------------------------------------------------------
+\section{Summary and Looking Ahead}
+%----------------------------------------------------------------------------------------
+
+This lecture has covered digital ownership and tokenization. Key takeaways:
+
+\textbf{Tokenization represents ownership as blockchain tokens.} Fungible (ERC-20) for interchangeable assets, non-fungible (ERC-721) for unique items, multi-token (ERC-1155) for mixed use cases.
+
+\textbf{NFT speculation crashed, but the technology remains.} Wash trading, hype, and unsustainable economics drove the bubble; provable digital ownership remains valuable.
+
+\textbf{Real-world asset tokenization is growing.} BlackRock, Franklin Templeton, and others are tokenizing treasuries and funds, bringing institutional credibility.
+
+\textbf{Security tokens require compliance.} STOs differ from ICOs in regulatory status, investor requirements, and secondary market restrictions.
+
+\textbf{Practical applications extend beyond speculation.} Credentials, supply chain, fractional ownership---though all face the oracle problem.
+
+\textbf{Challenges remain.} Legal status of tokens, physical-digital bridge, interoperability, and liquidity fragmentation.
+
+In the next lecture, we turn to cryptocurrency investment---market structure, valuation approaches, risk factors, and the emergence of regulated investment products like ETFs.
+
+%----------------------------------------------------------------------------------------
+\section*{Readings}
+\addcontentsline{toc}{section}{Readings}
+%----------------------------------------------------------------------------------------
+
+\textbf{Required:}
+\begin{itemize}
+    \item Chalmers, D., Fisch, C., Matthews, R., Quinn, W., \& Sherrill, J. (2022). ``Beyond the Bubble: Will NFTs and Digital Proof of Ownership Empower Creative Industry Entrepreneurs?'' \textit{Journal of Business Venturing Insights}, 17, e00309.
+\end{itemize}
+
+\textbf{Supplementary:}
+\begin{itemize}
+    \item Nadini, M., et al. (2021). ``Mapping the NFT Revolution: Market Trends, Trade Networks, and Visual Features.'' \textit{Scientific Reports}, 11, 20902.
+    \item World Economic Forum. (2024). ``Tokenization of Real-World Assets: A Path to More Efficient Capital Markets.''
+    \item Weyl, E. G., Ohlhaver, P., \& Buterin, V. (2022). ``Decentralized Society: Finding Web3's Soul.'' On soulbound tokens.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

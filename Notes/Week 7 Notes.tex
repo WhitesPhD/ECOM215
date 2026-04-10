@@ -1,0 +1,324 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{xcolor}
+
+% Page geometry
+\geometry{margin=2.5cm, headheight=14pt}
+
+% Color definitions
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{DarkGray}{RGB}{51, 51, 51}
+\definecolor{AccentOrange}{RGB}{214, 96, 77}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ImperialBlue,
+    urlcolor=ImperialBlue,
+    citecolor=ImperialBlue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{ImperialBlue}{\small Blockchain Economics and Digital Assets}}
+\fancyhead[R]{\textcolor{ImperialBlue}{\small Lecture 7 Notes}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section formatting
+\titleformat{\section}
+  {\Large\bfseries\color{ImperialBlue}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{ImperialBlue}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{DarkGray}}
+  {\thesubsubsection}{1em}{}
+
+% Custom commands
+\newcommand{\keyword}[1]{\textbf{\textcolor{AccentOrange}{#1}}}
+
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries\textcolor{ImperialBlue}{Blockchain Economics and Digital Assets}}\\[0.5em]
+    {\Large Lecture 7: Cryptocurrencies as an Asset Class (Part I)}\\[0.3em]
+    {\large Market Structure, Valuation, and Risk-Return}\\[1em]
+    {\large Dr Daniele Bianchi}\\[0.5em]
+    {\normalsize Queen Mary, University of London}\\[0.3em]
+    {\normalsize Semester B, 2025/2026}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\tableofcontents
+
+\vspace{2cm}
+
+%----------------------------------------------------------------------------------------
+\section*{Overview}
+\addcontentsline{toc}{section}{Overview}
+%----------------------------------------------------------------------------------------
+
+The first six lectures covered blockchain as technology and its applications: consensus mechanisms, smart contracts, DeFi protocols, stablecoins, and tokenization. This lecture marks a shift in perspective---from protocol design and application mechanics to \textit{financial economics}. The central question is whether cryptocurrencies constitute a legitimate asset class worthy of investment consideration.
+
+This is not a rhetorical question. Answering it requires applying standard tools from financial economics: defining what an asset class is, examining market structure, confronting the valuation problem, and honestly assessing risk-return characteristics. The answer, as we shall see, is nuanced. Crypto markets have matured considerably---but serious questions about valuation, volatility, and market integrity remain unresolved.
+
+This week (Part I) covers market structure, valuation frameworks, and risk-return characteristics. Next week (Part II) covers the 2024 spot ETF approvals, institutional adoption, investment vehicles, and market integrity.
+
+%----------------------------------------------------------------------------------------
+\section{What Makes an Asset Class?}
+%----------------------------------------------------------------------------------------
+
+\subsection{Definition and Criteria}
+
+An \keyword{asset class} is a group of investments that exhibit similar characteristics, respond to similar economic forces, and are subject to comparable regulatory treatment. The conventional asset classes---equities, fixed income, commodities, real estate, and alternatives---are distinguished from one another by their risk-return profiles, liquidity characteristics, and the economic mechanisms that drive their returns.
+
+Four criteria are commonly used to evaluate whether a new category of investments qualifies as a distinct asset class:
+
+\begin{enumerate}
+    \item \textbf{Return potential}: What drives returns? Are returns compensation for bearing systematic risk, or are they driven primarily by speculation?
+    \item \textbf{Risk characteristics}: What is the volatility profile? Are there extreme tail risks? How large are drawdowns?
+    \item \textbf{Liquidity}: Can investors trade at meaningful scale without substantially moving the price?
+    \item \textbf{Regulatory framework}: Is there legal clarity, investor protection, and regulatory oversight?
+\end{enumerate}
+
+A fifth consideration, especially relevant for portfolio construction, is the \keyword{correlation structure}: does the asset provide diversification benefits when added to a portfolio of traditional assets?
+
+\subsection{Where Do Cryptocurrencies Fit?}
+
+Cryptocurrencies are typically classified under \keyword{alternative investments}, alongside hedge funds, private equity, and commodities. But the analogy is imperfect in several important respects.
+
+Unlike real estate or commodities, most cryptoassets generate no cash flows. Unlike hedge funds or private equity, there is no fund manager making active allocation decisions. Unlike gold, the ``store of value'' narrative is empirically contested. Unlike equities, there are no earnings, dividends, or share buybacks to anchor valuation.
+
+The institutional investment case for cryptocurrency rests primarily on two claims: (i) attractive risk-adjusted returns, and (ii) low correlation with traditional asset classes. Both claims have some historical support but are subject to important caveats, which we examine in detail below.
+
+%----------------------------------------------------------------------------------------
+\section{Crypto Market Structure}
+%----------------------------------------------------------------------------------------
+
+\subsection{How Crypto Markets Differ from Traditional Markets}
+
+Crypto markets depart from traditional financial markets in several structural ways. Understanding these differences is essential for assessing the investability of the asset class.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{Traditional equities} & \textbf{Cryptocurrency} \\
+\midrule
+Venues & Centralised exchanges (NYSE, LSE) & Multiple CEXs + DEXs \\
+Regulation & Securities law, market surveillance & Varies; often light or absent \\
+Price reference & Consolidated tape (one price) & No consolidated tape; fragmented \\
+Trading hours & Market hours (e.g., 9:30--16:00) & 24/7/365 \\
+Settlement & T+1 & Near-instant or on-chain \\
+Custody & Regulated broker-dealer & Self-custody or third-party custodian \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Each of these differences creates both opportunities (continuous trading, instant settlement, global access) and risks (fragmentation, manipulation, custody failure).
+
+\subsection{Centralised Exchanges (CEXs)}
+
+\keyword{Centralised exchanges} (CEXs)---Binance, Coinbase, Kraken, OKX, Bybit---are the dominant trading venues for cryptocurrency. They operate traditional limit order books, match buy and sell orders through a centralised matching engine, and hold custody of user funds.
+
+CEXs generate revenue primarily through trading fees, which typically range from 0.01\% to 0.60\% per trade. Their risk profile includes counterparty risk (the exchange may fail, as FTX demonstrated in 2022), commingling risk (some exchanges have mixed customer and proprietary funds), and regulatory arbitrage (many operate from loosely regulated jurisdictions).
+
+The FTX collapse in November 2022 remains the most significant illustration of CEX risk. FTX commingled customer deposits with its affiliated trading firm, Alameda Research, resulting in \$8--10 billion in missing customer funds. The founder was convicted of fraud in 2023 and sentenced to 25 years in prison.
+
+\subsection{Decentralised Exchanges (DEXs)}
+
+\keyword{Decentralised exchanges} use the automated market maker (AMM) model covered in Week 4 (Uniswap, Curve, etc.). Unlike CEXs, DEXs have no centralised order book: liquidity is provided through pools, and pricing is determined algorithmically.
+
+DEXs are non-custodial---users connect their wallets, trade, and disconnect, retaining control of their assets throughout. All trades are visible on-chain, providing full transparency. However, DEXs account for only approximately 15--20\% of total spot volume, and they impose higher costs for large trades (slippage, gas fees). Smart contract risk replaces counterparty risk.
+
+The economic trade-off is clear: DEXs eliminate the counterparty risk that destroyed FTX customers, but they introduce smart contract risk, higher execution costs, and lower liquidity for most trading pairs.
+
+\subsection{Market Fragmentation and Price Discovery}
+
+Unlike equity markets, where a \keyword{consolidated tape} provides a single reference price across all venues, cryptocurrency markets have no equivalent mechanism. The ``price of Bitcoin'' depends on which exchange you are looking at.
+
+Price differences across venues create arbitrage opportunities, and arbitrageurs do link prices across exchanges---but imperfectly and with delays. The consequences for investors are significant: execution quality varies by venue, reference price ambiguity complicates ETF pricing and index construction, and manipulation is easier when there is no consolidated reference.
+
+In equity markets, the National Best Bid and Offer (NBBO) ensures that investors receive the best available price across all registered exchanges. No equivalent exists for crypto. This fragmentation was one of the SEC's primary concerns when it repeatedly rejected spot Bitcoin ETF applications between 2013 and 2023.
+
+\subsection{Liquidity}
+
+\keyword{Liquidity} in crypto markets varies enormously by asset and venue.
+
+Two key measures are relevant. The \keyword{bid-ask spread} is the gap between the best available buy and sell prices; tighter spreads indicate more liquid markets. \keyword{Slippage} measures how much the execution price moves against the trader for a given order size, and is particularly relevant for institutional-sized trades.
+
+For Bitcoin and Ethereum on major exchanges, bid-ask spreads are comparable to mid-cap equities. For altcoins, spreads can be 10--100 times wider. Critically, liquidity can evaporate during stress events---a phenomenon sometimes called the ``liquidity illusion.'' Because crypto trades 24/7, liquidity also varies by time of day and day of week, with thinner markets during weekend hours and Asian/European overlap periods.
+
+\subsection{The Custody Problem}
+
+\keyword{Custody}---who holds the assets and how they are secured---is a first-order risk in cryptocurrency that has no real analogue in traditional finance, where regulated broker-dealers and custodian banks provide standardised, insured safekeeping.
+
+In crypto, two models exist. \textbf{Self-custody} means the investor controls private keys directly. There is no counterparty risk, but loss of keys means permanent, irrecoverable loss of assets. This is impractical for institutions. \textbf{Third-party custody} involves regulated custodians such as Coinbase Custody, Fidelity Digital Assets, BitGo, or Fireblocks. These provide institutional-grade security and regulatory compliance, but re-introduce counterparty risk.
+
+The development of institutional-grade custody was a prerequisite for the 2024 spot ETF approvals. The SEC needed assurance that the underlying Bitcoin was held securely before approving products aimed at retail and institutional investors.
+
+%----------------------------------------------------------------------------------------
+\section{The Valuation Problem}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Fundamental Challenge}
+
+Traditional asset valuation is grounded in \keyword{discounted cash flows} (DCF). The value of an equity is the present value of expected future dividends or earnings. The value of a bond is the present value of coupon payments and principal. The value of real estate is the present value of rental income.
+
+The fundamental problem with most cryptoassets is that there are no cash flows to discount. Bitcoin pays no dividends, generates no earnings, and has no contractual obligation to return capital. Its value depends entirely on what someone else will pay for it in the future.
+
+This does not necessarily mean that crypto is worthless---gold also generates no cash flows, yet has sustained value for millennia. But it does mean that standard valuation tools do not directly apply, and alternative frameworks must be evaluated on their own merits.
+
+\subsection{Framework 1: Network Value (Metcalfe's Law)}
+
+The network value approach posits that a blockchain's value derives from the size and activity of its network, analogous to the value of a telephone network or social platform. \keyword{Metcalfe's Law} states that the value of a network is proportional to $n^2$, where $n$ is the number of users.
+
+Applied to Bitcoin, the logic is: more users lead to more liquidity, which leads to more utility, which leads to higher value. Empirically, there is a positive historical relationship between Bitcoin's market capitalisation and the number of active addresses.
+
+However, the approach has significant limitations. Active addresses are not the same as active users---one person may control hundreds of wallets. The causal direction is ambiguous: price increases attract users just as much as users may drive prices. The $n^2$ relationship is assumed, not derived from any economic model specific to monetary networks. And critically, the model does not produce a reliable price target---the gap between model-implied and actual market capitalisation can be enormous (e.g., a factor of 6 in 2021).
+
+\subsection{Framework 2: Stock-to-Flow}
+
+The \keyword{stock-to-flow} (S2F) model proposes that Bitcoin's value is determined by its scarcity, measured as the ratio of existing supply to annual new production:
+$$\text{Stock-to-Flow} = \frac{\text{Existing supply}}{\text{Annual new production}}$$
+
+The higher the ratio, the scarcer the asset. Gold has a high stock-to-flow ratio (approximately 60); Bitcoin's ratio increases after each halving event. The model regresses $\log(\text{price})$ on $\log(\text{S2F})$ and produced impressive in-sample fits in early work.
+
+The model failed out-of-sample. After 2021, Bitcoin's price significantly underperformed the S2F prediction. The model implies that price approaches infinity as the flow of new coins approaches zero---an economically nonsensical result. More fundamentally, the model confuses scarcity with demand: a scarce asset with no demand is not valuable. From an econometric perspective, both the price series and the S2F series are non-stationary, making the regression susceptible to spurious correlation.
+
+The lesson is that scarcity is \textit{necessary} but not \textit{sufficient} for value. Demand matters, and demand for cryptocurrency is driven by speculation, adoption, and narrative---factors that the S2F model ignores entirely.
+
+\subsection{Framework 3: Cost of Production}
+
+The cost-of-production approach argues that Bitcoin's ``fundamental value'' is anchored by the cost of mining it. Mining requires electricity and hardware---real economic costs. Rational miners will not operate at a loss indefinitely, so the cost of production should act as a price floor.
+
+This reasoning is incomplete because causality runs in both directions. Higher Bitcoin prices attract more miners, which \textit{raises} the cost of production. The difficulty adjustment mechanism ensures that block production continues regardless of how much or how little hashrate is deployed. Marginal mining costs vary enormously depending on location and energy source. And the framework does not apply at all to Proof-of-Stake networks.
+
+Where the cost-of-production framework does provide useful insight is around halving events. The April 2024 halving reduced the block reward from 6.25 to 3.125 BTC, forcing less efficient miners out and creating short-term supply pressure. This is a real economic effect, even if it does not constitute a complete valuation model.
+
+\subsection{Framework 4: Tokenomics and Utility Value}
+
+For tokens beyond Bitcoin, the economic design of the token---its \keyword{tokenomics}---can provide partial valuation anchors.
+
+Key tokenomics factors include the supply schedule (fixed for BTC; inflationary for early ETH; deflationary for post-EIP-1559 ETH with fee burning), token distribution (how concentrated is ownership? what share is held by insiders?), utility (is the token \textit{required} to use the protocol, or is it purely speculative?), and value capture (does protocol revenue flow to token holders through fee-sharing or buyback-and-burn mechanisms?).
+
+Ethereum provides the most instructive case. Post-Merge, ETH stakers earn approximately 3--4\% annual yield---a real economic return. EIP-1559 burns base fees, reducing net supply when the network is heavily used. This creates something closer to a cash-flow asset: one could attempt a crude ``dividend discount'' approach using staking yield as the cash flow. But the yield is denominated in ETH rather than a stable unit, the appropriate discount rate is unknown, and the growth rate of fee revenue is highly uncertain. Even for ETH, valuation remains difficult---though it is less difficult than for Bitcoin.
+
+\subsection{The Bottom Line on Valuation}
+
+There is no single ``correct'' cryptocurrency valuation model. Each framework captures some aspect of value---network effects, scarcity, production costs, utility---but none is reliable enough to generate actionable price targets. Investors must combine multiple frameworks and remain honest about the fundamental uncertainty involved.
+
+This is not a comfortable conclusion, but it is an honest one. An analyst who acknowledges uncertainty is more useful than one who presents false precision.
+
+%----------------------------------------------------------------------------------------
+\section{Risk-Return Characteristics}
+%----------------------------------------------------------------------------------------
+
+\subsection{Return Characteristics}
+
+Cryptocurrency returns have been extraordinary over long horizons but extremely uneven across time and across assets.
+
+Bitcoin has delivered approximately 150\% annualised return since 2013, but this headline figure obscures multiple drawdowns exceeding 50\%. Ethereum has delivered even higher returns since its 2015 launch, accompanied by even higher volatility. Critically, most altcoins have delivered \textit{negative} lifetime returns.
+
+\keyword{Survivorship bias} is a serious concern. Focusing on Bitcoin and Ethereum overstates the returns that an average crypto investor would have earned. CoinGecko lists over 13,000 tokens, the vast majority of which are effectively dead. Any performance analysis that begins with ``Bitcoin has returned\ldots'' is implicitly conditioning on success.
+
+\subsection{Volatility}
+
+Crypto volatility is substantially higher than that of traditional asset classes. Typical annualised volatility ranges are approximately 15--20\% for the S\&P 500, 12--18\% for gold, 25--40\% for crude oil, 50--80\% for Bitcoin, 70--100\% for Ethereum, and 100--200\%+ for typical altcoins.
+
+An important nuance is that Bitcoin's volatility has been declining over time as the market matures. Thirty-day annualised volatility regularly exceeded 100\% before 2020 but has mostly remained in the 40--70\% range since 2023. If this trend continues, Bitcoin's risk profile will gradually converge toward that of a volatile commodity rather than a speculative instrument.
+
+\subsection{Drawdowns and Tail Risk}
+
+High volatility is one dimension of risk; extreme drawdowns are another. Bitcoin has experienced some of the largest peak-to-trough declines in the history of financial markets: approximately $-$84\% from December 2017 to December 2018 (recovery took about three years), $-$55\% from April to June 2021 (recovery in about six months), and $-$77\% from November 2021 to November 2022 (recovery took about two years).
+
+For comparison, the S\&P 500's worst drawdown during the 2008 global financial crisis was approximately $-$57\%, and during COVID-19 in March 2020 approximately $-$34\%.
+
+Return distributions for cryptocurrency exhibit \keyword{fat tails} and negative skewness during crashes. This means that standard deviation alone substantially underestimates the true risk of holding crypto. An investor who allocated 10\% of a portfolio to Bitcoin at the November 2021 peak would have seen that position fall to approximately 2.3\% of portfolio value by November 2022.
+
+\subsection{The Sharpe Ratio: Handle with Care}
+
+The \keyword{Sharpe ratio} is the standard measure for comparing risk-adjusted returns across assets:
+$$\text{Sharpe Ratio} = \frac{E[R] - R_f}{\sigma(R)}$$
+where $E[R]$ is the expected return, $R_f$ is the risk-free rate, and $\sigma(R)$ is the standard deviation of returns.
+
+Crypto Sharpe ratios can look attractive over certain sample windows---sometimes exceeding those of equities. However, several caveats apply. First, the Sharpe ratio assumes normally distributed returns, but crypto returns are fat-tailed and skewed, violating this assumption. Second, the ratio is extremely sensitive to the sample period: a window starting January 2023 looks excellent, while one starting November 2021 looks terrible. Third, for fat-tailed distributions, the \keyword{Sortino ratio}---which penalises only downside volatility---may be more informative, as it distinguishes between ``good'' volatility (large gains) and ``bad'' volatility (large losses).
+
+\subsection{Correlation with Traditional Assets}
+
+The \keyword{diversification argument} for crypto states that if crypto returns are uncorrelated with equities and bonds, even a small allocation improves portfolio efficiency by raising the return per unit of risk.
+
+What the data shows is more complicated. Before 2020, the correlation between Bitcoin and the S\&P 500 was near zero on average, consistent with the diversification narrative. Between 2020 and 2022, correlation spiked significantly during the COVID crash and the subsequent monetary tightening cycle, reaching 0.5--0.7 at times. From 2023 to 2025, correlation has moderated but remains higher than the pre-2020 baseline.
+
+This pattern is consistent with a well-known phenomenon in financial economics: \keyword{correlation breakdown}. Correlations tend to increase during market crises---precisely when diversification is most needed. Crypto is not exempt from this tendency.
+
+\subsection{Why Did Correlations Increase?}
+
+Several structural factors explain the rise in BTC-equity correlation after 2020.
+
+First, institutional participation increased. As hedge funds, family offices, and asset managers entered crypto, the same portfolio rebalancing flows that move equities now also move Bitcoin. Second, Bitcoin became more sensitive to macroeconomic factors: Fed rate decisions, CPI releases, and dollar strength---the same factors driving equity markets. Third, risk-on/risk-off dynamics increasingly include crypto: in a flight to safety, investors sell all risky assets; in a risk-on environment, liquidity flows into all risky assets. Fourth, leverage linkages mean that leveraged crypto positions are often funded with the same capital backing equity positions, so margin calls force simultaneous liquidation.
+
+The implication for portfolio construction is that the ``uncorrelated alpha'' argument for crypto has weakened. Crypto may still offer diversification at certain frequencies or over very long horizons, but it is not a reliable hedge against equity drawdowns.
+
+\subsection{Bitcoin as ``Digital Gold''}
+
+A popular narrative positions Bitcoin as a store of value and inflation hedge analogous to gold. The arguments in favour cite Bitcoin's fixed supply (21 million cap), independence from government control, and portability.
+
+The empirical evidence is not supportive. During the 2021--2023 inflation episode, Bitcoin's price \textit{fell} while inflation rose---the opposite of what an inflation hedge should do. The BTC-Gold correlation is low and unstable, sometimes positive and sometimes negative. Bitcoin's volatility (approximately 60\%) is roughly four times that of gold (approximately 15\%), making it a very ``noisy'' store of value.
+
+Bitcoin may eventually function as digital gold if its volatility continues to decline and adoption broadens. But as of 2025, this remains a narrative rather than an empirically established fact.
+
+%----------------------------------------------------------------------------------------
+\section{Summary and Looking Ahead}
+%----------------------------------------------------------------------------------------
+
+This lecture has examined whether cryptocurrencies qualify as a legitimate asset class. The key findings:
+
+\textbf{Crypto markets are structurally different from traditional markets.} They are fragmented across multiple venues, trade 24/7 with no consolidated price reference, and present a first-order custody problem. These structural features create both opportunities and risks that investors must understand.
+
+\textbf{Valuation is fundamentally challenging.} Most cryptoassets generate no cash flows, rendering standard DCF analysis inapplicable. Alternative frameworks---network value, stock-to-flow, cost of production, tokenomics---provide directional intuition but fail as reliable quantitative tools. Honest uncertainty is more appropriate than false precision.
+
+\textbf{Returns have been high but so has risk.} Extreme volatility, large drawdowns, and fat-tailed return distributions mean that standard risk measures (standard deviation, Sharpe ratio) understate the true risk. Survivorship bias inflates headline return figures.
+
+\textbf{The diversification benefit is weaker than advertised.} Correlations with equities increased after 2020, driven by institutional participation, macro sensitivity, and leverage linkages. The ``digital gold'' narrative is not supported by inflation-episode evidence.
+
+\textbf{None of this means crypto is uninvestable.} But it means that investors must approach the asset class with clear expectations about what they are buying and why. The question of \textit{how} to access crypto markets---through ETFs, direct holdings, or derivatives---is the subject of next week's lecture.
+
+%----------------------------------------------------------------------------------------
+\section*{Readings}
+\addcontentsline{toc}{section}{Readings}
+%----------------------------------------------------------------------------------------
+
+\textbf{Required:}
+\begin{itemize}
+    \item Bianchi, D. (2020). ``Cryptocurrencies as an Asset Class? An Empirical Assessment.'' \textit{Journal of Alternative Investments}, 23(2), 162--179.
+\end{itemize}
+
+\textbf{Supplementary:}
+\begin{itemize}
+    \item Liu, Y., and Tsyvinski, A. (2021). ``Risks and Returns of Cryptocurrency.'' \textit{Review of Financial Studies}, 34(6), 2689--2727.
+    \item Taleb, N.N. (2021). ``Bitcoin, Currencies, and Fragility.'' \textit{Quantitative Finance}, 21(8), 1249--1255.
+    \item Makarov, I., and Schoar, A. (2020). ``Trading and Arbitrage in Cryptocurrency Markets.'' \textit{Journal of Financial Economics}, 135(2), 293--319.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

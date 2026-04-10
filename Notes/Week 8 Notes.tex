@@ -1,0 +1,343 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{xcolor}
+
+% Page geometry
+\geometry{margin=2.5cm, headheight=14pt}
+
+% Color definitions
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{DarkGray}{RGB}{51, 51, 51}
+\definecolor{AccentOrange}{RGB}{214, 96, 77}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ImperialBlue,
+    urlcolor=ImperialBlue,
+    citecolor=ImperialBlue
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{ImperialBlue}{\small Blockchain Economics and Digital Assets}}
+\fancyhead[R]{\textcolor{ImperialBlue}{\small Lecture 8 Notes}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section formatting
+\titleformat{\section}
+  {\Large\bfseries\color{ImperialBlue}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{ImperialBlue}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{DarkGray}}
+  {\thesubsubsection}{1em}{}
+
+% Custom commands
+\newcommand{\keyword}[1]{\textbf{\textcolor{AccentOrange}{#1}}}
+
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+\begin{center}
+    {\LARGE\bfseries\textcolor{ImperialBlue}{Blockchain Economics and Digital Assets}}\\[0.5em]
+    {\Large Lecture 8: Cryptocurrencies as an Asset Class (Part II)}\\[0.3em]
+    {\large ETFs, Institutional Adoption, and Market Integrity}\\[1em]
+    {\large Dr Daniele Bianchi}\\[0.5em]
+    {\normalsize Queen Mary, University of London}\\[0.3em]
+    {\normalsize Semester B, 2025/2026}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\tableofcontents
+
+\vspace{2cm}
+
+%----------------------------------------------------------------------------------------
+\section*{Overview}
+\addcontentsline{toc}{section}{Overview}
+%----------------------------------------------------------------------------------------
+
+Last week established the analytical foundations: crypto market structure, the valuation problem, and risk-return characteristics. This lecture addresses the practical side: how investors actually access cryptocurrency markets, what regulatory developments have enabled institutional participation, and what risks remain.
+
+The centrepiece of this lecture is the 2024 approval of spot Bitcoin and Ethereum ETFs in the United States---the most significant event in cryptocurrency's integration into mainstream finance. We trace the regulatory battle that led to approval, examine how these products work, assess their market impact, and consider what they mean for portfolio construction.
+
+We then survey the broader institutional ecosystem (custody, prime brokerage, corporate treasuries), the full menu of investment vehicles (direct and indirect), and the market integrity problems that regulation has not yet fully resolved. The lecture concludes with an integrated assessment of cryptocurrency against the asset class criteria established in Part I.
+
+%----------------------------------------------------------------------------------------
+\section{The 2024 Spot ETF Approvals}
+%----------------------------------------------------------------------------------------
+
+\subsection{Why ETFs Matter}
+
+\keyword{Exchange-Traded Funds} (ETFs) are investment vehicles that trade on regulated stock exchanges and track the price of an underlying asset or basket of assets. They are the dominant mechanism through which retail and institutional investors access most asset classes, from equities and bonds to commodities and real estate.
+
+For cryptocurrency, the approval of spot ETFs was transformative for four reasons. First, accessibility: any investor with a brokerage account can buy crypto exposure without wallets, private keys, or exchange accounts. Second, regulatory wrapper: ETFs are regulated securities products with established investor protections. Third, institutional mandates: many pension funds, endowments, and wealth managers are prohibited from holding crypto directly but permitted to hold ETFs. Fourth, tax and reporting: ETFs integrate into existing portfolio reporting and tax frameworks.
+
+\subsection{Spot vs.\ Futures ETFs}
+
+The distinction between \keyword{spot} and \keyword{futures-based} ETFs is economically important.
+
+Futures-based ETFs, such as ProShares BITO (approved October 2021), hold CME Bitcoin futures contracts rather than actual Bitcoin. Because futures contracts expire, the ETF must periodically ``roll'' from expiring contracts to new ones. When the futures curve is in \keyword{contango}---meaning futures prices exceed spot prices, which is the typical condition---this rolling process destroys value over time. The resulting drag on returns can be substantial, and tracking error relative to Bitcoin's spot price accumulates.
+
+Spot ETFs, approved in January 2024, hold actual Bitcoin in custody through a qualified custodian. The price tracks the spot market directly, with no roll cost, no contango drag, and much tighter tracking of the underlying asset.
+
+The SEC approved futures ETFs years before spot ETFs because futures trade on the CME, a regulated exchange with existing surveillance. The SEC's resistance to spot ETFs reflected concerns about the unregulated nature of the underlying spot market.
+
+\subsection{The Road to Approval}
+
+The SEC rejected spot Bitcoin ETF applications repeatedly from 2013 to 2023, citing the risk of fraud and manipulation in the unregulated spot market.
+
+The timeline of key events: the Winklevoss twins filed the first application in 2013; the SEC rejected it in 2017, citing market manipulation risk; futures-based ETFs were approved in 2021; Grayscale filed to convert its GBTC trust to a spot ETF and was rejected; BlackRock filed for its iShares Bitcoin Trust (IBIT) in June 2023; in August 2023, the DC Circuit Court ruled in \textit{Grayscale v.\ SEC} that the SEC's rejection was ``arbitrary and capricious''; in January 2024, the SEC approved 11 spot Bitcoin ETFs simultaneously; and in May 2024, the SEC approved spot Ethereum ETFs.
+
+The \textit{Grayscale} ruling was decisive. The court's logic was straightforward: the SEC could not rationally approve futures ETFs (which reference the same underlying market) while rejecting spot ETFs. The agency's legal position became untenable.
+
+\subsection{The SEC's Concerns and Their Resolution}
+
+The SEC's core objection was the risk of \keyword{market manipulation} in the unregulated Bitcoin spot market. Specifically, the agency argued that there was no regulated market of ``significant size'' providing reliable price discovery, that wash trading and spoofing were prevalent on offshore exchanges, and that no adequate market surveillance existed.
+
+Several developments addressed these concerns. The CME Bitcoin futures market matured to the point where the SEC accepted that futures prices led spot price discovery. ETF applicants established surveillance-sharing agreements with exchanges to detect manipulation. Coinbase Custody, regulated by the New York State Department of Financial Services (NYDFS), was designated as custodian for most approved ETFs. And the court ruling forced the SEC's hand.
+
+It is worth noting that SEC Chair Gensler explicitly stated that approval of Bitcoin ETFs did not constitute SEC endorsement of Bitcoin itself. The SEC approved a product structure, not the underlying asset.
+
+\subsection{How Spot Bitcoin ETFs Work}
+
+The \keyword{creation/redemption mechanism} is central to how ETFs function and maintain price alignment with the underlying asset.
+
+\keyword{Authorised Participants} (APs)---typically large broker-dealers---are the only entities that can create or redeem ETF shares. In the creation process, the AP delivers cash to the ETF issuer, who purchases Bitcoin on the open market and deposits it with the custodian. New ETF shares are issued to the AP, who then sells them on the secondary market.
+
+A critical design feature: the SEC required \keyword{cash-only} creation and redemption, prohibiting in-kind delivery of Bitcoin. This means APs cannot deliver Bitcoin directly to the issuer; they must deliver dollars, and the issuer handles the Bitcoin purchase. This adds a layer of friction and cost compared to in-kind ETFs (such as gold or equity ETFs), but avoids the regulatory complexity of broker-dealers handling Bitcoin directly.
+
+Redemption works in reverse: the AP returns ETF shares to the issuer, who sells the corresponding Bitcoin and returns cash.
+
+\subsection{ETF Flows and the Fee War}
+
+The launch of spot Bitcoin ETFs was among the most successful ETF debuts in history. Combined net inflows exceeded \$30 billion in the first year. BlackRock's iShares Bitcoin Trust (IBIT) alone surpassed \$50 billion in assets under management, making it one of the fastest-growing ETFs ever launched.
+
+A notable dynamic was the rotation out of \keyword{Grayscale's GBTC}. Before the ETF era, the Grayscale Bitcoin Trust was the primary institutional vehicle for Bitcoin exposure, but it charged a 1.50\% management fee and often traded at substantial premia or discounts to its net asset value. Once spot ETFs launched at fees of 0.15\%--0.25\%, investors sold GBTC and rotated into cheaper alternatives. GBTC experienced tens of billions in outflows during 2024.
+
+The fee competition among issuers has been intense. BlackRock and Fidelity both charge 0.25\%; ARK/21Shares charges 0.21\%; Grayscale launched a ``mini'' BTC trust at 0.15\%. This is beneficial for investors but compresses margins for issuers.
+
+\subsection{Ethereum Spot ETFs}
+
+In May 2024, the SEC also approved spot Ethereum ETFs, with trading commencing in July 2024.
+
+Two key differences from Bitcoin ETFs stand out. First, the SEC required that ETH held by the ETFs \textit{not} be staked. This means ETF holders forgo the approximately 3--4\% annual staking yield that direct ETH holders can earn---a significant economic cost that makes the product less attractive relative to direct holding. Second, ETH ETF inflows have been substantially smaller than Bitcoin ETF inflows, reflecting both lower institutional demand and the staking restriction.
+
+Ethereum's value proposition is also harder to communicate to traditional allocators. Bitcoin's ``digital gold'' pitch is simple; Ethereum's story---a programmable platform with fee revenue and a DeFi ecosystem---requires more explanation.
+
+If the SEC eventually permits staking within ETH ETFs, the product becomes considerably more attractive, as investors would earn yield on top of price exposure. This decision remains pending.
+
+\subsection{Impact on Price Discovery and Market Structure}
+
+The introduction of spot ETFs has changed how Bitcoin's price is formed.
+
+Observed effects include reduced daily volatility in the months following launch (consistent with broader, more stable investor participation), a stronger link to macroeconomic factors (ETF flows respond to equity market sentiment, CPI data, and Fed signalling), compression of price premium/discount dynamics (GBTC historically traded at large deviations from NAV; ETF structure keeps prices close to NAV through daily creation/redemption), and a shift of Bitcoin ``exposure'' from crypto-native venues to regulated US equity exchanges.
+
+The economic interpretation is that ETFs have improved market efficiency and access, but at the cost of making Bitcoin behave more like a traditional risk asset. The diversification benefit weakens as the asset becomes more mainstream---a direct consequence of the correlation dynamics discussed in Part I.
+
+%----------------------------------------------------------------------------------------
+\section{Institutional Adoption}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Infrastructure Stack}
+
+ETFs were the catalyst for institutional adoption, but the broader ecosystem required building several infrastructure layers: qualified custody, prime brokerage (credit, lending, and execution services), OTC trading desks for large block trades, regulated derivatives (CME futures and options), compliance and AML tools, research and data services, insurance, and tax/reporting integration.
+
+Each layer had to reach a minimum level of maturity before institutions could participate at scale. This infrastructure was largely absent before 2020 and is now substantially in place for Bitcoin and Ethereum, though still incomplete for smaller assets.
+
+\subsection{Custody Solutions}
+
+Institutional-grade custody is a prerequisite for any significant allocation. The major qualified custodians are Coinbase Custody (custodian for the majority of US spot ETFs, regulated by NYDFS), Fidelity Digital Assets (custodian for Fidelity's own FBTC, operating under an existing trust company charter), BitGo (independent custodian with insurance backing, widely used by funds and family offices), and Fireblocks (infrastructure-as-a-service provider, supplying custody technology to banks and institutions).
+
+A notable concentration risk exists: Coinbase custodies a very large share of institutionally held Bitcoin. A single point of failure---whether operational, regulatory, or security-related---would have systemic consequences. This risk is recognised but not yet fully mitigated.
+
+\subsection{Corporate Treasuries: The MicroStrategy Model}
+
+Some publicly listed companies have allocated corporate treasury reserves to Bitcoin. The most prominent case is \keyword{MicroStrategy} (now rebranded as ``Strategy''), which began purchasing Bitcoin in August 2020 under CEO Michael Saylor. By early 2025, the company had accumulated over 400,000 BTC, making it the largest corporate holder. Purchases were funded through a combination of cash reserves, debt issuance (convertible notes), and equity raises (at-the-market share offerings). The company's stock price has effectively become a leveraged proxy for Bitcoin, with a correlation exceeding 0.9.
+
+The economic assessment is mixed. On the positive side, shareholders gain Bitcoin exposure through a listed equity with no management fee. On the negative side, the strategy is leveraged: if Bitcoin declines significantly, debt servicing becomes difficult and the company may face forced selling pressure. The concentration of a software company's value in a single volatile asset introduces substantial idiosyncratic risk. The strategy performs spectacularly in bull markets and is extremely dangerous in bear markets.
+
+Other companies (Tesla, Block) have taken much smaller positions. The MicroStrategy model remains an outlier rather than a template.
+
+%----------------------------------------------------------------------------------------
+\section{Investment Vehicles}
+%----------------------------------------------------------------------------------------
+
+\subsection{Direct vs.\ Indirect Exposure}
+
+Investors can access cryptocurrency through a range of channels with different risk-return profiles, regulatory treatment, and practical requirements.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{Direct} & \textbf{Indirect} \\
+\midrule
+What you hold & The token itself & A financial product referencing the token \\
+Custody & Self or third-party & Fund custodian \\
+Regulation & Varies by jurisdiction & Securities regulation \\
+Counterparty risk & Exchange risk & Fund issuer risk \\
+Fees & Trading fees, gas & Management fees \\
+Flexibility & Full (DeFi, staking, transfers) & Limited to product features \\
+Tax treatment & Complex, varies & Standard capital gains \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Most institutional capital now enters through indirect channels (ETFs, funds, futures). Direct investment remains more common among retail participants, crypto-native firms, and those seeking DeFi participation.
+
+\subsection{Direct Investment Channels}
+
+\textbf{Buy and hold} is the simplest direct approach: purchase on an exchange, withdraw to a personal wallet, and hold long-term. The investor has full ownership and control but bears full responsibility for security.
+
+\textbf{Active trading} involves more frequent buying and selling to capitalise on volatility. Higher potential returns are coupled with higher transaction costs and considerably more risk. Evidence from traditional markets suggests that most retail traders underperform buy-and-hold strategies; this is likely worse in crypto given higher costs and greater volatility.
+
+\textbf{DeFi participation}---staking, liquidity provision, lending---was covered in Week 4. These activities generate yield but introduce smart contract risk, impermanent loss, and protocol-specific risks. Direct investment requires managing private keys, tax reporting, and regulatory compliance---barriers that are non-trivial for retail investors and prohibitive for most institutions.
+
+\subsection{Indirect Investment Channels}
+
+\textbf{Spot ETFs}, covered in detail above, are now the dominant institutional on-ramp. They provide regulated, accessible, low-cost exposure without the custody burden.
+
+\textbf{Crypto-related equities} offer indirect exposure through publicly listed companies with significant crypto operations or holdings. Examples include MicroStrategy (Bitcoin treasury), Coinbase (COIN, exchange and custody), Marathon Digital and Riot Platforms (mining operations). These provide equity-market-regulated exposure with crypto beta but add company-specific risk (management quality, business model, leverage) on top of underlying crypto risk.
+
+\textbf{Crypto funds} (hedge funds, venture capital) offer active management of crypto portfolios, typically restricted to accredited or institutional investors. Fee structures are typically 2\% management plus 20\% performance. The track record is mixed, and several high-profile collapses have occurred (Three Arrows Capital in 2022).
+
+\subsection{Derivatives}
+
+Derivatives have become a major component of crypto market structure, with derivatives volume often exceeding spot volume.
+
+\keyword{Perpetual futures} are a crypto-native innovation: futures contracts with no expiry date, held indefinitely. A \keyword{funding rate} mechanism---periodic payments exchanged between long and short positions---keeps the contract price aligned with spot. When the perpetual futures price exceeds the spot price, longs pay shorts (discouraging excess bullish positioning); when it is below spot, shorts pay longs. Perpetual futures are the dominant instrument on crypto-native exchanges.
+
+\keyword{CME futures and options} are standard regulated instruments used by institutions for hedging and basis trading. Open interest has grown substantially since 2023.
+
+Funding rates contain information about market sentiment and positioning. Extreme positive funding rates combined with rising prices suggest crowded long positions and potential correction risk. Extreme negative rates combined with falling prices suggest crowded shorts and potential reversal. A popular institutional strategy is the \keyword{cash-and-carry} trade: buy spot Bitcoin (or the ETF) and short futures to earn the funding rate spread. This produces a measurable, relatively low-risk return and has attracted significant capital since ETF approval.
+
+Bitcoin \keyword{options} have grown rapidly, primarily on Deribit (which dominates with over 85\% market share) and the CME. Options allow hedging (protective puts), income generation (covered calls), and provide market information through implied volatility surfaces and put/call ratios.
+
+%----------------------------------------------------------------------------------------
+\section{Market Integrity and Manipulation}
+%----------------------------------------------------------------------------------------
+
+\subsection{The Market Integrity Gap}
+
+For cryptocurrency to function as a legitimate asset class, markets must be fair and orderly. Traditional financial markets enforce this through securities laws prohibiting insider trading and manipulation, exchange-level surveillance, self-regulatory organisations (FINRA, FCA), and consolidated audit trails.
+
+Crypto markets have significant gaps. Most trading volume occurs on venues outside securities regulators' reach. No comprehensive cross-venue surveillance exists. Pseudonymous trading makes identifying manipulators difficult. Insider trading around token listings and protocol upgrades is common and largely unpunished.
+
+\subsection{Types of Manipulation}
+
+\keyword{Wash trading}---simultaneously buying and selling to inflate volume---is estimated to account for 50--70\% of reported exchange volume. Motivations include attracting token listings, earning trading rewards, and inflating exchange rankings.
+
+\keyword{Pump and dump} schemes involve coordinated buying to inflate a low-cap token's price, followed by selling to latecomers. These are often organised via Telegram or Discord groups and primarily affect small-cap tokens rather than BTC or ETH.
+
+\keyword{Spoofing}---placing large orders with no intention to execute, creating a false impression of supply or demand---is illegal in regulated markets but largely unmonitored in crypto.
+
+\keyword{Front-running and MEV} (Maximal Extractable Value) involve reordering transactions to extract value. On-chain, validators or ``searchers'' can observe pending transactions and insert their own transactions ahead of them to profit. On exchanges, insiders may exploit knowledge of large pending orders.
+
+\subsection{Case Study: The FTX Collapse}
+
+FTX was the world's third-largest crypto exchange before its collapse in November 2022. The exchange commingled customer funds with its affiliated trading firm, Alameda Research. Alameda used customer deposits to fund speculative trades and venture investments. When a wave of withdrawals hit, FTX could not honour redemptions. Between \$8 and \$10 billion in customer funds were missing. Founder Sam Bankman-Fried was convicted of fraud and sentenced to 25 years in prison in March 2024.
+
+The FTX case illustrates that counterparty risk on unregulated exchanges is real and potentially catastrophic, that ``proof of reserves'' is insufficient without proof of liabilities, and that the collapse accelerated the regulatory push and strengthened the case for regulated access channels like ETFs.
+
+\subsection{Regulatory Responses}
+
+\subsubsection{EU: Markets in Crypto-Assets Regulation (MiCA)}
+
+\keyword{MiCA} is the most comprehensive regulatory framework for digital assets globally, effective from December 2024. It requires licensing for crypto-asset service providers (CASPs), prohibits market abuse (insider trading, market manipulation, unlawful disclosure), imposes reserve and transparency requirements for stablecoins, and establishes conduct rules for exchanges and custodians. For investors, MiCA provides a level of legal certainty and consumer protection that previously did not exist in the EU.
+
+\subsubsection{US: Fragmented Approach}
+
+The US regulatory landscape is characterised by jurisdictional ambiguity. The SEC asserts jurisdiction over tokens that qualify as ``securities'' under the \keyword{Howey test}: an investment of money, in a common enterprise, with expectation of profit, derived primarily from the efforts of others. The CFTC treats Bitcoin and Ethereum as ``commodities.'' Ongoing legislative efforts seek to clarify the boundary between the two agencies.
+
+The practical implications are significant. Bitcoin is generally not considered a security (no issuer, no common enterprise, no management team). Ethereum's classification remains ambiguous, though the SEC's approval of ETH ETFs suggests de facto commodity treatment. Most ICO tokens are likely unregistered securities, creating legal risk for issuers and holders. This regulatory ambiguity is itself a risk factor and a reason why institutional adoption has concentrated on BTC and ETH.
+
+\subsubsection{UK: FCA}
+
+The FCA tightened crypto marketing rules in October 2023 and requires registration for crypto firms operating in the UK. However, no comprehensive licensing regime comparable to MiCA yet exists. The UK is currently lagging behind the EU in regulatory clarity for digital assets.
+
+%----------------------------------------------------------------------------------------
+\section{The Asset Class Verdict}
+%----------------------------------------------------------------------------------------
+
+After two lectures of analysis, we can assess cryptocurrency against the asset class criteria established in Part I.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Criterion} & \textbf{Assessment} & \textbf{Trend} \\
+\midrule
+Return potential & High & Moderating with maturity \\
+Risk (volatility, drawdowns) & Very high & Declining but still extreme \\
+Liquidity (BTC/ETH) & Adequate & Improving via ETFs \\
+Liquidity (altcoins) & Poor & Fragmented \\
+Regulatory framework & Mixed & Improving (MiCA, ETFs) \\
+Correlation / diversification & Weakening & Higher with institutionalisation \\
+Market integrity & Poor & Slowly improving \\
+Valuation anchor & Absent & Partial for ETH (yield) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Bitcoin and Ethereum are increasingly \textit{investable}---the infrastructure, regulation, and products now exist for meaningful institutional participation. But ``investable'' is not synonymous with ``attractive.'' Whether crypto deserves a place in a diversified portfolio depends on the investor's risk tolerance, time horizon, belief about future adoption, and willingness to accept that many fundamental questions---particularly around valuation---remain unanswered.
+
+The most defensible institutional approach, as of 2025, is a small risk-budget allocation (1--3\%) to Bitcoin and possibly Ethereum via spot ETFs, sized by the investor's tolerance for drawdown risk rather than by any fundamental price target. This approach is honest about what we do and do not know.
+
+%----------------------------------------------------------------------------------------
+\section{Summary and Looking Ahead}
+%----------------------------------------------------------------------------------------
+
+This lecture has covered the practical side of cryptocurrency investment. Key takeaways:
+
+\textbf{Spot ETFs transformed crypto's accessibility.} The 2024 approvals were the result of a decade-long regulatory battle, culminating in a court ruling that forced the SEC's hand. Record-breaking inflows and intense fee competition have made crypto exposure cheap and accessible.
+
+\textbf{Institutional infrastructure is now largely in place.} Qualified custody, regulated derivatives, and prime brokerage services exist for BTC and ETH, though concentration risks (particularly around Coinbase) remain.
+
+\textbf{Multiple investment channels exist with different risk profiles.} Direct investment offers maximum flexibility but maximum responsibility. Indirect channels (ETFs, equities, funds) provide regulated access with limited flexibility. Derivatives offer leverage, hedging, and sentiment information.
+
+\textbf{Market integrity remains the weakest link.} Wash trading, manipulation, and fraud persist on unregulated venues. MiCA, SEC enforcement, and ETF surveillance are partial solutions. The regulatory classification of most tokens (security vs.\ commodity) remains unresolved.
+
+\textbf{Regulation is embedded throughout, not standalone.} MiCA governs stablecoins and service providers. The SEC's Howey test determines which tokens are securities. The Grayscale court ruling forced ETF approval. Understanding regulation is essential for any investor in this space.
+
+In the next lecture, we turn to blockchain's integration with traditional financial infrastructure: tokenized securities, settlement modernisation, and institutional blockchain initiatives.
+
+%----------------------------------------------------------------------------------------
+\section*{Readings}
+\addcontentsline{toc}{section}{Readings}
+%----------------------------------------------------------------------------------------
+
+\textbf{Required:}
+\begin{itemize}
+    \item Bianchi, D., and Babiak, M. (2022). ``On the Performance of Cryptocurrency Funds.'' \textit{Journal of Banking \& Finance}, 138, 106467.
+\end{itemize}
+
+\textbf{Supplementary:}
+\begin{itemize}
+    \item Makarov, I., and Schoar, A. (2020). ``Trading and Arbitrage in Cryptocurrency Markets.'' \textit{Journal of Financial Economics}, 135(2), 293--319.
+    \item Cong, L.W., Li, X., Tang, K., and Yang, Y. (2023). ``Crypto Wash Trading.'' \textit{Management Science}, 69(11), 6427--6454.
+    \item European Commission (2023). \textit{Markets in Crypto-Assets Regulation (MiCA)}. Official Journal of the EU.
+    \item US Court of Appeals, DC Circuit (2023). \textit{Grayscale Investments v.\ SEC}, No.\ 22-1142.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
