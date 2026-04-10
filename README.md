@@ -8,9 +8,8 @@ file for ECOM215.
 
 ## Week-by-week materials
 
-| Week | Lecture slides | Notes | Tutorial (TA copy) |
-|-----:|:---------------|:------|:-------------------|
-| 0    | [Course Introduction](Lectures/Week%200%20Slides.pdf) | — | — |
+| Week | Lecture slides | Notes | Tutorial |
+|-----:|:---------------|:------|:---------|
 | 1    | [Foundations of Blockchain Technology](Lectures/Week%201%20Slides.pdf) | [Notes](Notes/Week%201%20Notes.pdf) | — |
 | 2    | [Blockchain Economics](Lectures/Week%202%20Slides.pdf) | [Notes](Notes/Week%202%20Notes.pdf) | [Tutorial](Tutorials/Week%202%20Tutorial%20TA%20Copy.pdf) |
 | 3    | [Smart Contracts & DApps](Lectures/Week%203%20Slides.pdf) | [Notes](Notes/Week%203%20Notes.pdf) | [Tutorial](Tutorials/Week%203%20Tutorial%20TA%20Copy.pdf) |

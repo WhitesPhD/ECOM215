@@ -351,14 +351,18 @@ def split_frames(tex: str) -> list[tuple[str, str]]:
 # PDF text extraction
 # ---------------------------------------------------------------------------
 
-def pdftotext_full(pdf_path: Path) -> str:
+def _run_pdftotext(pdf_path: Path, keep_page_breaks: bool) -> str:
     if not pdf_path.exists():
         return ""
     if shutil.which("pdftotext") is None:
         return ""
+    args = ["pdftotext", "-layout"]
+    if not keep_page_breaks:
+        args.append("-nopgbrk")
+    args += [str(pdf_path), "-"]
     try:
         result = subprocess.run(
-            ["pdftotext", "-layout", "-nopgbrk", str(pdf_path), "-"],
+            args,
             capture_output=True,
             text=True,
             check=False,
@@ -367,6 +371,17 @@ def pdftotext_full(pdf_path: Path) -> str:
         return result.stdout or ""
     except Exception:
         return ""
+
+
+def pdftotext_full(pdf_path: Path) -> str:
+    """Full text, with page breaks stripped — used for section-title matching."""
+    return _run_pdftotext(pdf_path, keep_page_breaks=False)
+
+
+def pdftotext_with_pages(pdf_path: Path) -> str:
+    """Full text with form-feed (\\f) page markers preserved — used by the
+    PDF-only fallback chunker to split pages."""
+    return _run_pdftotext(pdf_path, keep_page_breaks=True)
 
 
 _TOC_LINE_RE = re.compile(r"\.{3,}|\s\d+\s*$")
@@ -568,6 +583,50 @@ def build_chunks_for_file(tex_path: Path, source_type: str) -> list[Chunk]:
     return chunks
 
 
+def build_chunks_from_pdf_only(pdf_path: Path, source_type: str) -> list[Chunk]:
+    """Fallback chunker for folders that only have PDFs (no .tex source).
+    Splits the pdftotext output on form-feed (page break) and emits one
+    chunk per non-empty page."""
+    dump = pdftotext_with_pages(pdf_path)
+    if not dump:
+        return []
+    week = week_from_filename(pdf_path.name)
+    rel_pdf = str(pdf_path.relative_to(SOURCE_ROOT))
+    doc_title = pdf_path.stem  # e.g. "Week 2 Tutorial TA Copy"
+
+    pages = dump.split("\f")
+    chunks: list[Chunk] = []
+    page_idx = 0
+    for page in pages:
+        page_text = page.strip()
+        if len(page_text) < 80:
+            continue  # cover / nearly-empty page
+        page_idx += 1
+        # Use the first non-empty line as a section label (truncated).
+        first_line = next((ln.strip() for ln in page.splitlines() if ln.strip()), "")
+        section = (first_line[:120] or f"Page {page_idx}")
+        chunk_id = "-".join(filter(None, [
+            source_type,
+            f"week-{week}" if week is not None else None,
+            f"p{page_idx:03d}",
+            slugify(section),
+        ]))
+        chunks.append(Chunk(
+            id=chunk_id,
+            source_type=source_type,
+            week=week,
+            title_full=doc_title,
+            section=section,
+            subsection=None,
+            tex_path="",
+            pdf_path=rel_pdf,
+            tex_text="",
+            pdf_text=page_text,
+            token_estimate=estimate_tokens(page_text),
+        ))
+    return chunks
+
+
 def main() -> int:
     if not SOURCE_ROOT.exists():
         print(f"error: source root not found: {SOURCE_ROOT}", file=sys.stderr)
@@ -579,11 +638,20 @@ def main() -> int:
             print(f"skip: {folder} not found")
             continue
         tex_files = sorted(folder.glob("*.tex"))
+        tex_stems = {p.stem for p in tex_files}
         for tex_path in tex_files:
             file_chunks = build_chunks_for_file(tex_path, source_type)
             all_chunks.extend(file_chunks)
             print(
                 f"  {source_type}/{tex_path.name}: {len(file_chunks)} chunks"
+            )
+        # Process any PDFs that have no matching .tex source.
+        pdf_only = [p for p in sorted(folder.glob("*.pdf")) if p.stem not in tex_stems]
+        for pdf_path in pdf_only:
+            file_chunks = build_chunks_from_pdf_only(pdf_path, source_type)
+            all_chunks.extend(file_chunks)
+            print(
+                f"  {source_type}/{pdf_path.name}: {len(file_chunks)} chunks (from PDF)"
             )
 
     payload = {

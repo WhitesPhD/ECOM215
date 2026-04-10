@@ -53,7 +53,11 @@
       "Read(//Users/portatilenuovo/Downloads/**)",
       "Bash(python3 scripts/build_chunks.py)",
       "Bash(python3 -c ':*)",
-      "Bash(gh --version)"
+      "Bash(gh --version)",
+      "Bash(ls -la \"Lectures/Week 0 Slides\".*)",
+      "Bash(ls Tutorials/*.tex)",
+      "Bash(git log:*)",
+      "Bash(git ls-tree:*)"
     ]
   }
 }
