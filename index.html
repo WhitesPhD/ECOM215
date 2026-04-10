@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECOM215 — Blockchain Economics and Digital Assets</title>
+<style>
+  :root {
+    --imperial: #003e74;
+    --imperial-dark: #002a52;
+    --dark: #2b2b2b;
+    --muted: #6b6b6b;
+    --light: #f5f6f8;
+    --border: #e4e7ec;
+    --accent: #d6604d;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--dark);
+    background: #fafbfc;
+  }
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 32px 80px 32px;
+  }
+  header.page-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+  }
+  h1 {
+    margin: 0 0 6px 0;
+    font-size: 26px;
+    color: var(--imperial);
+    font-weight: 700;
+  }
+  header.page-header p {
+    margin: 2px 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  h2 {
+    margin: 36px 0 12px 0;
+    font-size: 18px;
+    color: var(--imperial);
+    font-weight: 600;
+  }
+  p { margin: 0 0 12px 0; }
+  a { color: var(--imperial); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .cta {
+    display: inline-block;
+    background: var(--imperial);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    margin: 12px 0 0 0;
+  }
+  .cta:hover {
+    background: var(--imperial-dark);
+    text-decoration: none;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 4px 0 8px 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    background: var(--light);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--muted);
+  }
+  tr:last-child td { border-bottom: none; }
+  td.week { font-weight: 600; color: var(--muted); width: 60px; white-space: nowrap; }
+  td.dash { color: #c0c4cb; }
+
+  pre {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 13px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+  code {
+    font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    background: var(--light);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre code { background: none; padding: 0; }
+
+  footer.page-footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 24px 18px 60px 18px; }
+    h1 { font-size: 22px; }
+    table { font-size: 13px; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="page-header">
+      <h1>Blockchain Economics and Digital Assets</h1>
+      <p>ECOM215 · Queen Mary, University of London · 2025/2026</p>
+      <p>Module lead: Dr Daniele Bianchi</p>
+    </header>
+
+    <p>
+      This repository holds the LaTeX sources, compiled PDFs, and a retrieval
+      index for the ECOM215 course material. A small chat widget lets you ask
+      questions about the course using your own Anthropic or OpenAI API key.
+    </p>
+
+    <p>
+      <a class="cta" href="chat/">Open the course chat →</a>
+    </p>
+
+    <h2>Week-by-week materials</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Lecture slides</th>
+          <th>Notes</th>
+          <th>Tutorial (TA copy)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="week">0</td>
+          <td><a href="Lectures/Week%200%20Slides.pdf">Course introduction</a></td>
+          <td class="dash">—</td>
+          <td class="dash">—</td>
+        </tr>
+        <tr>
+          <td class="week">1</td>
+          <td><a href="Lectures/Week%201%20Slides.pdf">Foundations of blockchain technology</a></td>
+          <td><a href="Notes/Week%201%20Notes.pdf">Notes</a></td>
+          <td class="dash">—</td>
+        </tr>
+        <tr>
+          <td class="week">2</td>
+          <td><a href="Lectures/Week%202%20Slides.pdf">Blockchain economics</a></td>
+          <td><a href="Notes/Week%202%20Notes.pdf">Notes</a></td>
+          <td><a href="Tutorials/Week%202%20Tutorial%20TA%20Copy.pdf">Tutorial</a></td>
+        </tr>
+        <tr>
+          <td class="week">3</td>
+          <td><a href="Lectures/Week%203%20Slides.pdf">Smart contracts &amp; DApps</a></td>
+          <td><a href="Notes/Week%203%20Notes.pdf">Notes</a></td>
+          <td><a href="Tutorials/Week%203%20Tutorial%20TA%20Copy.pdf">Tutorial</a></td>
+        </tr>
+        <tr>
+          <td class="week">4</td>
+          <td><a href="Lectures/Week%204%20Slides.pdf">Decentralised finance (DeFi)</a></td>
+          <td><a href="Notes/Week%204%20Notes.pdf">Notes</a></td>
+          <td><a href="Tutorials/Week%204%20Tutorial%20TA%20Copy.pdf">Tutorial</a></td>
+        </tr>
+        <tr>
+          <td class="week">5</td>
+          <td><a href="Lectures/Week%205%20Slides.pdf">Stablecoins &amp; CBDCs</a></td>
+          <td><a href="Notes/Week%205%20Notes.pdf">Notes</a></td>
+          <td><a href="Tutorials/Week%205%20Tutorial%20TA%20Copy.pdf">Tutorial</a></td>
+        </tr>
+        <tr>
+          <td class="week">6</td>
+          <td><a href="Lectures/Week%206%20Slides.pdf">Digital ownership &amp; tokenization</a></td>
+          <td><a href="Notes/Week%206%20Notes.pdf">Notes</a></td>
+          <td><a href="Tutorials/Week%206%20Tutorial%20TA%20Copy.pdf">Tutorial</a></td>
+        </tr>
+        <tr>
+          <td class="week">7</td>
+          <td><a href="Lectures/Week%207%20Slides.pdf">Cryptocurrencies as an asset class (I)</a></td>
+          <td><a href="Notes/Week%207%20Notes.pdf">Notes</a></td>
+          <td><a href="Tutorials/Week%207%20Tutorial%20TA%20Copy.pdf">Tutorial</a></td>
+        </tr>
+        <tr>
+          <td class="week">8</td>
+          <td><a href="Lectures/Week%208%20Slides.pdf">Cryptocurrencies as an asset class (II)</a></td>
+          <td><a href="Notes/Week%208%20Notes.pdf">Notes</a></td>
+          <td><a href="Tutorials/Week%208%20Tutorial%20TA%20Copy.pdf">Tutorial</a></td>
+        </tr>
+        <tr>
+          <td class="week">9</td>
+          <td><a href="Lectures/Week%209%20Slides.pdf">Blockchain in traditional finance</a></td>
+          <td><a href="Notes/Week%209%20Notes.pdf">Notes</a></td>
+          <td><a href="Tutorials/Week%209%20Tutorial%20TA%20Copy.pdf">Tutorial</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Rebuilding</h2>
+    <p>Regenerate PDFs from the LaTeX sources:</p>
+<pre><code>cd Lectures  &amp;&amp; latexmk -pdf *.tex
+cd ../Notes  &amp;&amp; latexmk -pdf *.tex
+cd ../Tutorials &amp;&amp; latexmk -pdf *.tex</code></pre>
+
+    <p>Rebuild the retrieval index used by the chat widget:</p>
+<pre><code>python3 scripts/build_chunks.py</code></pre>
+
+    <footer class="page-footer">
+      Source on <a href="https://github.com/WhitesPhD/ECOM215">GitHub</a> ·
+      <a href="chat/">Chat widget</a>
+    </footer>
+  </div>
+</body>
+</html>
