@@ -156,7 +156,7 @@
           <th>Week</th>
           <th>Lecture slides</th>
           <th>Notes</th>
-          <th>Tutorial (TA copy)</th>
+          <th>Tutorial</th>
         </tr>
       </thead>
       <tbody>
@@ -222,15 +222,6 @@
         </tr>
       </tbody>
     </table>
-
-    <h2>Rebuilding</h2>
-    <p>Regenerate PDFs from the LaTeX sources:</p>
-<pre><code>cd Lectures  &amp;&amp; latexmk -pdf *.tex
-cd ../Notes  &amp;&amp; latexmk -pdf *.tex
-cd ../Tutorials &amp;&amp; latexmk -pdf *.tex</code></pre>
-
-    <p>Rebuild the retrieval index used by the chat widget:</p>
-<pre><code>python3 scripts/build_chunks.py</code></pre>
 
     <footer class="page-footer">
       Source on <a href="https://github.com/WhitesPhD/ECOM215">GitHub</a> ·
