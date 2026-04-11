@@ -725,24 +725,35 @@
   // Bidirectional: expanding "dex" adds "decentralised" + "exchange", and
   // the phrase-alias pass below turns "decentralised exchange" into "dex".
   const TOKEN_ALIASES = {
-    dex:   ["decentralised", "exchange"],
-    dexs:  ["decentralised", "exchange"],
-    dexes: ["decentralised", "exchange"],
-    cex:   ["centralised", "exchange"],
-    cexs:  ["centralised", "exchange"],
-    cexes: ["centralised", "exchange"],
-    amm:   ["automated", "market", "maker"],
-    amms:  ["automated", "market", "maker"],
-    defi:  ["decentralised", "finance"],
-    lp:    ["liquidity", "provider"],
-    lps:   ["liquidity", "provider"],
-    pow:   ["proof", "of", "work"],
-    pos:   ["proof", "of", "stake"],
-    nft:   ["non", "fungible", "token"],
-    nfts:  ["non", "fungible", "token"],
-    dao:   ["decentralised", "autonomous", "organisation"],
-    daos:  ["decentralised", "autonomous", "organisation"],
-    tvl:   ["total", "value", "locked"],
+    dex:      ["decentralised", "exchange"],
+    dexs:     ["decentralised", "exchange"],
+    dexes:    ["decentralised", "exchange"],
+    cex:      ["centralised", "exchange"],
+    cexs:     ["centralised", "exchange"],
+    cexes:    ["centralised", "exchange"],
+    amm:      ["automated", "market", "maker"],
+    amms:     ["automated", "market", "maker"],
+    defi:     ["decentralised", "finance"],
+    lp:       ["liquidity", "provider"],
+    lps:      ["liquidity", "provider"],
+    pow:      ["proof", "of", "work"],
+    pos:      ["proof", "of", "stake"],
+    nft:      ["non", "fungible", "token"],
+    nfts:     ["non", "fungible", "token"],
+    dao:      ["decentralised", "autonomous", "organisation"],
+    daos:     ["decentralised", "autonomous", "organisation"],
+    tvl:      ["total", "value", "locked"],
+    // Bidirectional chain / asset aliases. The course text mixes the
+    // acronym and the spelled-out form (e.g. one frame says "ETH", the
+    // next says "Ethereum"), so a student query using either should
+    // retrieve both.
+    eth:      ["ethereum"],
+    ethereum: ["eth"],
+    btc:      ["bitcoin"],
+    bitcoin:  ["btc"],
+    evm:      ["ethereum", "virtual", "machine"],
+    dapp:     ["decentralised", "application"],
+    dapps:    ["decentralised", "application"],
   };
 
   // Multi-token phrases that should also emit an acronym alias. Checked
@@ -764,6 +775,11 @@
     { phrase: "decentralised autonomous organisation", add: ["dao"] },
     { phrase: "decentralized autonomous organization", add: ["dao"] },
     { phrase: "total value locked",     add: ["tvl"] },
+    { phrase: "ethereum virtual machine", add: ["evm"] },
+    { phrase: "decentralised application", add: ["dapp"] },
+    { phrase: "decentralized application", add: ["dapp"] },
+    { phrase: "decentralised applications", add: ["dapp"] },
+    { phrase: "decentralized applications", add: ["dapp"] },
   ];
 
   function tokenize(text) {
@@ -1097,12 +1113,15 @@
     }).join("\n\n---\n\n");
 
     return [
-      "You are a teaching assistant for ECOM215 (Blockchain Economics and Digital Assets) at Queen Mary, University of London.",
+      "You are a teaching assistant for ECOM215 (Blockchain Economics and Digital Assets) at Queen Mary, University of London. You answer student questions using the course material excerpts below.",
       "",
-      "Answer the student's question using ONLY the course material excerpts below.",
-      "If the excerpts do not contain enough information, say so directly — do not guess or make up facts.",
-      "Be concise and precise. When you use information from a source, cite it inline using its bracketed number, e.g. [1] or [2][3].",
-      "At the end of your answer, do NOT repeat a sources list — the UI will render source links separately.",
+      "Rules:",
+      "- Ground every factual claim in the excerpts. Do not invent facts, do not draw on outside knowledge, and do not speculate.",
+      "- Do NOT open with meta-disclaimers like \"Based on the course material…\", \"From the excerpts provided…\", or \"I can only provide limited information…\". Just answer the question directly.",
+      "- If the excerpts only partially cover the question, give the partial answer first and note the gap at the end in one short sentence (e.g. \"The material doesn't cover X directly; see Week N for more.\").",
+      "- Reproduce numeric worked examples, formulas, and derivations verbatim when the student asks about them — don't paraphrase the algebra.",
+      "- Cite sources inline using their bracketed number, e.g. [1] or [2][3]. Do NOT append a sources list at the end; the UI renders source links separately.",
+      "- Prefer clear, self-contained prose. Use Markdown headings, lists, tables, and LaTeX math ($…$ for inline, $$…$$ for display) where they aid clarity.",
       "",
       "Course material excerpts:",
       "",
