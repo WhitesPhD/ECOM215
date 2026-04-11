@@ -574,32 +574,6 @@
   Security audits help but don't guarantee safety. Code complexity makes exhaustive verification difficult.
 \end{frame}
 
-% \begin{frame}{Upgradeability: A Partial Solution}
-%   \textbf{The tension}: Immutability prevents fixes, but bugs are inevitable.
-  
-%   \vspace{1em}
-%   \textbf{Solution}: \highlight{Proxy patterns}---deploy a ``proxy'' contract that forwards calls to an ``implementation'' contract. The implementation can be swapped.
-  
-%   \vspace{1em}
-%   \textbf{How it works}:
-%   \begin{itemize}
-%     \item Users interact with the proxy address (which never changes)
-%     \item The proxy delegates to an implementation contract
-%     \item Administrators can point the proxy to a new implementation
-%   \end{itemize}
-  
-%   \vspace{1em}
-%   \textbf{The trade-off}:
-%   \begin{itemize}
-%     \item \good{Bugs can be fixed}
-%     \item \bad{Introduces trust}: Who controls upgrades? They could rug-pull users.
-%     \item Many DeFi protocols use timelocks and multisig requirements to limit this risk
-%   \end{itemize}
-  
-%   \vspace{0.5em}
-%   Upgradeability trades some trustlessness for practicality.
-% \end{frame}
-
 %----------------------------------------------------------------------------------------
 \section{Decentralised Applications (DApps)}
 %----------------------------------------------------------------------------------------
@@ -678,13 +652,6 @@
     \item OpenSea: NFT marketplace
     \item ENS: Decentralised domain names
   \end{itemize}
-  
-  % \vspace{0.5em}
-  % \textbf{Gaming and Metaverse}:
-  % \begin{itemize}
-  %   \item Axie Infinity: Play-to-earn game
-  %   \item Decentraland: Virtual world
-  % \end{itemize}
   
   \vspace{0.5em}
   \textbf{Infrastructure}:

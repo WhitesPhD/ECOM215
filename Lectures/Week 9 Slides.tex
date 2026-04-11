@@ -168,51 +168,6 @@
   \textbf{Step 4: Custody.} Your broker (or a custodian bank) holds the shares on your behalf and maintains the record of your ownership.
 \end{frame}
 
-% \begin{frame}{The Settlement Chain}
-%   \begin{center}
-% \begin{tikzpicture}[
-%     scale=1, every node/.style={transform shape},
-%     node distance=0.5cm and 0.9cm,
-%     box/.style={draw, rectangle, rounded corners, minimum width=1.3cm, minimum height=0.5cm, align=center, font=\tiny, fill=LightGray},
-%     bluebox/.style={draw, rectangle, rounded corners, minimum width=1.3cm, minimum height=0.5cm, align=center, font=\tiny, fill=ImperialBlue!15},
-%     arrow/.style={->, thin, >=stealth},
-%     label/.style={font=\tiny, text=DarkGray}
-%   ]
-%     % Top row: traditional
-%     \node[bluebox] (buyer) {Buyer};
-%     \node[box, right=of buyer] (brokerB) {Buyer's\\Broker};
-%     \node[box, right=of brokerB] (ccp) {Clearing\\House};
-%     \node[box, right=of ccp] (brokerS) {Seller's\\Broker};
-%     \node[bluebox, right=of brokerS] (seller) {Seller};
-    
-%     \node[box, below=0.6cm of ccp] (csd) {Depository};
-    
-%     \draw[arrow] (buyer) -- (brokerB);
-%     \draw[arrow] (brokerB) -- (ccp);
-%     \draw[arrow] (ccp) -- (brokerS);
-%     \draw[arrow] (brokerS) -- (seller);
-%     \draw[arrow] (ccp) -- (csd);
-    
-%     \node[above=0.2cm of ccp, font=\tiny\bfseries, text=ImperialBlue] {Traditional Settlement (T+1)};
-    
-%     % Bottom: blockchain
-%     \node[bluebox, below=1.6cm of buyer] (buyerB) {Buyer};
-%     \node[box, right=1.8cm of buyerB] (chain) {Shared\\Ledger};
-%     \node[bluebox, right=1.8cm of chain] (sellerB) {Seller};
-    
-%     \draw[arrow] (buyerB) -- node[above, label] {Cash} (chain);
-%     \draw[arrow] (chain) -- node[above, label] {Security} (sellerB);
-%     \draw[arrow] (sellerB) -- node[below, label] {Security} (chain);
-%     \draw[arrow] (chain) -- node[below, label] {Cash} (buyerB);
-    
-%     \node[above=0.2cm of chain, font=\tiny\bfseries, text=ImperialBlue] {Blockchain Settlement (near-instant)};
-%   \end{tikzpicture}
-%   \end{center}
-  
-%   \vspace{0.3em}
-%   \textbf{Key difference}: In traditional settlement, multiple institutions maintain separate records and must reconcile them. In blockchain-based settlement, a single shared ledger records ownership, and the exchange of cash and securities can happen \textit{simultaneously}---this is called \highlight{atomic settlement} or \highlight{delivery-versus-payment (DvP)}.
-% \end{frame}
-
 \begin{frame}{What is T+1 and Why Does It Exist?}
   \highlight{T+1} means that the trade settles one business day after execution. Until May 2024, the US used T+2 (two business days).
   
@@ -237,7 +192,6 @@
     \item \textbf{Atomic settlement}: Cash and securities move simultaneously on a shared ledger. If one leg fails, neither executes. This eliminates settlement risk by design.
     \item \textbf{Single source of truth}: All parties see the same ledger. No reconciliation needed between separate databases.
     \item \textbf{Programmable compliance}: Smart contracts can enforce transfer restrictions, KYC requirements, and regulatory rules automatically.
-    % \item \textbf{Reduced intermediation}: Fewer parties in the chain means lower cost and fewer points of failure.
   \end{itemize}
   
   \vspace{0.5em}
@@ -359,8 +313,6 @@
     \item The problem it solves: You can tokenize a bond, but if the cash payment still goes through traditional banking, you haven't really improved settlement.
   \end{itemize}
   
-  % \vspace{0.3em}
-  % Both represent the industry's attempt to get the benefits of shared ledgers without using public blockchains or cryptocurrencies.
 \end{frame}
 
 \begin{frame}{Reality Check: What Has Actually Shipped?}
@@ -386,8 +338,6 @@
   \vspace{0.3em}
   \textbf{Pattern}: The initiatives that are actually live tend to be narrow in scope and centralised. The broader, more ambitious visions remain in pilot or early stages.
   
-  % \vspace{0.3em}
-  % BlackRock BUIDL (covered in Week 6) is notable because it uses a \textit{public} blockchain (Ethereum) rather than a private one---a different bet on where institutional finance is heading.
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -454,13 +404,6 @@
     \item Demonstrated that direct transfers between currencies are technically feasible
   \end{itemize}
   
-  % \vspace{0.3em}
-  % \textbf{Fnality} (mentioned earlier): Bank of England-approved system using tokenized central bank reserves for wholesale settlement among 17 banks.
-  
-  % \vspace{0.3em}
-  % % FIGURE PLACEHOLDER: Map or table of major wholesale CBDC experiments
-  % % Source: BIS Innovation Hub, Atlantic Council CBDC Tracker
-  % \textit{[Figure: Major wholesale CBDC experiments worldwide. Source: BIS Innovation Hub]}
 \end{frame}
 
 \begin{frame}{Cross-Border CBDC Experiments}
@@ -624,10 +567,6 @@
     \item Equities settling on-chain at scale
   \end{itemize}
   
-  % \vspace{0.3em}
-  % \begin{block}{Bottom Line}
-  %   Blockchain will not replace traditional financial infrastructure overnight. The more likely path is gradual adoption, starting with specific asset classes and use cases where the benefits are clearest, expanding as regulation, interoperability, and institutional comfort develop.
-  % \end{block}
 \end{frame}
 
 %----------------------------------------------------------------------------------------
