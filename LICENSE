@@ -2,11 +2,11 @@ ECOM215 — Blockchain Economics and Digital Assets
 Copyright (c) 2026 Daniele Bianchi
 
 This work is licensed under the Creative Commons
-Attribution-NonCommercial-NoDerivatives 4.0 International License
-(CC BY-NC-ND 4.0).
+Attribution-NonCommercial-ShareAlike 4.0 International License
+(CC BY-NC-SA 4.0).
 
 To view a copy of this license, visit
-https://creativecommons.org/licenses/by-nc-nd/4.0/
+https://creativecommons.org/licenses/by-nc-sa/4.0/
 or send a letter to Creative Commons, PO Box 1866, Mountain View,
 CA 94042, USA.
 
@@ -17,8 +17,12 @@ SUMMARY (not a substitute for the full legal code)
 You are free to:
 
   Share — copy and redistribute the material in any medium or
-  format, for non-commercial purposes, provided you follow the
-  terms below.
+  format.
+
+  Adapt — remix, transform, and build upon the material.
+
+The licensor cannot revoke these freedoms as long as you follow
+the license terms.
 
 Under the following terms:
 
@@ -30,14 +34,15 @@ Under the following terms:
 
   NonCommercial — You may not use the material for commercial
   purposes. Using it as assigned reading in a paid course at
-  another institution is not permitted without prior written
-  permission.
+  another institution, repackaging it as a paid training product,
+  or otherwise deriving commercial benefit is not permitted
+  without prior written permission.
 
-  NoDerivatives — If you remix, transform, or build upon the
-  material, you may not distribute the modified material. You may
-  not publish an edited, translated, or adapted version of these
-  lectures, notes, tutorials, or the chat widget while still
-  attributing the original author.
+  ShareAlike — If you remix, transform, or build upon the
+  material, you must distribute your contributions under the same
+  license as the original (CC BY-NC-SA 4.0). This keeps the
+  material in the open commons: adapted versions cannot be placed
+  under a more restrictive licence or closed off.
 
   No additional restrictions — You may not apply legal terms or
   technological measures that legally restrict others from doing
@@ -67,11 +72,12 @@ from third parties, including (non-exhaustively):
   - Atlantic Council CBDC Tracker
   - Coinglass, Kaiko, Etherscan, DeFiLlama, CoinGecko
 
-Those figures retain their original copyrights and licenses. They
+Those figures retain their original copyrights and licences. They
 are reproduced here strictly for non-commercial educational use
-under fair dealing / fair use provisions and are not covered by
-the CC BY-NC-ND license above. Any reuse of those figures should
-be cleared with the original source.
+under fair dealing / fair use provisions and are NOT covered by
+the CC BY-NC-SA licence above. Anyone adapting or redistributing
+this work must clear third-party figures with the original source
+or replace them with licence-compatible alternatives.
 
 --------------------------------------------------------------------
 CHAT WIDGET DEPENDENCIES
@@ -96,5 +102,5 @@ or timeliness of any information presented, and accepts no
 liability for decisions taken on the basis of this material.
 
 --------------------------------------------------------------------
-Full legal code: https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
+Full legal code: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 --------------------------------------------------------------------
