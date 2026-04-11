@@ -697,13 +697,97 @@
     });
   }
 
+  // Canonicalise US ↔ UK spelling to a single form so queries written in
+  // either English variant hit the same index. The course material is
+  // UK-spelt ("decentralised", "organised", "utilised", …) so we map the
+  // US `-ize` family to `-ise`. Applied to both the index and the query.
+  function canonicalise(token) {
+    return token
+      .replace(/izations$/, "isations")
+      .replace(/ization$/, "isation")
+      .replace(/izing$/, "ising")
+      .replace(/izers$/, "isers")
+      .replace(/izer$/, "iser")
+      .replace(/ized$/, "ised")
+      .replace(/izes$/, "ises")
+      .replace(/ize$/, "ise");
+  }
+
+  // Single-token acronym expansions. When a query token matches a key, the
+  // associated expansion tokens are added to the query (also canonicalised).
+  // Bidirectional: expanding "dex" adds "decentralised" + "exchange", and
+  // the phrase-alias pass below turns "decentralised exchange" into "dex".
+  const TOKEN_ALIASES = {
+    dex:   ["decentralised", "exchange"],
+    dexs:  ["decentralised", "exchange"],
+    dexes: ["decentralised", "exchange"],
+    cex:   ["centralised", "exchange"],
+    cexs:  ["centralised", "exchange"],
+    cexes: ["centralised", "exchange"],
+    amm:   ["automated", "market", "maker"],
+    amms:  ["automated", "market", "maker"],
+    defi:  ["decentralised", "finance"],
+    lp:    ["liquidity", "provider"],
+    lps:   ["liquidity", "provider"],
+    pow:   ["proof", "of", "work"],
+    pos:   ["proof", "of", "stake"],
+    nft:   ["non", "fungible", "token"],
+    nfts:  ["non", "fungible", "token"],
+    dao:   ["decentralised", "autonomous", "organisation"],
+    daos:  ["decentralised", "autonomous", "organisation"],
+    tvl:   ["total", "value", "locked"],
+  };
+
+  // Multi-token phrases that should also emit an acronym alias. Checked
+  // against the lowercased raw query string so both US and UK spellings
+  // of the same phrase are picked up.
+  const PHRASE_ALIASES = [
+    { phrase: "decentralised exchange", add: ["dex"] },
+    { phrase: "decentralized exchange", add: ["dex"] },
+    { phrase: "centralised exchange",   add: ["cex"] },
+    { phrase: "centralized exchange",   add: ["cex"] },
+    { phrase: "automated market maker", add: ["amm"] },
+    { phrase: "liquidity provider",     add: ["lp"] },
+    { phrase: "decentralised finance",  add: ["defi"] },
+    { phrase: "decentralized finance",  add: ["defi"] },
+    { phrase: "proof of work",          add: ["pow"] },
+    { phrase: "proof of stake",         add: ["pos"] },
+    { phrase: "non fungible token",     add: ["nft"] },
+    { phrase: "non-fungible token",     add: ["nft"] },
+    { phrase: "decentralised autonomous organisation", add: ["dao"] },
+    { phrase: "decentralized autonomous organization", add: ["dao"] },
+    { phrase: "total value locked",     add: ["tvl"] },
+  ];
+
   function tokenize(text) {
     const toks = (text || "").toLowerCase().match(/[a-z0-9]+/g) || [];
     const out = [];
     for (const t of toks) {
       if (t.length <= 1) continue;
       if (STOPWORDS.has(t)) continue;
-      out.push(t);
+      out.push(canonicalise(t));
+    }
+    return out;
+  }
+
+  // Build the query-token set: start from the canonicalised query tokens,
+  // then expand via TOKEN_ALIASES (single-token) and PHRASE_ALIASES
+  // (phrases scanned in the original query text).
+  function expandQueryTokens(rawQuery, baseTokens) {
+    const out = new Set(baseTokens);
+    for (const t of baseTokens) {
+      const expansion = TOKEN_ALIASES[t];
+      if (!expansion) continue;
+      for (const a of expansion) {
+        const c = canonicalise(a);
+        if (!STOPWORDS.has(c) && c.length > 1) out.add(c);
+      }
+    }
+    const lowered = (rawQuery || "").toLowerCase();
+    for (const { phrase, add } of PHRASE_ALIASES) {
+      if (lowered.includes(phrase)) {
+        for (const a of add) out.add(canonicalise(a));
+      }
     }
     return out;
   }
@@ -731,7 +815,7 @@
   function searchChunks(query) {
     if (!index) return [];
     const { chunkTokens, idf } = index;
-    const qTokens = new Set(tokenize(query));
+    const qTokens = expandQueryTokens(query, tokenize(query));
     if (!qTokens.size) return [];
     const scored = [];
     for (let i = 0; i < chunks.length; i++) {
