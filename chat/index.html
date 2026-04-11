@@ -524,6 +524,13 @@
   const TOP_K = 6;
   const MAX_CHARS_PER_CHUNK = 2400;  // clip each chunk in the prompt
   const MAX_HISTORY_TURNS = 6;        // keep last N user/assistant turns
+  const RETRIEVAL_CONTEXT_TURNS = 2;  // user turns to concat for retrieval
+                                      // (current + immediately prior; more
+                                      // than that lets the oldest topic
+                                      // dominate after a topic change)
+  const QUERY_STRENGTH_THRESHOLD = 6.0;  // top-chunk score below which we
+                                         // fall back to context-augmented
+                                         // retrieval (see ask() below)
   const PDF_BASE = "../";             // pdf_path is relative to the repo root
 
   const PROVIDER_DEFAULTS = {
@@ -812,11 +819,16 @@
     return { chunkTokens, idf };
   }
 
+  // Returns `{ results, topScore }` — results is an array of chunks
+  // (up to TOP_K), topScore is the score of the best-matching chunk
+  // before truncation, used by the caller to decide whether the query
+  // stands on its own or needs prior-turn context.
   function searchChunks(query) {
-    if (!index) return [];
+    const empty = { results: [], topScore: 0 };
+    if (!index) return empty;
     const { chunkTokens, idf } = index;
     const qTokens = expandQueryTokens(query, tokenize(query));
-    if (!qTokens.size) return [];
+    if (!qTokens.size) return empty;
     const scored = [];
     for (let i = 0; i < chunks.length; i++) {
       const c = chunks[i];
@@ -840,7 +852,10 @@
       }
     }
     scored.sort((a, b) => b.score - a.score || b.hits - a.hits);
-    return scored.slice(0, TOP_K).map((s) => chunks[s.idx]);
+    return {
+      results: scored.slice(0, TOP_K).map((s) => chunks[s.idx]),
+      topScore: scored.length ? scored[0].score : 0,
+    };
   }
 
   // ============================================================
@@ -1163,7 +1178,30 @@
     addMessage("user", question);
     history.push({ role: "user", content: question });
 
-    const retrieved = searchChunks(question);
+    // Try the query on its own first. If it matches a chunk strongly
+    // enough (top score above QUERY_STRENGTH_THRESHOLD), use those
+    // results — the question stands alone and we don't want prior-turn
+    // vocabulary polluting retrieval after a topic change. If the top
+    // score is weak — which happens on pronoun-heavy follow-ups like
+    // "explain that more" or "tell me more" — fall back to a query that
+    // concatenates the last few user turns, so the follow-up inherits
+    // the topic of the preceding question.
+    let search = searchChunks(question);
+    if (
+      search.topScore < QUERY_STRENGTH_THRESHOLD &&
+      history.filter((m) => m.role === "user").length > 1
+    ) {
+      const contextQuery = history
+        .filter((m) => m.role === "user")
+        .slice(-RETRIEVAL_CONTEXT_TURNS)
+        .map((m) => m.content)
+        .join(" ");
+      const augmented = searchChunks(contextQuery);
+      // Only take the augmented results if they're actually stronger;
+      // a very generic prior turn could score even worse.
+      if (augmented.topScore > search.topScore) search = augmented;
+    }
+    const retrieved = search.results;
     const systemPrompt = retrieved.length > 0
       ? buildSystemPrompt(retrieved)
       : "You are a teaching assistant for ECOM215 (Blockchain Economics and Digital Assets). No relevant course material was found for this question. Tell the student that no matching material was found, and suggest rephrasing or broadening the question. Do not invent content.";
