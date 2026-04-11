@@ -6,7 +6,7 @@ Module lead: Dr Daniele Bianchi
 This repository holds the LaTeX sources, compiled PDFs, and RAG chunk
 file for ECOM215.
 
-## Week-by-week materials
+## Course materials
 
 | Week | Lecture slides | Notes | Tutorial |
 |-----:|:---------------|:------|:---------|
