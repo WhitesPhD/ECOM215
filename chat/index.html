@@ -458,7 +458,7 @@
         <h3>Week</h3>
         <div id="week-filters"></div>
       </div>
-      <div class="group">
+      <div class="group" id="chunks-file-group" hidden>
         <h3>Chunks file</h3>
         <button type="button" id="load-file-btn" class="sidebar-btn">Load from file…</button>
         <input type="file" id="chunks-file-input" accept="application/json,.json" hidden>
@@ -1434,6 +1434,7 @@
     welcome();
 
     loadChunks().catch((err) => {
+      $("#chunks-file-group").hidden = false;
       $("#status").textContent = "Auto-load failed — use Load from file…";
       addSystemMessage(
         "Couldn't auto-fetch course-chunks.json. "
