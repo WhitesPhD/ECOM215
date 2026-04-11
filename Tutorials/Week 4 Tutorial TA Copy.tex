@@ -1,0 +1,357 @@
+% Tutorial 3: The DAO Hack - ECOM215
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\usepackage[T1]{fontenc}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+
+\usepackage{array, xcolor}
+\usepackage{colortbl}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{AccentGreen}{RGB}{46, 139, 87}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\lhead{}
+\chead{}
+\rhead{\footnotesize ECOM215: Tutorial 3 --- The DAO Hack}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\title{Tutorial 3: The DAO Hack\\[0.3em] \Large Code vs Intent\\[1em] \normalsize ECOM215: Blockchain Economics and Digital Assets}
+\author{Week 4 $\vert$ Smart Contracts and Decentralised Applications}
+\date{Semester B, 2025/2026}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{CASE BRIEF FOR STUDENTS}\\[0.3em] Please read before the tutorial. Estimated reading time: 15 minutes.}}
+\end{center}
+
+\section*{Background}
+
+In 2016, a project called ``The DAO'' (Decentralised Autonomous Organisation) became the largest crowdfunding campaign in history, raising over \$150 million worth of Ether (ETH) in just 28 days. The DAO was designed to be a new kind of investment fund---one with no managers, no board of directors, and no physical location. Instead, all decisions would be made through smart contract code and token holder voting.
+
+The DAO's premise was simple: investors would contribute ETH and receive DAO tokens in return. These tokens gave voting rights on which projects the fund should invest in. Profits from successful investments would be distributed to token holders automatically. No intermediaries, no fees, no human discretion---just code executing as written.
+
+It was the embodiment of the blockchain ethos: ``Code is law.''
+
+\section*{The Exploit}
+
+On 17 June 2016, an unknown attacker began draining funds from The DAO. By the time the attack was noticed, approximately 3.6 million ETH---worth around \$60 million at the time---had been siphoned into a ``child DAO'' controlled by the attacker.
+
+\medskip
+\noindent\textbf{How did it happen?}
+
+The attacker exploited a vulnerability called a ``reentrancy bug'' in The DAO's smart contract code. Here's the simplified logic:
+
+\begin{enumerate}[leftmargin=*]
+\item The DAO's ``withdraw'' function worked in two steps:
+\begin{itemize}
+\item First, send the requested ETH to the user
+\item Second, update the user's balance to reflect the withdrawal
+\end{itemize}
+
+\item The attacker created a malicious contract that, when receiving ETH, would immediately call the withdraw function again---before step 2 (updating the balance) could execute.
+
+\item Because the balance hadn't been updated yet, The DAO thought the attacker still had funds to withdraw. The cycle repeated, draining ETH with each loop.
+\end{enumerate}
+
+The bug was publicly known before the attack. Security researchers had warned The DAO's creators, but no fix had been implemented.
+
+\medskip
+\noindent\textbf{Crucially}: The attacker did not ``hack'' The DAO in the traditional sense. They did not break encryption, guess passwords, or access systems illegally. They simply used the smart contract exactly as its code allowed. Every transaction was valid according to the rules written into the contract.
+
+\section*{The Ethereum Community's Response}
+
+The attack created an existential crisis for Ethereum. The options were:
+
+\medskip
+\noindent\textbf{Option 1: Do nothing}
+\begin{itemize}[leftmargin=*]
+\item The code executed as written. The attacker followed the rules.
+\item Intervening would undermine the principle that ``code is law.''
+\item But: \$60 million stolen, The DAO's investors wiped out, confidence in Ethereum damaged.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Option 2: Soft fork}
+\begin{itemize}[leftmargin=*]
+\item Freeze the attacker's funds by blacklisting their address.
+\item Less invasive than reversing transactions.
+\item But: Still sets precedent that the community can censor transactions.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Option 3: Hard fork}
+\begin{itemize}[leftmargin=*]
+\item Rewrite Ethereum's history to return the stolen funds to DAO investors.
+\item Investors made whole, attacker gets nothing.
+\item But: Destroys the principle of immutability. If history can be rewritten once, why not again?
+\end{itemize}
+
+\medskip
+After intense debate, a community vote, and significant controversy, the Ethereum Foundation implemented \textbf{Option 3}---a hard fork that returned the stolen ETH to investors.
+
+\section*{The Aftermath}
+
+\textbf{Ethereum Classic}: Not everyone agreed with the hard fork. A minority of the community continued running the original, unforked Ethereum chain. This became ``Ethereum Classic'' (ETC)---a chain where the attacker kept the funds and ``code is law'' was upheld. ETC still exists today, though it's much smaller than Ethereum.
+
+\medskip
+\noindent\textbf{Legal questions}: Was the attacker a thief or simply a clever user? They exploited a bug, but every transaction they made was technically valid. No charges were ever filed (the attacker's identity was never confirmed, though some later investigations claimed to identify them).
+
+\medskip
+\noindent\textbf{Industry impact}: The DAO hack became a cautionary tale about smart contract security. It led to:
+\begin{itemize}[leftmargin=*]
+\item Greater emphasis on code audits before deployment
+\item Development of formal verification methods
+\item The principle that smart contracts, while ``immutable,'' exist within a social and economic context that cannot be fully automated
+\end{itemize}
+
+\section*{Key Facts Summary}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Item} & \textbf{Detail} \\
+\midrule
+Date & June 2016 \\
+Amount raised & $\sim$\$150 million (ETH) \\
+Amount stolen & $\sim$\$60 million (3.6 million ETH) \\
+Vulnerability & Reentrancy bug \\
+Resolution & Ethereum hard fork (funds returned) \\
+Consequence & Ethereum/Ethereum Classic split \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Questions to Consider}
+
+\begin{enumerate}[leftmargin=*]
+\item Was the attacker a ``thief'' or simply someone who used the code as written?
+
+\item Was the hard fork the right decision? What precedent did it set?
+
+\item If ``code is law,'' what happens when the code has bugs?
+
+\item Who should bear responsibility for smart contract vulnerabilities---developers, auditors, or users who invest without understanding the code?
+
+\item Could something like The DAO hack happen today? What has changed?
+\end{enumerate}
+
+\section*{Further Reading (Optional)}
+
+\begin{itemize}[leftmargin=*]
+\item The original DAO white paper (search ``DAO white paper 2016'')
+\item Ethereum Foundation's blog post on the hard fork decision
+\item ``The DAO Hack'' chapter in \textit{The Infinite Machine} by Camila Russo
+\end{itemize}
+
+\newpage
+
+%==============================================================================
+% PART B: TA DISCUSSION GUIDE
+%==============================================================================
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{DISCUSSION GUIDE FOR TEACHING ASSISTANT}\\[0.3em] This section is for TA use only. Do not distribute to students.}}
+\end{center}
+
+\section*{Session Timeline}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Time} & \textbf{Activity} \\
+\midrule
+0:00--0:08 & Context setting: summarise case, check understanding \\
+0:08--0:20 & Discussion Question 1 \\
+0:20--0:32 & Discussion Question 2 \\
+0:32--0:44 & Discussion Question 3 \\
+0:44--0:52 & Discussion Question 4 \\
+0:52--1:00 & Synthesis and key takeaways \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Discussion Questions with Guidance}
+
+\subsection*{Question 1: Was the attacker a thief?}
+
+\textit{``The attacker used the smart contract exactly as its code allowed. Every transaction was valid. Was this theft, or just clever use of a system?''}
+
+\medskip
+\noindent\textbf{Let students debate both sides. Points that may emerge:}
+
+\medskip
+\noindent\underline{``Yes, it was theft'':}
+\begin{itemize}[leftmargin=*]
+\item Intent matters. The attacker clearly intended to take funds that weren't rightfully theirs.
+\item Legal systems distinguish between what you \textit{can} do and what you're \textit{allowed} to do.
+\item Just because a door is unlocked doesn't mean you can enter and take things.
+\item The social contract among DAO investors was to fund projects, not to have funds drained.
+\end{itemize}
+
+\medskip
+\noindent\underline{``No, it wasn't theft'':}
+\begin{itemize}[leftmargin=*]
+\item The attacker followed the contract's rules perfectly.
+\item Investors agreed to be bound by the code when they invested.
+\item In traditional finance, exploiting pricing errors or inefficiencies is often legal (arbitrage).
+\item If we call this theft, where do we draw the line? All MEV extraction? All DeFi exploits?
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight to draw out}: This case exposes the tension between \textit{code as written} and \textit{code as intended}. Smart contracts can execute the former but cannot understand the latter.
+
+\subsection*{Question 2: Was the hard fork the right decision?}
+
+\textit{``The Ethereum community voted to rewrite history and return the funds. Was this the correct choice? What are the implications?''}
+
+\medskip
+\noindent\underline{Arguments for the hard fork:}
+\begin{itemize}[leftmargin=*]
+\item Pragmatic: Saved \$60M, protected investor confidence, kept Ethereum viable
+\item Ethereum was young; letting a catastrophic failure stand could have killed the project
+\item The ``immutability'' principle is valuable, but it's not absolute---human systems always have override mechanisms
+\item Democratic: The community voted and the majority supported the fork
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments against the hard fork:}
+\begin{itemize}[leftmargin=*]
+\item Sets dangerous precedent: If history can be rewritten once, why not again?
+\item Who decides which hacks deserve reversal? FTX? Mt.\ Gox? Where does it end?
+\item Undermines the core value proposition of blockchain (immutability, censorship resistance)
+\item Creates moral hazard: Investors may take more risks if they expect bailouts
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight to draw out}: There is no ``neutral'' position. Doing nothing is also a choice with consequences. The fork revealed that blockchains are social systems, not just technical ones.
+
+\subsection*{Question 3: Who bears responsibility for smart contract bugs?}
+
+\textit{``The vulnerability was publicly known before the attack. Security researchers had warned The DAO's developers. Who should bear responsibility---developers, auditors, investors, or the attacker?''}
+
+\medskip
+\noindent\underline{Developers:}
+\begin{itemize}[leftmargin=*]
+\item Wrote flawed code and didn't fix known vulnerabilities
+\item Rushed to launch without adequate testing
+\item But: Were volunteers/early-stage; industry standards didn't exist yet
+\end{itemize}
+
+\medskip
+\noindent\underline{Auditors (if any):}
+\begin{itemize}[leftmargin=*]
+\item Security reviews existed but missed the vulnerability (or warnings were ignored)
+\item But: Audits are not guarantees; they're point-in-time assessments
+\end{itemize}
+
+\medskip
+\noindent\underline{Investors:}
+\begin{itemize}[leftmargin=*]
+\item Invested \$150M in experimental, unaudited code
+\item Most did not read or understand the smart contract
+\item But: Can we expect retail investors to audit code? Is that realistic?
+\end{itemize}
+
+\medskip
+\noindent\underline{The attacker:}
+\begin{itemize}[leftmargin=*]
+\item Ultimately, they chose to exploit rather than report
+\item But: If code is law, they did nothing ``wrong'' by the system's own rules
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight to draw out}: Responsibility is distributed, but the current system puts most risk on end users who are least equipped to evaluate smart contract security. This has implications for regulation and investor protection.
+
+\subsection*{Question 4: Could this happen today? What has changed?}
+
+\textit{``It's now 2026. Has the industry learned from The DAO? Could a similar attack happen again?''}
+
+\medskip
+\noindent\underline{What has improved:}
+\begin{itemize}[leftmargin=*]
+\item Audit industry matured (Trail of Bits, OpenZeppelin, Certora, etc.)
+\item Formal verification tools exist
+\item Bug bounty programs incentivise responsible disclosure
+\item More conservative coding patterns (checks-effects-interactions)
+\item Time-locks and governance delays common for large protocols
+\end{itemize}
+
+\medskip
+\noindent\underline{What hasn't changed:}
+\begin{itemize}[leftmargin=*]
+\item DeFi exploits still happen regularly ($\sim$\$3B+ stolen in 2022 alone)
+\item Speed-to-market pressure leads to shortcuts
+\item Composability creates unexpected interactions
+\item Many users still invest without understanding risks
+\item ``Code is law'' philosophy persists in some communities
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight to draw out}: Technical improvements are real, but the fundamental tension between innovation speed and security remains. Flash loan attacks, oracle manipulation, and governance exploits are modern equivalents. The scale of losses has actually increased, not decreased.
+
+\subsection*{Extension Question (if time permits)}
+
+\textit{``An attacker drains \$100M from a DeFi protocol today. Should the protocol's governance execute an emergency intervention to reverse it? How is this different from what Ethereum did?''}
+
+\medskip
+This connects to modern DeFi governance debates. Most protocols now have multisigs or emergency mechanisms that \textit{could} intervene---so the question is not ``can they?'' but ``should they?'' and ``under what circumstances?''
+
+\section*{Synthesis Points (Final 8 minutes)}
+
+Summarise the key takeaways:
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{``Code is law'' is aspirational, not absolute.} Smart contracts execute code literally, but they exist within social, legal, and economic systems that involve human judgment.
+
+\item \textbf{Immutability is a spectrum.} Even ``immutable'' blockchains can be forked by social consensus. The question is when such interventions are legitimate.
+
+\item \textbf{Security is hard.} Known vulnerabilities weren't fixed. This remains a pattern---speed to market often wins over security.
+
+\item \textbf{Responsibility is unclear.} Current systems place most risk on users least able to evaluate it. This is an unresolved tension with regulatory implications.
+
+\item \textbf{History repeats.} The fundamental dynamics of The DAO (experimental code, concentrated funds, known bugs, delayed response) recur in modern DeFi exploits.
+\end{enumerate}
+
+\section*{Connection to Lecture Material}
+
+Link back to Week 3 lecture concepts:
+\begin{itemize}[leftmargin=*]
+\item Smart contract properties (immutable, deterministic, atomic)
+\item ``Code is law'' and its limitations
+\item The DAO hack as the canonical smart contract failure
+\item Upgradeability patterns that emerged in response
+\end{itemize}
+
+\section*{Notes for TA}
+
+\begin{itemize}[leftmargin=*]
+\item Students may have strong opinions about whether the fork was right. That's fine---encourage debate, but ensure both sides get air time.
+\item If students ask about the attacker's identity, some later research (2022) claimed to identify them, but no legal action resulted. You don't need to go into detail; the case is about principles, not attribution.
+\item The reentrancy bug is explained in the case brief at a conceptual level. You don't need to explain the code mechanics.
+\end{itemize}
+
+\vfill
+\begin{flushright}
+\textit{End of Tutorial 3 Materials}
+\end{flushright}
+
+\end{document}

@@ -1,0 +1,388 @@
+% Tutorial 1: Mt. Gox Collapse - ECOM215
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\usepackage[T1]{fontenc}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+
+\usepackage{array, xcolor}
+\usepackage{colortbl}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{AccentGreen}{RGB}{46, 139, 87}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\lhead{}
+\chead{}
+\rhead{\footnotesize ECOM215: Tutorial 1 --- Mt.\ Gox Collapse}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\title{Tutorial 1: The Mt.\ Gox Collapse\\[0.3em] \Large Not Your Keys, Not Your Coins\\[1em] \normalsize ECOM215: Blockchain Economics and Digital Assets}
+\author{Week 2 $\vert$ Foundations of Blockchain Technology}
+\date{Semester B, 2025/2026}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{CASE BRIEF FOR STUDENTS}\\[0.3em] Please read before the tutorial. Estimated reading time: 15 minutes.}}
+\end{center}
+
+\section*{Background}
+
+In early 2014, Mt.\ Gox was the world's largest Bitcoin exchange, handling approximately 70\% of all Bitcoin transactions globally. Based in Tokyo and run by French developer Mark Karpelès, the exchange had grown from a small trading card website into the dominant gateway between traditional currency and Bitcoin.
+
+On 7 February 2014, Mt.\ Gox halted all Bitcoin withdrawals, citing ``technical issues.'' Three weeks later, the company filed for bankruptcy, announcing that 850,000 Bitcoin---worth approximately \$450 million at the time---had been stolen. At today's prices, that amount would be worth tens of billions of dollars.
+
+The Mt.\ Gox collapse remains the largest loss in cryptocurrency history and offers fundamental lessons about the gap between blockchain's theoretical properties and how people actually use cryptocurrency.
+
+\section*{What Was Mt.\ Gox?}
+
+Mt.\ Gox began in 2010 as ``Magic: The Gathering Online eXchange''---a platform for trading collectible cards. Its founder, Jed McCaleb, repurposed it for Bitcoin trading and sold it to Mark Karpelès in 2011.
+
+\medskip
+\noindent\textbf{How the exchange worked:}
+\begin{itemize}[leftmargin=*]
+\item Users deposited fiat currency (dollars, euros, yen) or Bitcoin into Mt.\ Gox accounts
+\item Mt.\ Gox held these assets on users' behalf
+\item Users traded within the exchange's internal ledger
+\item Users could withdraw to external bank accounts or Bitcoin wallets
+\end{itemize}
+
+\medskip
+\noindent\textbf{The critical point:} When users deposited Bitcoin to Mt.\ Gox, the exchange took custody of the private keys. Users received an IOU---a balance on Mt.\ Gox's internal database---not actual control of Bitcoin on the blockchain.
+
+This is the difference between \textit{custodial} and \textit{non-custodial} arrangements:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Custodial}: A third party (the exchange) holds your private keys
+\item \textbf{Non-custodial}: You hold your own private keys in a personal wallet
+\end{itemize}
+
+\section*{What Went Wrong}
+
+The full picture of Mt.\ Gox's failure emerged slowly through bankruptcy proceedings and investigations. Multiple factors contributed:
+
+\medskip
+\noindent\textbf{1. Ongoing theft (undetected for years)}
+\begin{itemize}[leftmargin=*]
+\item Hackers had been draining Bitcoin from Mt.\ Gox's wallets since at least 2011
+\item The exchange's systems failed to detect the discrepancy between customer balances and actual holdings
+\item By 2014, the exchange was insolvent---it owed customers far more Bitcoin than it actually held
+\end{itemize}
+
+\medskip
+\noindent\textbf{2. Poor security practices}
+\begin{itemize}[leftmargin=*]
+\item Private keys were stored in ``hot wallets'' (connected to the internet) rather than secure cold storage
+\item Inadequate monitoring of outgoing transactions
+\item No regular audits reconciling customer balances with actual reserves
+\end{itemize}
+
+\medskip
+\noindent\textbf{3. Technical vulnerabilities}
+\begin{itemize}[leftmargin=*]
+\item Transaction malleability: Attackers could modify transaction IDs, causing Mt.\ Gox's systems to re-send payments it thought had failed
+\item The exchange's code was reportedly poorly written and difficult to maintain
+\end{itemize}
+
+\medskip
+\noindent\textbf{4. Management failures}
+\begin{itemize}[leftmargin=*]
+\item The company grew far beyond the founder's technical and operational capacity
+\item Warning signs were ignored or explained away
+\item No proper financial controls or governance structures
+\end{itemize}
+
+\section*{The Irony}
+
+Bitcoin was designed to eliminate the need for trusted intermediaries. Its core properties---cryptographic security, transparency, immutability---allow peer-to-peer transactions without banks or payment processors.
+
+Yet the largest Bitcoin disaster occurred not because of any failure in the Bitcoin protocol, but because users \textbf{reintroduced a trusted intermediary}. They handed their private keys to an exchange, trusting Mt.\ Gox to safeguard their assets.
+
+\medskip
+\noindent\textbf{The blockchain worked exactly as designed:}
+\begin{itemize}[leftmargin=*]
+\item Every Bitcoin transaction was valid and properly recorded
+\item The cryptography was never broken
+\item The Bitcoin network continued operating without interruption
+\end{itemize}
+
+\medskip
+\noindent\textbf{The failure was at the interface:}
+\begin{itemize}[leftmargin=*]
+\item Users trusted a centralised company instead of using the decentralised protocol directly
+\item The exchange held private keys, creating a single point of failure
+\item When the exchange failed, users had no recourse on the blockchain---their Bitcoin was gone
+\end{itemize}
+
+This pattern---blockchain technology working correctly while intermediaries built on top of it fail---has repeated throughout cryptocurrency history.
+
+\section*{The Aftermath}
+
+\textbf{For Mt.\ Gox users:}
+\begin{itemize}[leftmargin=*]
+\item Approximately 24,000 creditors lost funds
+\item Bankruptcy proceedings lasted over a decade
+\item A portion of Bitcoin was later recovered (200,000 BTC found in an old wallet)
+\item Creditors began receiving partial repayments in 2024---ten years after the collapse
+\end{itemize}
+
+\medskip
+\noindent\textbf{For Mark Karpelès:}
+\begin{itemize}[leftmargin=*]
+\item Arrested in Japan in 2015
+\item Charged with embezzlement and data manipulation
+\item Found guilty of falsifying records but acquitted of embezzlement
+\item Received a suspended sentence
+\end{itemize}
+
+\medskip
+\noindent\textbf{For the industry:}
+\begin{itemize}[leftmargin=*]
+\item The phrase ``not your keys, not your coins'' became a mantra
+\item Proof-of-reserves became a standard expectation for exchanges
+\item Hardware wallets and cold storage solutions gained popularity
+\item Regulatory attention increased, eventually leading to frameworks like MiCA
+\end{itemize}
+
+\section*{Key Facts Summary}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Item} & \textbf{Detail} \\
+\midrule
+Peak market share & $\sim$70\% of global Bitcoin trading \\
+Date of collapse & February 2014 \\
+Bitcoin lost & 850,000 BTC (650,000 customer + 200,000 company) \\
+Value at time & $\sim$\$450 million \\
+Value at 2024 prices & $\sim$\$50+ billion \\
+Cause & Ongoing theft + poor security + management failures \\
+Resolution & Partial repayment began 2024 (10 years later) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Questions to Consider}
+
+\begin{enumerate}[leftmargin=*]
+\item Bitcoin was designed to eliminate trusted intermediaries. Why did users hand their Bitcoin to Mt.\ Gox anyway?
+
+\item The blockchain worked perfectly throughout the Mt.\ Gox collapse. Does this mean the technology succeeded or failed?
+
+\item ``Not your keys, not your coins'' is good advice. But is it realistic to expect ordinary users to manage their own private keys?
+
+\item How should we think about the trade-off between the security of self-custody and the convenience of using intermediaries?
+
+\item Mt.\ Gox would likely be illegal under today's regulations (MiCA, etc.). Does regulation solve the problem, or just shift the trust to regulators?
+\end{enumerate}
+
+\section*{Further Reading (Optional)}
+
+\begin{itemize}[leftmargin=*]
+\item ``The Mt.\ Gox Bitcoin Debacle'' - Wired (2014)
+\item Kim Nilsson's investigation: ``The Missing MtGox Bitcoins'' (WizSec blog)
+\item Mt.\ Gox bankruptcy trustee reports (available online)
+\end{itemize}
+
+\newpage
+
+%==============================================================================
+% PART B: TA DISCUSSION GUIDE
+%==============================================================================
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{DISCUSSION GUIDE FOR TEACHING ASSISTANT}\\[0.3em] This section is for TA use only. Do not distribute to students.}}
+\end{center}
+
+\section*{Session Timeline}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Time} & \textbf{Activity} \\
+\midrule
+0:00--0:08 & Context setting: What Mt.\ Gox was and what happened \\
+0:08--0:22 & Discussion Question 1: Why intermediaries persist \\
+0:22--0:36 & Discussion Question 2: Did blockchain succeed or fail? \\
+0:36--0:48 & Discussion Question 3: Self-custody vs.\ convenience \\
+0:48--0:55 & Discussion Question 4: Role of regulation \\
+0:55--1:00 & Synthesis and key takeaways \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Discussion Questions with Guidance}
+
+\subsection*{Question 1: Why did users trust Mt.\ Gox?}
+
+\textit{``Bitcoin was created specifically to eliminate the need for trusted intermediaries. Yet users voluntarily handed their Bitcoin to a centralised exchange. Why?''}
+
+\medskip
+\noindent\textbf{Points that may emerge:}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Convenience}: Managing private keys is technically demanding. Exchanges offer a familiar banking-like experience.
+\item \textbf{Trading functionality}: To actively trade, you need assets on an exchange. The blockchain itself doesn't provide order books or instant execution.
+\item \textbf{Fiat on/off-ramps}: Converting between dollars/euros and Bitcoin requires an intermediary in most jurisdictions.
+\item \textbf{Network effects}: Mt.\ Gox had the most liquidity, so traders gravitated there.
+\item \textbf{Lack of alternatives}: In 2011--2014, user-friendly wallets and hardware solutions were primitive.
+\item \textbf{Complacency}: Mt.\ Gox seemed established and reliable. ``Too big to fail'' mentality.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Blockchain technology provides the \textit{option} of trustless transactions, but doesn't \textit{force} users to take it. In practice, convenience often wins over security. This creates what we might call the \textbf{intermediary re-emergence problem}---new intermediaries form around decentralised systems.
+
+\subsection*{Question 2: Did blockchain succeed or fail?}
+
+\textit{``The Bitcoin blockchain worked perfectly throughout Mt.\ Gox's collapse. Every transaction was valid, the network kept running, no cryptography was broken. So did the technology succeed---or did the overall system fail?''}
+
+\medskip
+\noindent\underline{Arguments that blockchain succeeded:}
+\begin{itemize}[leftmargin=*]
+\item The protocol did exactly what it was designed to do
+\item Users who held their own keys were unaffected
+\item The theft was detectable precisely because of blockchain transparency
+\item Mt.\ Gox was not ``the blockchain''---it was a company built on top of it
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments that the system failed:}
+\begin{itemize}[leftmargin=*]
+\item The \textit{ecosystem} failed, even if the protocol didn't
+\item Technology must be evaluated by real-world outcomes, not just theoretical properties
+\item If most users need intermediaries to use blockchain, then those intermediaries are part of the system
+\item \$450 million lost is a failure by any practical measure
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: This question highlights the distinction between \textit{protocol-level} properties and \textit{system-level} outcomes. Blockchain provides certain guarantees \textit{if used as designed}. But how people actually use it determines real-world results. A system that most users cannot safely use directly has practical limitations.
+
+\subsection*{Question 3: Self-custody vs.\ convenience}
+
+\textit{``Not your keys, not your coins'' is sound advice. But managing private keys---backing them up, securing them, never losing them---is demanding. Is self-custody realistic for ordinary users? What's the right balance?''}
+
+\medskip
+\noindent\underline{Case for self-custody:}
+\begin{itemize}[leftmargin=*]
+\item Mt.\ Gox, FTX, Celsius, Voyager---the list of failed custodians is long
+\item Hardware wallets (Ledger, Trezor) have made self-custody much easier
+\item ``Be your own bank'' is blockchain's core value proposition
+\item Long-term holders who don't need to trade have less need for exchanges
+\end{itemize}
+
+\medskip
+\noindent\underline{Case for custodial solutions:}
+\begin{itemize}[leftmargin=*]
+\item Most people struggle with password management; private keys are harder
+\item Lost keys mean permanently lost assets---no recovery, no customer service
+\item Regulated custodians (Coinbase Custody, Fidelity) now offer institutional-grade security
+\item Active traders need exchange access; moving on/off chain for every trade is impractical
+\end{itemize}
+
+\medskip
+\noindent\underline{Middle ground options:}
+\begin{itemize}[leftmargin=*]
+\item Multi-signature wallets (require multiple keys to transact)
+\item Social recovery (trusted contacts can help restore access)
+\item Keep trading amounts on exchanges, long-term holdings in self-custody
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: There's a genuine trade-off between \textit{trustlessness} and \textit{usability}. Maximising one often means sacrificing the other. The right choice depends on the user's technical sophistication, risk tolerance, and use case. This is not a solved problem.
+
+\subsection*{Question 4: Does regulation solve the problem?}
+
+\textit{``Under MiCA and similar regulations, exchanges must maintain reserves, segregate customer assets, and submit to audits. Mt.\ Gox would be illegal today. Does regulation solve the custody problem?''}
+
+\medskip
+\noindent\underline{Arguments that regulation helps:}
+\begin{itemize}[leftmargin=*]
+\item Minimum standards prevent the worst abuses
+\item Proof-of-reserves and audits create accountability
+\item Regulated entities can be sued, prosecuted, shut down
+\item Ordinary users can't audit exchanges themselves---regulators can
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments that regulation has limits:}
+\begin{itemize}[leftmargin=*]
+\item FTX was regulated in multiple jurisdictions and still collapsed
+\item Regulation shifts trust from the exchange to the regulator---it doesn't eliminate trust
+\item Enforcement is reactive, not preventive; fraud is usually discovered after the damage
+\item Global market: Users can access unregulated offshore exchanges
+\end{itemize}
+
+\medskip
+\noindent\underline{The deeper tension:}
+\begin{itemize}[leftmargin=*]
+\item Blockchain was designed to eliminate the need for trusted institutions
+\item Regulation reintroduces institutional oversight
+\item This may be necessary and practical, but it changes the nature of what blockchain offers
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Regulation doesn't eliminate the trust problem---it redirects it. Instead of trusting the exchange alone, you trust the regulatory system (laws, enforcement, auditors). This may be a reasonable trade-off, but it's different from the trustless vision of blockchain's original design.
+
+\subsection*{Extension Question (if time permits)}
+
+\textit{``In 2024, spot Bitcoin ETFs were approved in the US. These are custodial products---investors don't hold private keys; they hold shares in a fund that holds Bitcoin. Is this a betrayal of Bitcoin's principles, or a pragmatic path to adoption?''}
+
+\medskip
+This connects Week 1 material to the later topic on traditional finance applications. ETFs bring institutional custody, regulatory oversight, and mainstream access---but they also reintroduce all the intermediaries Bitcoin was designed to bypass.
+
+\section*{Synthesis Points (Final 5 minutes)}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Blockchain provides options, not guarantees.} The technology enables trustless transactions, but users can choose to reintroduce intermediaries. Most do.
+
+\item \textbf{``Not your keys, not your coins'' reflects a real risk.} Mt.\ Gox, FTX, and many others demonstrate that custodial risk is not theoretical.
+
+\item \textbf{There is a genuine trade-off between security and usability.} Self-custody is safer against exchange failure but harder to use and unforgiving of user error.
+
+\item \textbf{Intermediaries re-emerge around decentralised systems.} Exchanges, custodians, and other service providers fill gaps that the base protocol doesn't address.
+
+\item \textbf{Regulation changes the trust model but doesn't eliminate trust.} Oversight may reduce risk, but it reintroduces institutional dependencies.
+\end{enumerate}
+
+\section*{Connection to Lecture Material}
+
+Link back to Week 1 lecture concepts:
+\begin{itemize}[leftmargin=*]
+\item The role of intermediaries in traditional finance (and why blockchain was designed to bypass them)
+\item Private keys and digital signatures---what it means to ``own'' cryptocurrency
+\item The difference between custodial and non-custodial arrangements
+\item Blockchain's core properties (immutability, transparency) vs.\ how people actually use it
+\item Public blockchains as ``trust minimisation''---but only if you use them as designed
+\end{itemize}
+
+\section*{Notes for TA}
+
+\begin{itemize}[leftmargin=*]
+\item This is the first tutorial, so students may be less familiar with discussion format. Be prepared to prompt more actively.
+\item Some students may have strong ideological views about self-custody (``never trust exchanges'') or pragmatic views (``exchanges are fine if regulated''). Both perspectives have merit; encourage engagement with the trade-offs.
+\item If students ask about the recovered Bitcoin (200,000 BTC): Yes, some was found in an old wallet in 2014, and creditor repayments began in 2024. The recovery process was extraordinarily slow due to legal complexity across jurisdictions.
+\item The case deliberately avoids detailed technical discussion of transaction malleability. If students ask, explain that it was a bug in how Mt.\ Gox tracked transactions, not a flaw in Bitcoin itself. The point is the operational failure, not the technical detail.
+\end{itemize}
+
+\vfill
+\begin{flushright}
+\textit{End of Tutorial 1 Materials}
+\end{flushright}
+
+\end{document}

@@ -1,0 +1,355 @@
+% Tutorial 6: Valuing Bitcoin - ECOM215
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{amsmath}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\usepackage[T1]{fontenc}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+
+\usepackage{array, xcolor}
+\usepackage{colortbl}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{AccentGreen}{RGB}{46, 139, 87}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\lhead{}
+\chead{}
+\rhead{\footnotesize ECOM215: Tutorial 6 --- Valuing Bitcoin}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\title{Tutorial 6: Valuing Bitcoin\\[0.3em] \Large Three Analysts, Three Answers\\[1em] \normalsize ECOM215: Blockchain Economics and Digital Assets}
+\author{Week 7 $\vert$ Cryptocurrencies as an Asset Class (Part I)}
+\date{Semester B, 2025/2026}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{CASE BRIEF FOR STUDENTS}\\[0.3em] Please read before the tutorial. Estimated reading time: 15 minutes.}}
+\end{center}
+
+\section*{The Setting}
+
+You are a junior analyst at \textbf{Meridian Capital}, a London-based asset management firm with \pounds 8 billion in assets under management. The firm manages diversified portfolios for institutional clients including pension funds, endowments, and family offices.
+
+Meridian's Chief Investment Officer (CIO) has asked the research team to prepare a recommendation on whether Bitcoin deserves a strategic allocation in the firm's model portfolios. Three senior analysts have each prepared a one-page valuation memo using different frameworks. Your job is to evaluate all three, identify the strengths and weaknesses of each approach, and prepare a recommendation for the investment committee.
+
+The CIO has emphasised: \textit{``I don't want cheerleading or dismissal. I want rigorous analysis. Tell me what Bitcoin is worth---or tell me honestly why you can't.''}
+
+\section*{Analyst A: Network Value Approach}
+
+\textbf{Framework}: Bitcoin's value is driven by the size of its network, analogous to a telecommunications network or social platform. The more users, the more valuable the network.
+
+\medskip
+\noindent\textbf{Key assumptions:}
+\begin{itemize}[leftmargin=*]
+\item Applies \textbf{Metcalfe's Law}: Network value is proportional to the square of active users ($V \propto n^2$)
+\item Uses daily active addresses as a proxy for $n$
+\item Fits a regression of $\log(\text{market cap})$ on $\log(\text{active addresses})$ using 2015--2024 data
+\item Extrapolates based on projected address growth of 15\% per year (based on historical trend)
+\end{itemize}
+
+\medskip
+\noindent\textbf{Analyst A's conclusion:} Based on the fitted relationship and projected network growth, Bitcoin's ``fair value'' is approximately \$120,000--\$180,000 per coin by end of 2026.
+
+\medskip
+\noindent\textbf{Data provided by Analyst A:}
+
+\begin{center}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Year} & \textbf{Avg daily active} & \textbf{Avg price} & \textbf{Market cap} & \textbf{Metcalfe} \\
+ & \textbf{addresses (000s)} & \textbf{(USD)} & \textbf{(USD bn)} & \textbf{estimate (bn)} \\
+\midrule
+2017 & 530 & 4,075 & 68 & 55 \\
+2018 & 460 & 7,578 & 130 & 42 \\
+2019 & 520 & 7,345 & 132 & 53 \\
+2020 & 620 & 11,072 & 205 & 76 \\
+2021 & 860 & 47,454 & 893 & 145 \\
+2022 & 810 & 19,657 & 378 & 129 \\
+2023 & 930 & 28,249 & 551 & 170 \\
+2024 & 1,050 & 62,340 & 1,220 & 217 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\smallskip
+\noindent\textit{Note: The ``Metcalfe estimate'' column shows the model-implied market cap from the regression. Compare with actual market cap to assess fit.}
+
+\section*{Analyst B: Stock-to-Flow Model}
+
+\textbf{Framework}: Bitcoin's value is fundamentally driven by its scarcity, measured by the stock-to-flow (S2F) ratio---the existing supply divided by annual new production.
+
+\medskip
+\noindent\textbf{Key assumptions:}
+\begin{itemize}[leftmargin=*]
+\item Bitcoin's S2F ratio increases predictably after each halving (block reward cut in half approximately every 4 years)
+\item Fits a regression of $\log(\text{price})$ on $\log(\text{S2F})$ using historical data
+\item After the April 2024 halving, annual production dropped from $\sim$328,500 BTC to $\sim$164,250 BTC
+\item Current S2F $\approx 120$ (19.7 million existing / 164,250 new per year)
+\end{itemize}
+
+\medskip
+\noindent\textbf{Analyst B's conclusion:} Based on the S2F model, Bitcoin should trade at \$200,000--\$500,000 in the current halving cycle.
+
+\medskip
+\noindent\textbf{Data provided by Analyst B:}
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Period} & \textbf{Block reward} & \textbf{S2F ratio} & \textbf{S2F model price} \\
+ & \textbf{(BTC)} & & \textbf{(USD)} \\
+\midrule
+2012--2016 (Halving 1) & 25.0 & $\sim$25 & $\sim$2,500 \\
+2016--2020 (Halving 2) & 12.5 & $\sim$50 & $\sim$55,000 \\
+2020--2024 (Halving 3) & 6.25 & $\sim$56 & $\sim$100,000 \\
+2024--2028 (Halving 4) & 3.125 & $\sim$120 & $\sim$350,000 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\smallskip
+\noindent\textit{Note: The model predicted $\sim$\$100,000 for the 2020--2024 cycle. Bitcoin's actual average price during that period was approximately \$35,000. The model significantly over-predicted.}
+
+\section*{Analyst C: ``No Fundamental Value'' Position}
+
+\textbf{Framework}: Bitcoin has no intrinsic value because it produces no cash flows, has no contractual claims, and no earnings. Its price is entirely determined by speculative demand. Traditional valuation is therefore impossible.
+
+\medskip
+\noindent\textbf{Key arguments:}
+\begin{itemize}[leftmargin=*]
+\item Discounted cash flow (DCF) analysis cannot be applied: there are no dividends, coupons, or earnings to discount
+\item Network value models confuse correlation with causation: price increases attract users, not only the reverse
+\item Stock-to-flow confuses scarcity with demand: a scarce asset with no demand is not valuable
+\item Bitcoin's price history is dominated by speculative cycles and narrative shifts, not fundamentals
+\item Gold is sometimes cited as a precedent (no cash flows), but gold has thousands of years of monetary history and industrial use; Bitcoin has 16 years
+\end{itemize}
+
+\medskip
+\noindent\textbf{Analyst C's conclusion:} Bitcoin cannot be valued using standard financial tools. If the firm allocates to Bitcoin, it should be sized as a \textbf{risk budget allocation}---for instance, ``we are willing to lose up to $X$ on this position''---not as a fundamental investment. Recommended allocation: 0--2\% maximum, sized by the firm's risk tolerance rather than by any price target.
+
+\medskip
+\noindent\textbf{Data provided by Analyst C:}
+
+\begin{center}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Asset} & \textbf{Ann.\ return} & \textbf{Ann.\ vol.} & \textbf{Sharpe} & \textbf{Max drawdown} \\
+ & \textbf{(5yr)} & \textbf{(5yr)} & \textbf{(5yr)} & \\
+\midrule
+S\&P 500 & 12.1\% & 17.8\% & 0.52 & $-$25\% \\
+Gold & 8.4\% & 15.2\% & 0.37 & $-$18\% \\
+US Agg.\ Bond & $-$0.3\% & 7.1\% & $-$0.32 & $-$18\% \\
+Bitcoin & 48.5\% & 63.4\% & 0.71 & $-$77\% \\
+Ethereum & 32.2\% & 82.1\% & 0.35 & $-$82\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\smallskip
+\noindent\textit{Note: 5-year period ending December 2024. Risk-free rate assumed at 4.5\%. These figures are illustrative of the magnitudes; you should focus on relative comparisons rather than exact numbers.}
+
+\section*{Questions to Consider}
+
+\begin{enumerate}[leftmargin=*]
+\item What are the key strengths and weaknesses of each analyst's approach? Which assumptions are most vulnerable?
+
+\item Analyst A's Metcalfe model shows large gaps between predicted and actual market cap (e.g., 2021: predicted \$145bn, actual \$893bn). What does this tell you about the model's usefulness?
+
+\item Analyst B's S2F model predicted \$100,000 for the 2020--2024 cycle; the actual average was \$35,000. Should we discard the model, or is there still useful information in it?
+
+\item Analyst C says Bitcoin has no fundamental value. But Bitcoin's market cap exceeds \$1 trillion. Can something with no fundamental value sustain that market cap? What would need to be true?
+
+\item If you had to recommend one of the three approaches to the investment committee, which would it be and why?
+\end{enumerate}
+
+\section*{Further Reading (Optional)}
+
+\begin{itemize}[leftmargin=*]
+\item PlanB (2019), ``Modeling Bitcoin's Value with Scarcity'' --- the original S2F model (widely cited but heavily criticised)
+\item Alabi (2017), ``Digital blockchain networks appear to be following Metcalfe's Law'' --- early application of network value to crypto
+\item Taleb (2021), ``Bitcoin, Currencies, and Fragility'' --- a rigorous critique of Bitcoin's value proposition
+\end{itemize}
+
+\newpage
+
+%==============================================================================
+% PART B: TA DISCUSSION GUIDE
+%==============================================================================
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{DISCUSSION GUIDE FOR TEACHING ASSISTANT}\\[0.3em] This section is for TA use only. Do not distribute to students.}}
+\end{center}
+
+\section*{Session Timeline}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Time} & \textbf{Activity} \\
+\midrule
+0:00--0:08 & Context setting: recap valuation problem from lecture \\
+0:08--0:22 & Discussion Question 1: Evaluating the three frameworks \\
+0:22--0:34 & Discussion Question 2: The Metcalfe model's failures \\
+0:34--0:46 & Discussion Question 3: Can something have no fundamental value? \\
+0:46--0:54 & Discussion Question 4: Making the recommendation \\
+0:54--1:00 & Synthesis and key takeaways \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Discussion Questions with Guidance}
+
+\subsection*{Question 1: Evaluating the three frameworks}
+
+\textit{``Walk me through the key strengths and weaknesses of each analyst's approach. Which assumptions are you most and least comfortable with?''}
+
+\medskip
+\noindent\underline{Analyst A (Network Value / Metcalfe):}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Strengths}: Grounded in a real economic mechanism (network effects); empirically, there is a positive relationship between active addresses and market cap; intuitive---more users should mean more value
+\item \textbf{Weaknesses}: Active addresses $\neq$ active users (one person can have hundreds of wallets); the Metcalfe exponent ($n^2$) is assumed, not derived; causality is ambiguous---higher prices attract users as much as users drive prices; does not give a target price with any precision (look at the table: predicted \$145bn vs actual \$893bn in 2021)
+\item \textbf{Most vulnerable assumption}: That 15\% annual address growth will continue. Network growth could stall, plateau, or accelerate unpredictably
+\end{itemize}
+
+\medskip
+\noindent\underline{Analyst B (Stock-to-Flow):}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Strengths}: Scarcity is a real feature of Bitcoin's design; the halving schedule is deterministic and known in advance; the model is simple and easy to communicate
+\item \textbf{Weaknesses}: Confuses scarcity with demand (a rare coin nobody wants is still worthless); the model implies price $\to \infty$ as flow $\to 0$, which is economically nonsensical; already failed out-of-sample (2020--2024 actual $\ll$ predicted); both price and S2F are non-stationary time series, so the regression likely captures a spurious relationship
+\item \textbf{Most vulnerable assumption}: That scarcity alone drives value. The model has \textit{no demand variable} whatsoever
+\end{itemize}
+
+\medskip
+\noindent\underline{Analyst C (No Fundamental Value):}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Strengths}: Honest about the limits of current valuation tools; the risk-budget approach is actually how many sophisticated allocators treat crypto in practice; avoids false precision
+\item \textbf{Weaknesses}: ``No fundamental value'' may be too strong---network effects, scarcity, and censorship resistance have \textit{some} economic value even if it's hard to quantify; treating the entire asset as pure speculation may miss the fact that Bitcoin has survived 16 years and multiple cycles, which suggests some durable demand
+\item \textbf{Most vulnerable assumption}: That because we can't value it with standard tools, it has no value. This is a methodological limitation, not necessarily a statement about the asset
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: None of the three frameworks is fully satisfactory. This is the honest state of knowledge. Students who claim to ``know'' Bitcoin's value are probably overconfident; students who dismiss it as worthless are probably not engaging with the evidence.
+
+\subsection*{Question 2: What do the model failures tell us?}
+
+\textit{``Analyst A's Metcalfe model shows predicted market cap of \$145bn vs actual \$893bn in 2021. Analyst B's S2F predicted \$100,000 vs actual average of \$35,000. Are these models useless, or can we still learn something from them?''}
+
+\medskip
+\noindent\underline{Points to guide discussion:}
+\begin{itemize}[leftmargin=*]
+\item A model can be directionally informative without being quantitatively accurate. Metcalfe correctly identifies that more adoption $\to$ higher value. S2F correctly identifies that supply reduction events matter for price.
+\item But the \textit{magnitude} of predictions is unreliable---this matters enormously for investment decisions where you need to know whether something is overvalued or undervalued
+\item The 2021 overshoot in Metcalfe (actual $\gg$ predicted) suggests speculative excess beyond what network fundamentals justify---this is actually useful information (it tells you the market was in a bubble)
+\item The S2F undershoot (actual $\ll$ predicted) tells you the model is wrong in a way that biases toward bullish conclusions---dangerous if you're making allocation decisions
+\item In traditional finance, we would never accept a valuation model with this level of error. Why do crypto commentators?
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Models with large errors can still be informative about direction or relative value, but they cannot be used to set price targets or make buy/sell decisions with any confidence. A responsible analyst would present the model's track record honestly---including its failures---not just its successes.
+
+\subsection*{Question 3: Can something have no fundamental value but a \$1 trillion market cap?}
+
+\textit{``Analyst C says Bitcoin has no fundamental value. But it has persisted for 16 years and has a market cap exceeding \$1 trillion. Can this be reconciled?''}
+
+\medskip
+\noindent\underline{Arguments that it can be reconciled:}
+\begin{itemize}[leftmargin=*]
+\item Speculative bubbles can be large and persistent---tulip mania, dot-com stocks with no revenue. Size and duration do not prove fundamental value
+\item Fiat currencies also have no ``intrinsic'' value---their value comes from network effects and government mandate. Bitcoin could be similar: valuable because people collectively treat it as valuable
+\item Gold's value also depends partly on collective belief (industrial use accounts for only $\sim$10\% of demand)
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments that persistence suggests \textit{some} value:}
+\begin{itemize}[leftmargin=*]
+\item Bitcoin has survived multiple 70--80\% crashes and recovered each time. Pure speculative assets typically die after one crash (e.g., most ICO tokens)
+\item The network provides real utility: censorship-resistant value transfer, especially valuable in countries with capital controls or unstable currencies
+\item The existence of a large derivatives market, ETFs, and institutional infrastructure suggests that informed, sophisticated actors believe there is durable demand
+\item Even Analyst C implicitly acknowledges value by recommending a 0--2\% allocation rather than zero
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: The question of whether Bitcoin has ``fundamental'' value depends partly on your definition. If fundamental value requires cash flows, Bitcoin fails. If fundamental value can derive from network effects, scarcity, and utility (like gold or fiat currency), then the case is more nuanced. The honest answer is that we are still in the early stages of understanding what gives a digital, decentralised, scarce asset value.
+
+\subsection*{Question 4: Making the recommendation}
+
+\textit{``The CIO wants a recommendation. You must present one of the three approaches---or a combination---to the investment committee. What do you recommend, and how do you justify it?''}
+
+\medskip
+\noindent\underline{Expected student responses and how to push back:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{If students pick Analyst A or B}: Ask them how they would explain the model's track record of prediction errors to the investment committee. Would a pension fund trustee accept a valuation model that was off by 5--6$\times$?
+\item \textbf{If students pick Analyst C}: Ask them how they would size the allocation without any valuation anchor. How do you decide between 0.5\% and 2\%? What risk metric would you use?
+\item \textbf{If students propose a combination}: This is the most sophisticated answer. For example: use Metcalfe as a directional indicator (is adoption growing or shrinking?), use risk-return data to size the allocation, and acknowledge that no price target is reliable. Push them to be specific about \textit{how} the combination works in practice.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: In practice, most institutional allocators take something close to Analyst C's approach---they size crypto allocations based on risk tolerance, not fundamental valuation. But they supplement this with adoption metrics (Analyst A's intuition) and an understanding of supply dynamics (Analyst B's intuition). The combination is messier than any single model, but it's more honest.
+
+\subsection*{Extension Question (if time permits)}
+
+\textit{``Ethereum generates staking yield ($\sim$3--4\%) and burns fees (EIP-1559). Does this make it more ``valuable'' than Bitcoin in a fundamental sense? Could you build a DCF-like model for ETH?''}
+
+\medskip
+This is worth raising because it bridges to the next week's content on ETFs and institutional products. ETH's yield-bearing nature makes it look more like a traditional asset than Bitcoin---you could attempt a crude ``dividend discount'' model using staking yield as the cash flow. But the yield is denominated in ETH (not USD), the ``discount rate'' is unknown, and the growth rate of network fees is highly uncertain. So even for ETH, valuation remains difficult---but it's \textit{less} difficult than for Bitcoin, which is an important distinction.
+
+\section*{Synthesis Points (Final 6 minutes)}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{There is no reliable Bitcoin valuation model.} Network value and stock-to-flow provide directional intuition but fail quantitatively. This is an honest assessment, not a weakness of our analysis.
+
+\item \textbf{The absence of cash flows is the core problem.} Traditional finance values assets by discounting future cash flows. Most cryptoassets do not generate cash flows, which makes standard tools inapplicable. This doesn't mean the asset is worthless---it means our tools are limited.
+
+\item \textbf{Scarcity is necessary but not sufficient for value.} Bitcoin's fixed supply matters, but supply tells you nothing without demand. A model that ignores demand (S2F) will eventually fail.
+
+\item \textbf{In practice, institutional allocators use risk budgets, not price targets.} The ``how much can we afford to lose?'' approach is more defensible than any fundamental valuation for an asset this volatile and this poorly understood.
+
+\item \textbf{Intellectual honesty matters.} An analyst who admits uncertainty is more valuable than one who presents false precision. The CIO asked for rigour---and rigour sometimes means saying ``we don't know.''
+\end{enumerate}
+
+\section*{Connection to Lecture Material}
+
+Link back to Week 7 lecture concepts:
+\begin{itemize}[leftmargin=*]
+\item Valuation frameworks: network value, stock-to-flow, cost of production, tokenomics (all four from lecture)
+\item Risk-return characteristics: Sharpe ratio limitations, sample dependence
+\item The ``no cash flows'' problem as the fundamental challenge for crypto valuation
+\item Fat tails and drawdown risk---relevant to Analyst C's risk-budget approach
+\end{itemize}
+
+\section*{Notes for TA}
+
+\begin{itemize}[leftmargin=*]
+\item This tutorial works best as a structured debate. Consider splitting the class into three groups, each assigned to defend one analyst's position, then have them challenge each other before converging on a recommendation.
+\item Students may arrive with strong prior views on Bitcoin's value (either bullish or dismissive). The goal is not to change their view but to force them to justify it rigorously. Push back on \textit{every} position.
+\item The data tables are simplified and illustrative. If students question specific numbers, acknowledge this and redirect to the methodological question: even with perfect data, would the model be reliable?
+\item The Sharpe ratio table from Analyst C may generate debate about whether Bitcoin's Sharpe ratio (0.71) makes it an attractive investment. Refer back to the lecture: Sharpe ratios assume normal returns, and crypto returns are fat-tailed. A 77\% drawdown is not captured by standard deviation.
+\end{itemize}
+
+\vfill
+\begin{flushright}
+\textit{End of Tutorial 6 Materials}
+\end{flushright}
+
+\end{document}

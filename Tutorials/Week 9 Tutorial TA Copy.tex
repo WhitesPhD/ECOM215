@@ -1,0 +1,376 @@
+% Tutorial 8: Should the Banks Build a Blockchain? - ECOM215
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{amsmath}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\usepackage[T1]{fontenc}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+
+\usepackage{array, xcolor}
+\usepackage{colortbl}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{AccentGreen}{RGB}{46, 139, 87}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\lhead{}
+\chead{}
+\rhead{\footnotesize ECOM215: Tutorial 8 --- Should the Banks Build a Blockchain?}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\title{Tutorial 8: Should the Banks Build a Blockchain?\\[0.3em] \Large Evaluating a Bond Settlement Consortium\\[1em] \normalsize ECOM215: Blockchain Economics and Digital Assets}
+\author{Week 9 $\vert$ Blockchain in Traditional Finance}
+\date{Semester B, 2025/2026}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{CASE BRIEF FOR STUDENTS}\\[0.3em] Please read before the tutorial. Estimated reading time: 15 minutes.}}
+\end{center}
+
+\section*{The Setting}
+
+Five major European banks---Deutsche Bank, BNP Paribas, Barclays, Santander, and ING---have formed a consortium called \textbf{EuroBond Ledger (EBL)}. Their proposal: build a shared blockchain platform for issuing, settling, and managing European corporate bonds.
+
+The consortium has hired a consultancy to prepare a feasibility report. The consultancy is enthusiastic. The banks' operations teams are sceptical. You are an analyst asked to evaluate whether the proposal makes economic sense.
+
+\section*{The Problem EBL Claims to Solve}
+
+European corporate bond markets are large (approximately \texteuro 9 trillion outstanding) but operationally inefficient.
+
+\medskip
+\noindent\textbf{How corporate bond settlement currently works:}
+\begin{enumerate}[leftmargin=*]
+\item A bond trade is agreed between two parties (e.g., a pension fund buying from a bank).
+\item The trade details are sent to a \textbf{central securities depository (CSD)}---in Europe, this is typically Euroclear (Brussels) or Clearstream (Luxembourg).
+\item The CSD matches the buyer's and seller's instructions. If both sides agree, it transfers the bond from the seller's account to the buyer's account, and cash moves in the opposite direction. This is called \textbf{delivery-versus-payment (DvP)}.
+\item Settlement takes \textbf{T+2} (two business days after the trade).
+\item Throughout this process, each bank maintains its own internal records, which must be \textbf{reconciled} with the CSD's records. When records disagree, trades ``fail'' and must be manually corrected.
+\end{enumerate}
+
+\medskip
+\noindent\textbf{The inefficiencies:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Settlement failures}: Approximately 2--5\% of European bond trades fail on the intended settlement date, requiring manual intervention.
+\item \textbf{Reconciliation costs}: Each bank spends millions annually reconciling its records with Euroclear/Clearstream and with counterparties.
+\item \textbf{Capital tied up}: During the T+2 settlement window, banks must hold regulatory capital against unsettled trades. Faster settlement would free up this capital.
+\item \textbf{Limited trading hours}: CSDs operate during European business hours. Bonds cannot settle at night or on weekends, even though investors operate globally.
+\item \textbf{Issuance friction}: Issuing a new bond requires coordinating with a CSD, legal counsel, paying agents, and listing venues---a process that takes days to weeks.
+\end{itemize}
+
+\section*{The EBL Proposal}
+
+The consortium proposes a \textbf{permissioned blockchain} shared among the five founding banks, with the possibility of adding more participants over time.
+
+\medskip
+\noindent\textbf{How EBL would work:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Bond issuance}: New bonds are issued as tokens on the shared ledger. Each token represents a unit of the bond (e.g., \texteuro 1,000 face value). The issuer's legal counsel certifies that the token represents a binding obligation.
+\item \textbf{Settlement}: When two parties agree a trade, the ledger executes an \textbf{atomic swap}---the bond token and the cash token (a tokenized euro deposit) move simultaneously. If either leg fails, neither executes. Settlement is near-instant.
+\item \textbf{Record-keeping}: All five banks see the same ledger. There is no need to reconcile separate databases, because there is only one database.
+\item \textbf{Smart contract automation}: Coupon payments, maturity redemptions, and corporate actions (e.g., calls, consent solicitations) are programmed into the bond's smart contract and execute automatically.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Technology choice}: The consultancy recommends the Canton Network (a privacy-preserving distributed ledger designed for institutional finance), with smart contracts written in Daml.
+
+\section*{The Consultancy's Claimed Benefits}
+
+\begin{center}
+\small
+\begin{tabular}{p{3.5cm}p{4cm}p{4cm}}
+\toprule
+\textbf{Dimension} & \textbf{Current state} & \textbf{EBL proposal} \\
+\midrule
+Settlement time & T+2 (2 business days) & Near-instant (seconds) \\
+Settlement failures & 2--5\% of trades & Near-zero (atomic DvP) \\
+Reconciliation & Daily, costly, manual & Eliminated (shared ledger) \\
+Trading hours & CSD business hours & 24/7/365 \\
+Capital efficiency & Capital held for T+2 window & Capital freed immediately \\
+Issuance time & Days to weeks & Hours (tokenized issuance) \\
+Coupon payments & Manual processing & Automated via smart contract \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The consultancy estimates annual savings of \texteuro 50--80 million across the five banks, plus additional revenue from faster issuance and broader market access.
+
+\section*{The Sceptics' Objections}
+
+The banks' operations and risk teams have raised concerns:
+
+\medskip
+\noindent\textbf{1. ``We already have Euroclear.''}
+\begin{itemize}[leftmargin=*]
+\item Euroclear is a trusted, regulated CSD that has worked reliably for decades. It already provides DvP. Why build a parallel system?
+\item EBL would need to achieve regulatory approval as a settlement system---a process that took Fnality (a similar project) years and is still not complete.
+\end{itemize}
+
+\medskip
+\noindent\textbf{2. ``Netting is valuable.''}
+\begin{itemize}[leftmargin=*]
+\item In the current system, trades are netted at end-of-day: if Bank A owes Bank B \texteuro 100m and Bank B owes Bank A \texteuro 80m, only \texteuro 20m moves. This massively reduces liquidity needs.
+\item Atomic settlement means every trade settles individually in gross terms. This could \textit{increase} the total cash needed, not decrease it.
+\end{itemize}
+
+\medskip
+\noindent\textbf{3. ``Five banks is not enough.''}
+\begin{itemize}[leftmargin=*]
+\item The European corporate bond market has hundreds of active participants. A system with only five banks has very limited utility.
+\item Bonds issued on EBL would only be tradeable among EBL members---creating a liquidity island.
+\item Adding new members requires governance agreements, legal work, and technical integration for each one.
+\end{itemize}
+
+\medskip
+\noindent\textbf{4. ``This is a shared database, not a blockchain.''}
+\begin{itemize}[leftmargin=*]
+\item With only five trusted participants, there is no need for a consensus mechanism or cryptographic verification. A well-designed shared database with access controls could achieve the same result at lower complexity.
+\item The ``blockchain'' label may be marketing rather than a genuine technical requirement.
+\end{itemize}
+
+\medskip
+\noindent\textbf{5. ``Legal finality is unclear.''}
+\begin{itemize}[leftmargin=*]
+\item When is a transaction on the EBL ledger legally final? EU settlement finality laws were designed for CSDs, not distributed ledgers.
+\item The EU's DLT Pilot Regime (2023) allows some experimentation, but within strict limits on the size and type of securities.
+\end{itemize}
+
+\section*{Key Data}
+
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Item} & \textbf{Detail} \\
+\midrule
+European corporate bond market & $\sim$\texteuro 9 trillion outstanding \\
+Five consortium banks' share & $\sim$25\% of European bond trading \\
+Average settlement failure rate & 2--5\% \\
+Estimated reconciliation cost per bank & \texteuro 10--20 million / year \\
+EBL estimated build cost & \texteuro 80--120 million over 3 years \\
+EBL estimated annual savings & \texteuro 50--80 million (across 5 banks) \\
+Euroclear settlement volume & $\sim$\texteuro 900 trillion / year (all securities) \\
+EU DLT Pilot Regime limits & \texteuro 6 billion market cap per issuer \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Questions to Consider}
+
+\begin{enumerate}[leftmargin=*]
+\item Does the economic case for EBL stand up? Are the claimed savings realistic, and do they justify the build cost?
+
+\item How do you respond to the ``this is just a shared database'' objection? When does a use case genuinely require blockchain rather than a conventional database?
+
+\item The netting problem is a real economic trade-off. How should the consortium handle this---is there a way to get the benefits of atomic settlement without losing netting?
+
+\item If you were a sixth bank invited to join, what would you need to see before committing?
+
+\item Could this be built on a public blockchain (Ethereum) instead of a permissioned one? What would be gained and lost?
+\end{enumerate}
+
+\section*{Further Reading (Optional)}
+
+\begin{itemize}[leftmargin=*]
+\item European Central Bank (2024), ``The Eurosystem's Exploratory Work on DLT for Wholesale Central Bank Money Settlement''
+\item European Commission (2022), ``Regulation on a Pilot Regime for Market Infrastructures Based on Distributed Ledger Technology'' (DLT Pilot Regime)
+\item ISDA and Linklaters (2023), ``Legal Implications of Distributed Ledger Technology in the Derivatives Market''
+\end{itemize}
+
+\newpage
+
+%==============================================================================
+% PART B: TA DISCUSSION GUIDE
+%==============================================================================
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{DISCUSSION GUIDE FOR TEACHING ASSISTANT}\\[0.3em] This section is for TA use only. Do not distribute to students.}}
+\end{center}
+
+\section*{Session Timeline}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Time} & \textbf{Activity} \\
+\midrule
+0:00--0:08 & Context: recap how bond settlement works (from lecture) \\
+0:08--0:22 & Discussion Question 1: Does the economic case hold? \\
+0:22--0:34 & Discussion Question 2: Blockchain vs.\ database \\
+0:34--0:46 & Discussion Question 3: Netting and the liquidity problem \\
+0:46--0:55 & Discussion Question 4: Public vs.\ permissioned \\
+0:55--1:00 & Synthesis and key takeaways \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Discussion Questions with Guidance}
+
+\subsection*{Question 1: Does the economic case hold?}
+
+\textit{``The consultancy claims \texteuro 50--80 million in annual savings across five banks, against a build cost of \texteuro 80--120 million. Is this convincing?''}
+
+\medskip
+\noindent\underline{Arguments that it holds:}
+\begin{itemize}[leftmargin=*]
+\item Reconciliation costs alone are \texteuro 10--20m per bank per year, so \texteuro 50--100m across five banks. If the shared ledger genuinely eliminates reconciliation, the savings are plausible.
+\item Capital savings from faster settlement are real: regulatory capital held against unsettled trades has a cost of capital (typically 8--12\%). Freeing up even a fraction of this is economically significant.
+\item Reduced settlement failures avoid operational costs, penalties (the EU's CSDR settlement discipline regime fines for late settlement), and reputational damage.
+\item Payback period of 1--2 years is attractive if the savings materialise.
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments that it doesn't:}
+\begin{itemize}[leftmargin=*]
+\item Build cost estimates for technology projects are notoriously optimistic. \texteuro 80--120m could easily become \texteuro 200m+ with regulatory delays, integration complexity, and scope creep.
+\item The savings assume full adoption---all bond trades between the five banks go through EBL. In practice, adoption would be gradual, and the system would run in parallel with existing infrastructure for years, adding cost rather than saving it.
+\item Ongoing maintenance, governance, and legal costs are not included in the consultancy's figures.
+\item The \texteuro 50--80m saving is across five banks. Per bank, that's \texteuro 10--16m per year---significant but not transformative for institutions with billions in annual revenue.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: The economic case is plausible but fragile. It depends on optimistic assumptions about adoption speed, build cost, and the degree to which reconciliation is truly eliminated (rather than just shifted). Push students to distinguish between the consultancy's projections and what would actually happen in practice.
+
+\subsection*{Question 2: Blockchain or database?}
+
+\textit{``The operations team says this is just a shared database with blockchain branding. Are they right? When does a use case genuinely require blockchain?''}
+
+\medskip
+\noindent\underline{A framework for when blockchain adds value:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Multiple mutually distrusting parties} need to share a common record---and no single party is trusted to maintain the ``master copy.'' This is the core value proposition of any distributed ledger.
+\item With five competing banks, there \textit{is} a trust problem: no bank wants a rival to control the database. A shared ledger with consensus removes the need to trust any single operator.
+\item A conventional shared database requires someone to administer it. Who? If Euroclear runs it, it's just Euroclear with a different interface. If one bank runs it, the others face counterparty risk.
+\end{itemize}
+
+\medskip
+\noindent\underline{When a database is sufficient:}
+\begin{itemize}[leftmargin=*]
+\item If there is already a trusted central party (like Euroclear), a blockchain doesn't add trust---it duplicates an existing solution at higher complexity.
+\item With only five participants, the ``consensus'' is simple agreement---you don't need a Byzantine fault tolerant protocol for five identified, regulated banks.
+\item If the system is permissioned and administered by a single entity anyway, it is functionally a database regardless of what it's called.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: The honest answer is that EBL sits in a grey zone. There is a legitimate trust problem (competing banks), but the number of participants is small enough that simpler solutions exist. The strongest use case for blockchain in finance is when the number of participants is large, no single party is trusted, and the need for transparency and auditability is high. Five banks sharing a ledger is borderline.
+
+\subsection*{Question 3: The netting problem}
+
+\textit{``Atomic settlement sounds great, but the operations team says it would increase liquidity needs because netting is lost. How serious is this, and is there a solution?''}
+
+\medskip
+\noindent\underline{Why netting matters:}
+\begin{itemize}[leftmargin=*]
+\item Refer to the worked example from the lecture: gross settlement required \pounds 310m in flows; netted settlement required only \pounds 100m. The ratio is typically 3--5$\times$ in real markets.
+\item For large banks with thousands of trades per day, the difference is enormous. Replacing netting with gross atomic settlement would require banks to hold substantially more cash at all times.
+\item This is a real economic cost that could outweigh the capital savings from faster settlement.
+\end{itemize}
+
+\medskip
+\noindent\underline{Possible solutions:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Deferred net settlement on-chain}: Batch trades and settle net positions every few hours rather than trade-by-trade. This preserves netting but loses the ``instant settlement'' benefit.
+\item \textbf{Intraday netting cycles}: Run netting cycles multiple times per day (e.g., every 15 minutes) rather than once at end-of-day. A compromise between instant gross and daily net.
+\item \textbf{Liquidity pools}: Participants pre-fund a shared pool to absorb gross settlement needs. This adds cost but enables real-time DvP.
+\item \textbf{Central bank money integration}: If the cash leg uses a wholesale CBDC or tokenized central bank reserves (like Fnality's USC), banks can settle in risk-free money without needing large pre-funded balances.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: The netting problem is the most important practical objection to blockchain settlement, and it doesn't have a clean solution. Every proposed compromise either reintroduces delay (losing the speed advantage) or requires pre-funding (adding cost). Students should understand that this is a genuine economic trade-off, not a technical problem to be ``solved.''
+
+\subsection*{Question 4: Public vs.\ permissioned}
+
+\textit{``Could EBL be built on Ethereum instead of Canton? What would change?''}
+
+\medskip
+\noindent\underline{Arguments for Ethereum:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{No governance problem}: No single consortium member controls Ethereum. The neutrality is built in.
+\item \textbf{Composability}: Bonds issued on Ethereum could interact with DeFi protocols, tokenized treasuries (BUIDL), and other assets. This creates new possibilities that a closed system cannot offer.
+\item \textbf{Open participation}: Any approved investor worldwide could eventually trade these bonds, not just the five consortium members. Liquidity is broader by design.
+\item \textbf{Precedent}: BlackRock chose Ethereum for BUIDL. If the world's largest asset manager trusts a public chain, the consortium could too.
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments against:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Privacy}: All transactions on Ethereum are publicly visible. Banks cannot allow competitors to see their trading activity. (Counter: privacy layers like zero-knowledge proofs exist but add complexity.)
+\item \textbf{Regulatory comfort}: Regulators are more comfortable with identifiable operators and known participants. A permissioned system maps better to existing regulatory frameworks.
+\item \textbf{Performance}: Ethereum's throughput and gas costs, while improving, may not meet the demands of high-volume bond settlement.
+\item \textbf{Governance risk}: Protocol upgrades on Ethereum are decided by a decentralised community, not by the consortium. Banks may be uncomfortable depending on infrastructure they don't control.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: This maps to the public vs.\ permissioned debate from the lecture. The likely answer is hybrid---issue bonds on a public chain for broad accessibility and composability, but settle through permissioned layers with privacy and compliance controls. The question is whether the technology to do this reliably exists today. As of 2025, it's getting close but is not fully production-ready.
+
+\subsection*{Extension Question (if time permits)}
+
+\textit{``Euroclear processes approximately \texteuro 900 trillion per year. EBL would handle a fraction of European corporate bonds. Is this a serious competitor, or a niche experiment?''}
+
+\medskip
+This question forces students to confront the scale gap. Even if EBL works perfectly, it would handle a tiny fraction of total settlement volume. The realistic near-term outcome is not that blockchain replaces Euroclear, but that Euroclear itself might adopt blockchain technology internally---as DTCC is doing with Project Ion. The disruptive threat is not a startup consortium but the incumbents upgrading their own systems.
+
+\section*{Synthesis Points (Final 5 minutes)}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{The economic case for blockchain in bond settlement is real but narrow.} Reconciliation savings and capital efficiency improvements are genuine, but they must be weighed against build costs, adoption friction, and the netting problem.
+
+\item \textbf{``Blockchain or database?'' is the right question to ask.} Not every shared record requires a distributed ledger. The answer depends on the number of participants, the trust relationships between them, and whether a central operator is acceptable.
+
+\item \textbf{Netting is a genuine economic constraint.} Instant gross settlement sounds appealing but increases liquidity demands. Any practical blockchain settlement system must address this trade-off, and every solution involves compromise.
+
+\item \textbf{Public vs.\ permissioned is not either/or.} Hybrid architectures---public chains for issuance and composability, permissioned layers for privacy and compliance---are the most likely outcome.
+
+\item \textbf{Incumbents may be the real adopters.} Euroclear, DTCC, and central banks are more likely to integrate blockchain into existing infrastructure than to be replaced by it. Disruption in financial infrastructure happens slowly and from within.
+\end{enumerate}
+
+\section*{Connection to Lecture Material}
+
+Link back to Week 9 lecture concepts:
+\begin{itemize}[leftmargin=*]
+\item Settlement chain: CSD, CCP, custodians, and the T+2 process
+\item Atomic settlement and delivery-versus-payment
+\item The netting problem (worked example from lecture)
+\item Institutional initiatives: Canton Network, DTCC Ion, Fnality
+\item Public vs.\ permissioned blockchain debate
+\item Legal finality and the EU DLT Pilot Regime
+\end{itemize}
+
+Also connects to earlier weeks:
+\begin{itemize}[leftmargin=*]
+\item Smart contracts (Week 3): EBL's automated coupon payments
+\item Tokenization (Week 6): Bond tokens as security tokens
+\item Custody (Week 7): Who holds the underlying assets?
+\end{itemize}
+
+\section*{Notes for TA}
+
+\begin{itemize}[leftmargin=*]
+\item This tutorial is more technical than the previous two (Weeks 7--8). Ensure students understand the basic settlement chain before diving into the blockchain alternative. If they look lost, spend the first 10 minutes walking through the numbered steps in the case brief.
+\item The ``blockchain or database'' question tends to generate strong opinions. Some students will have absorbed the blockchain hype narrative; others will be reflexively dismissive. Push both sides: the blockchain sceptics should explain why five competing banks \textit{can't} just share a database (the trust problem is real), and the blockchain enthusiasts should explain why five participants need cryptographic consensus rather than a simple access-controlled SQL database.
+\item The netting problem is the most analytically demanding part. If students struggle, draw the three-bank example from the lecture on the board and work through gross vs.\ net flows.
+\item The extension question about Euroclear's scale is useful for grounding the discussion in reality. Students often overestimate blockchain's near-term impact on established infrastructure.
+\end{itemize}
+
+\vfill
+\begin{flushright}
+\textit{End of Tutorial 8 Materials}
+\end{flushright}
+
+\end{document}

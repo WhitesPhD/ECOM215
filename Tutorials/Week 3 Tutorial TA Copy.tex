@@ -1,0 +1,438 @@
+% Tutorial 2: The Ethereum Merge - ECOM215
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\usepackage[T1]{fontenc}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+
+\usepackage{array, xcolor}
+\usepackage{colortbl}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{AccentGreen}{RGB}{46, 139, 87}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\lhead{}
+\chead{}
+\rhead{\footnotesize ECOM215: Tutorial 2 --- The Ethereum Merge}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\title{Tutorial 2: The Ethereum Merge\\[0.3em] \Large From Proof-of-Work to Proof-of-Stake\\[1em] \normalsize ECOM215: Blockchain Economics and Digital Assets}
+\author{Week 3 $\vert$ Blockchain Economics}
+\date{Semester B, 2025/2026}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{CASE BRIEF FOR STUDENTS}\\[0.3em] Please read before the tutorial. Estimated reading time: 15 minutes.}}
+\end{center}
+
+\section*{Background}
+
+On 15 September 2022, at 06:42:42 UTC, Ethereum completed ``The Merge''---the largest infrastructure change in blockchain history. In a single moment, the network switched from Proof-of-Work (PoW) to Proof-of-Stake (PoS), eliminating an entire industry of Ethereum miners and reducing the network's energy consumption by over 99.9\%.
+
+The Merge had been planned for years, delayed multiple times, and was widely considered the most technically ambitious upgrade ever attempted on a live blockchain with hundreds of billions of dollars in assets. Many predicted it would fail catastrophically. It didn't.
+
+This case examines what the Merge was, why it mattered, and what it reveals about the economics of consensus mechanisms.
+
+\section*{Why the Merge Happened}
+
+Ethereum launched in 2015 using Proof-of-Work, the same consensus mechanism as Bitcoin. By the early 2020s, Ethereum's PoW mining consumed approximately 80--100 TWh of electricity per year---comparable to the annual consumption of countries like the Netherlands or Chile.
+
+\medskip
+\noindent\textbf{The case against PoW:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Environmental criticism}: Climate activists, ESG-focused investors, and regulators increasingly targeted PoW's carbon footprint
+\item \textbf{Energy inefficiency}: The computational work in PoW serves only to prove resource expenditure---it produces nothing useful beyond security
+\item \textbf{Centralisation pressure}: Mining economies of scale pushed hashpower toward large industrial operations with access to cheap electricity
+\item \textbf{Hardware waste}: Mining equipment (GPUs, ASICs) became obsolete every 1--2 years
+\end{itemize}
+
+\medskip
+\noindent\textbf{The case for switching to PoS:}
+\begin{itemize}[leftmargin=*]
+\item Energy reduction of 99.95\%---from $\sim$100 TWh/year to $\sim$0.01 TWh/year
+\item Security through economic stake rather than computational waste
+\item Reduced barrier to participation (no specialised hardware needed)
+\item Foundation for future scalability improvements (sharding)
+\end{itemize}
+
+\section*{How the Merge Worked}
+
+The Merge was not a simple software update. It required replacing the core consensus mechanism of a live network securing over \$200 billion in assets, without any downtime.
+
+\medskip
+\noindent\textbf{The technical approach:}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Beacon Chain launch (December 2020)}: A separate PoS chain ran in parallel for nearly two years, allowing validators to stake ETH and the new system to be tested without risking the main network
+\item \textbf{Shadow forks and testnets}: The Merge was rehearsed on multiple test networks to identify and fix bugs
+\item \textbf{Terminal Total Difficulty}: A specific cumulative mining difficulty was set as the trigger point. When the PoW chain reached this difficulty, it would stop accepting PoW blocks
+\item \textbf{The Merge itself}: At the trigger point, the execution layer (transactions, smart contracts) merged with the Beacon Chain's consensus layer (PoS validation)
+\end{enumerate}
+
+\medskip
+\noindent\textbf{What changed immediately:}
+\begin{itemize}[leftmargin=*]
+\item Block production switched from miners to validators
+\item Block time became fixed at 12 seconds (previously variable, averaging $\sim$13 seconds)
+\item New ETH issuance dropped by $\sim$90\% (validators require less compensation than miners)
+\item Energy consumption fell by 99.95\%
+\end{itemize}
+
+\medskip
+\noindent\textbf{What did NOT change:}
+\begin{itemize}[leftmargin=*]
+\item Transaction fees (still determined by demand for block space)
+\item Transaction speed (scalability improvements came later, via Layer 2)
+\item Smart contract functionality
+\item User experience for holding or transacting ETH
+\end{itemize}
+
+\section*{The Stakeholders}
+
+The Merge created clear winners and losers:
+
+\medskip
+\noindent\textbf{Winners:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{ETH holders}: Reduced issuance means less dilution; ESG concerns addressed
+\item \textbf{Stakers}: Can now earn yield ($\sim$3--5\% APR) by validating
+\item \textbf{Environmental advocates}: Ethereum removed from climate criticism
+\item \textbf{Liquid staking protocols} (Lido, Rocket Pool): Massive growth in deposits
+\end{itemize}
+
+\medskip
+\noindent\textbf{Losers:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Ethereum miners}: Billions of dollars in mining equipment became worthless overnight
+\item \textbf{GPU manufacturers}: Lost a major customer segment
+\item \textbf{Mining pool operators}: Had to pivot or shut down
+\item \textbf{Electricity providers} in mining-heavy regions
+\end{itemize}
+
+\medskip
+\noindent\textbf{A note on the miners}: Ethereum miners had invested heavily in hardware and infrastructure. Some attempted to continue mining on a forked ``Ethereum PoW'' chain, but it failed to gain meaningful adoption. Most mining equipment was sold at steep discounts or repurposed.
+
+\section*{New Risks and Trade-offs}
+
+The Merge solved some problems but introduced others:
+
+\medskip
+\noindent\textbf{Staking centralisation:}
+\begin{itemize}[leftmargin=*]
+\item Lido, a liquid staking protocol, controls $\sim$30\% of all staked ETH
+\item Combined with Coinbase and other large stakers, a small number of entities control a majority of validation
+\item If these entities coordinated, they could potentially censor transactions
+\end{itemize}
+
+\medskip
+\noindent\textbf{Regulatory risk:}
+\begin{itemize}[leftmargin=*]
+\item The SEC has suggested staking services may be securities
+\item Centralised staking providers (Coinbase, Kraken) face regulatory pressure
+\item Some validators have complied with OFAC sanctions by refusing to include certain transactions
+\end{itemize}
+
+\medskip
+\noindent\textbf{Economic security questions:}
+\begin{itemize}[leftmargin=*]
+\item PoW security is ``external''---attacking requires acquiring hardware and electricity
+\item PoS security is ``internal''---attacking requires acquiring the network's own token
+\item Critics argue this makes PoS more vulnerable to well-funded attackers who can buy stake
+\end{itemize}
+
+\medskip
+\noindent\textbf{``Rich get richer'' concerns:}
+\begin{itemize}[leftmargin=*]
+\item Validators earn rewards proportional to their stake
+\item Large stakers earn more, can compound faster
+\item Unlike mining, there's no opportunity cost driving hardware obsolescence
+\end{itemize}
+
+\section*{The Broader Debate: PoW vs PoS}
+
+The Merge reignited a long-standing debate in the cryptocurrency community:
+
+\medskip
+\noindent\textbf{Bitcoin maximalist view (pro-PoW):}
+\begin{itemize}[leftmargin=*]
+\item PoW's energy cost IS the security---it's a feature, not a bug
+\item External costs (electricity) are harder to manipulate than internal costs (stake)
+\item Bitcoin's simplicity and stability are virtues; Ethereum's complexity is a risk
+\item ``Digital gold'' doesn't need to be energy-efficient; it needs to be secure
+\end{itemize}
+
+\medskip
+\noindent\textbf{Ethereum/PoS advocate view:}
+\begin{itemize}[leftmargin=*]
+\item PoS achieves equivalent security without environmental damage
+\item The Merge proves that PoS works at scale on a major network
+\item PoS enables future scalability improvements not possible with PoW
+\item Energy criticism was a genuine threat to mainstream adoption
+\end{itemize}
+
+\medskip
+Neither side has definitively ``won'' this debate. Bitcoin remains on PoW with no plans to change. Ethereum's PoS has operated successfully since September 2022, but hasn't yet been tested by a determined, well-funded attacker.
+
+\section*{Key Facts Summary}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Item} & \textbf{Detail} \\
+\midrule
+Merge date & 15 September 2022 \\
+Energy reduction & 99.95\% (from $\sim$100 TWh/yr to $\sim$0.01 TWh/yr) \\
+ETH issuance reduction & $\sim$90\% \\
+Validator requirement & 32 ETH ($\sim$\$50--100k depending on price) \\
+Current staking yield & $\sim$3--5\% APR \\
+Lido market share & $\sim$30\% of staked ETH \\
+Total ETH staked & $\sim$30 million ETH ($\sim$25\% of supply) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Questions to Consider}
+
+\begin{enumerate}[leftmargin=*]
+\item The Merge eliminated an entire industry (Ethereum mining). Was this justified by the benefits? How should we think about such transitions?
+
+\item Lido controls $\sim$30\% of staked ETH. Is this a problem? How is it similar to or different from mining pool concentration?
+
+\item Bitcoin advocates argue that PoW's energy cost IS the security. Ethereum advocates argue PoS is more efficient. Who is right?
+
+\item The Merge required years of planning and coordination. What does this say about blockchain governance and the ability to make changes?
+
+\item Some validators now comply with government sanctions (OFAC). Does this undermine Ethereum's censorship resistance? Is censorship resistance even desirable?
+\end{enumerate}
+
+\section*{Further Reading (Optional)}
+
+\begin{itemize}[leftmargin=*]
+\item Ethereum Foundation: ``The Merge'' documentation (ethereum.org)
+\item Vitalik Buterin: ``Why Proof of Stake'' (2020 blog post)
+\item Nic Carter: ``The Case for Bitcoin's Energy Use'' (opposing view)
+\item Galaxy Digital Research: ``Ethereum's Validator Set'' (centralisation analysis)
+\end{itemize}
+
+\newpage
+
+%==============================================================================
+% PART B: TA DISCUSSION GUIDE
+%==============================================================================
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{DISCUSSION GUIDE FOR TEACHING ASSISTANT}\\[0.3em] This section is for TA use only. Do not distribute to students.}}
+\end{center}
+
+\section*{Session Timeline}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Time} & \textbf{Activity} \\
+\midrule
+0:00--0:08 & Context setting: What the Merge was and why it happened \\
+0:08--0:22 & Discussion Question 1: Winners and losers \\
+0:22--0:36 & Discussion Question 2: PoW vs PoS security \\
+0:36--0:48 & Discussion Question 3: Staking centralisation \\
+0:48--0:55 & Discussion Question 4: Censorship and regulation \\
+0:55--1:00 & Synthesis and key takeaways \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Discussion Questions with Guidance}
+
+\subsection*{Question 1: Was eliminating Ethereum mining justified?}
+
+\textit{``The Merge made billions of dollars in mining equipment worthless overnight. Miners who had invested in the ecosystem were wiped out. Was this justified by the environmental and efficiency benefits?''}
+
+\medskip
+\noindent\textbf{Points that may emerge:}
+
+\medskip
+\noindent\underline{Arguments that it was justified:}
+\begin{itemize}[leftmargin=*]
+\item The environmental benefits are massive and real (99.95\% energy reduction)
+\item Miners knew the Merge was planned---they had years of warning
+\item The network's long-term health matters more than incumbent interests
+\item Creative destruction is normal in technology---buggy whip manufacturers also went out of business
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments for sympathy with miners:}
+\begin{itemize}[leftmargin=*]
+\item Miners provided security and invested based on the system's rules
+\item The transition was repeatedly delayed, creating uncertainty
+\item ``Ethereum PoW'' fork attempt shows some miners felt betrayed
+\item Precedent concern: If the rules can change once, they can change again
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Blockchains are social systems, not just technical ones. Changes to the rules create winners and losers. The ability to make such changes demonstrates that ``immutability'' applies to transaction history, not protocol rules. Governance matters.
+
+\subsection*{Question 2: Is PoW or PoS more secure?}
+
+\textit{``Bitcoin advocates say PoW's energy cost IS the security---you can't fake having spent real-world resources. Ethereum advocates say PoS achieves the same security more efficiently. Who is right?''}
+
+\medskip
+\noindent\underline{The case for PoW security:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{External costs}: Attacking requires resources from outside the system (hardware, electricity)
+\item \textbf{Physical constraints}: You can't ``print'' hashpower; it requires real-world manufacturing and energy
+\item \textbf{Battle-tested}: Bitcoin has operated for 15+ years without a successful attack on consensus
+\item \textbf{Simplicity}: Fewer attack vectors, easier to reason about
+\end{itemize}
+
+\medskip
+\noindent\underline{The case for PoS security:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Slashing}: Attackers lose their stake---they can't just walk away with equipment
+\item \textbf{Cost equivalence}: Acquiring 51\% of stake is comparably expensive to 51\% of hashpower
+\item \textbf{No external market}: You can't rent stake the way you can rent hashpower
+\item \textbf{Recovery possible}: A PoS network can slash attackers and recover; PoW attacks are harder to punish
+\end{itemize}
+
+\medskip
+\noindent\underline{Unresolved questions:}
+\begin{itemize}[leftmargin=*]
+\item PoS hasn't been tested by a well-funded nation-state adversary
+\item Long-range attacks and ``nothing at stake'' are theoretical concerns not yet exploited
+\item The ``true'' security comparison may not be knowable until an attack is attempted
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: This is a genuine debate without a definitive answer. Both mechanisms provide security through different means. PoW makes attacks expensive through energy; PoS makes attacks expensive through capital at risk. The right choice may depend on threat models and values.
+
+\subsection*{Question 3: Is staking centralisation a problem?}
+
+\textit{``Lido controls $\sim$30\% of staked ETH. Combined with Coinbase and a few other large stakers, a small number of entities control most validation. Is this a problem? How does it compare to mining pool concentration?''}
+
+\medskip
+\noindent\underline{Why it might be a problem:}
+\begin{itemize}[leftmargin=*]
+\item Coordinated validators could censor transactions
+\item Regulatory pressure on large stakers could force compliance (already happening with OFAC)
+\item ``Decentralisation'' was the whole point; this looks like re-centralisation
+\item Liquid staking creates governance concentration (Lido token holders control protocol decisions)
+\end{itemize}
+
+\medskip
+\noindent\underline{Why it might be overstated:}
+\begin{itemize}[leftmargin=*]
+\item Lido uses dozens of independent node operators, not a single validator
+\item Users can withdraw from Lido if it misbehaves (unlike mining pools, stake is more liquid)
+\item Mining pools also had concentration; top 4 Bitcoin pools control $\sim$70\% of hashrate
+\item Protocol-level solutions are being discussed (e.g., caps on any single entity's share)
+\end{itemize}
+
+\medskip
+\noindent\underline{Comparison to mining pools:}
+\begin{itemize}[leftmargin=*]
+\item Mining pools: Miners can switch pools instantly; pool operators don't own the hardware
+\item Staking pools: Withdrawals take time; liquid staking tokens add intermediation
+\item Both face concentration pressure from economies of scale
+\item Neither achieves the ``one CPU, one vote'' ideal from Bitcoin's whitepaper
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Centralisation pressure exists in both PoW and PoS. The mechanisms differ, but the outcome is similar: a relatively small number of entities control most block production. ``Decentralisation'' is a spectrum, not a binary.
+
+\subsection*{Question 4: Does OFAC compliance undermine censorship resistance?}
+
+\textit{``Some Ethereum validators now comply with US Treasury sanctions (OFAC) by refusing to include transactions from sanctioned addresses. Does this undermine Ethereum's censorship resistance? Is censorship resistance even a good thing?''}
+
+\medskip
+\noindent\underline{The censorship resistance view:}
+\begin{itemize}[leftmargin=*]
+\item Censorship resistance is a core blockchain value proposition
+\item If validators can exclude transactions, what's the point of decentralisation?
+\item Today it's OFAC; tomorrow it could be political dissidents
+\item This is a slippery slope toward permissioned networks
+\end{itemize}
+
+\medskip
+\noindent\underline{The compliance view:}
+\begin{itemize}[leftmargin=*]
+\item Validators are businesses operating in jurisdictions with laws
+\item OFAC sanctions target terrorist financing and sanctions evasion---legitimate goals
+\item Non-compliant validators still exist; transactions eventually get included
+\item Mainstream adoption may require some accommodation of legal systems
+\end{itemize}
+
+\medskip
+\noindent\underline{The nuanced middle:}
+\begin{itemize}[leftmargin=*]
+\item Currently, OFAC-compliant validators slow but don't stop sanctioned transactions
+\item The network as a whole remains censorship-resistant even if individual validators comply
+\item But: If compliance becomes mandatory or dominant, this could change
+\item The Tornado Cash sanctions show regulators are willing to target DeFi directly
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Censorship resistance exists on a spectrum. Individual validators may comply with local laws; the question is whether enough non-compliant validators exist to ensure eventual inclusion. This is an active tension with no clear resolution.
+
+\subsection*{Extension Question (if time permits)}
+
+\textit{``The Merge required years of coordination and planning. Ethereum has a clear leadership (Vitalik Buterin, Ethereum Foundation). Bitcoin has no such central coordination. Is Ethereum's ability to make changes a strength or a weakness?''}
+
+\medskip
+This connects to blockchain governance. Ethereum can evolve but depends on coordination around influential figures. Bitcoin is more resistant to change but also more resistant to improvement. Different values lead to different conclusions.
+
+\section*{Synthesis Points (Final 5 minutes)}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{The Merge was a major achievement with real trade-offs.} 99.95\% energy reduction is significant, but PoS introduces different centralisation and security considerations.
+
+\item \textbf{PoW vs PoS is a genuine debate, not a settled question.} Both mechanisms provide security through different means. The ``right'' answer depends on threat models and values.
+
+\item \textbf{Centralisation pressure exists in both systems.} Mining pools and staking pools both concentrate power. ``Decentralisation'' is a spectrum, not a binary.
+
+\item \textbf{Blockchains are social systems, not just technical ones.} The ability to execute the Merge shows that protocol rules can change through coordination. Governance matters.
+
+\item \textbf{Censorship resistance is under pressure.} Regulatory compliance by validators is already happening. The long-term implications for Ethereum's neutrality are unclear.
+\end{enumerate}
+
+\section*{Connection to Lecture Material}
+
+Link back to Week 2 lecture concepts:
+\begin{itemize}[leftmargin=*]
+\item Consensus mechanisms: PoW vs PoS comparison, now illustrated with a real transition
+\item The blockchain trilemma: The Merge didn't improve scalability directly---that requires Layer 2
+\item Economic incentives: Staking rewards ($\sim$3--5\% APR) vs mining economics
+\item Centralisation concerns: Mining pools vs staking pools, Lido's dominance
+\item Energy consumption: Concrete numbers on the before/after
+\end{itemize}
+
+\section*{Notes for TA}
+
+\begin{itemize}[leftmargin=*]
+\item Some students may be Bitcoin maximalists who view the Merge negatively. That's a legitimate perspective; ensure it gets fair treatment in discussion.
+\item The OFAC/censorship discussion can become politically charged. Keep the focus on the technical and economic trade-offs rather than specific policy views.
+\item If students ask about Ethereum's future (sharding, etc.), you can briefly mention that the Merge was step one of a multi-phase roadmap, but detailed coverage comes in later weeks.
+\item The 32 ETH staking requirement ($\sim$\$50--100k) is a significant barrier. Liquid staking (Lido, Rocket Pool) addresses this but creates its own centralisation. This is a tension, not a solved problem.
+\end{itemize}
+
+\vfill
+\begin{flushright}
+\textit{End of Tutorial 2 Materials}
+\end{flushright}
+
+\end{document}

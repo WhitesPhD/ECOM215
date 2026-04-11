@@ -1,0 +1,419 @@
+% Tutorial 7: Pension Fund Bitcoin Allocation - ECOM215
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{amsmath}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\usepackage[T1]{fontenc}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+
+\usepackage{array, xcolor}
+\usepackage{colortbl}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{AccentGreen}{RGB}{46, 139, 87}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\lhead{}
+\chead{}
+\rhead{\footnotesize ECOM215: Tutorial 7 --- Pension Fund Bitcoin Allocation}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\title{Tutorial 7: Should the Pension Fund Allocate to Bitcoin?\\[0.3em] \Large An Investment Committee Decision\\[1em] \normalsize ECOM215: Blockchain Economics and Digital Assets}
+\author{Week 8 $\vert$ Cryptocurrencies as an Asset Class (Part II)}
+\date{Semester B, 2025/2026}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{CASE BRIEF FOR STUDENTS}\\[0.3em] Please read before the tutorial. Estimated reading time: 20 minutes.}}
+\end{center}
+
+\section*{The Setting}
+
+The \textbf{Northern Counties Pension Scheme (NCPS)} is a UK defined-benefit pension fund with \pounds 3.2 billion in assets under management. It provides retirement benefits for approximately 45,000 current and former employees of local government bodies across Northern England.
+
+The scheme is currently 94\% funded (i.e., its assets cover 94\% of its projected liabilities). The Trustees---who are legally responsible for managing the fund in the best interests of members---have asked the investment team to evaluate a proposal from an external consultant: \textbf{allocate 2\% of AUM (\pounds 64 million) to Bitcoin via a spot ETF}.
+
+The consultant's pitch is straightforward: Bitcoin's high returns and historically low correlation with traditional assets could improve the portfolio's risk-adjusted returns and help close the funding gap.
+
+Today's tutorial simulates the investment committee meeting where this proposal will be debated.
+
+\section*{Current Portfolio Allocation}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Asset class} & \textbf{Allocation} & \textbf{Value (\pounds m)} \\
+\midrule
+UK and global equities & 45\% & 1,440 \\
+Government bonds (gilts) & 25\% & 800 \\
+Corporate bonds & 12\% & 384 \\
+Real estate & 8\% & 256 \\
+Infrastructure & 5\% & 160 \\
+Alternatives (hedge funds, PE) & 3\% & 96 \\
+Cash & 2\% & 64 \\
+\midrule
+\textbf{Total} & \textbf{100\%} & \textbf{3,200} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The fund targets a nominal return of 5.5\% per annum to meet its liability projections. Over the past five years, the portfolio has returned an average of 5.1\%---slightly below target, contributing to the 6\% funding gap.
+
+\section*{The Consultant's Proposal}
+
+\textbf{Recommendation}: Allocate 2\% (\pounds 64 million) to Bitcoin via the \textbf{iShares Bitcoin Trust (IBIT)}, a spot Bitcoin ETF listed on Nasdaq and managed by BlackRock.
+
+\medskip
+\noindent\textbf{Arguments presented by the consultant:}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Return enhancement}: Bitcoin's annualised return over the past 5 years ($\sim$48\%) far exceeds any asset class in the portfolio. Even with high volatility, a 2\% allocation could add 0.5--1.0 percentage points to portfolio returns.
+
+\item \textbf{Diversification}: Bitcoin's correlation with equities, while higher than pre-2020 levels, remains moderate ($\sim$0.3--0.4 over the past two years). This provides meaningful diversification relative to the fund's heavy equity exposure.
+
+\item \textbf{Regulated access}: IBIT is a regulated securities product trading on Nasdaq. The fund does not need to hold Bitcoin directly, manage private keys, or interact with crypto exchanges. Custody is handled by Coinbase Custody (regulated by NYDFS).
+
+\item \textbf{Institutional precedent}: Major US pension funds (e.g., State of Wisconsin Investment Board) and sovereign wealth funds have begun allocating to Bitcoin ETFs.
+\end{enumerate}
+
+\section*{Risk-Return Data}
+
+The consultant has provided the following data for the investment committee:
+
+\medskip
+\noindent\textbf{Table 1: Historical risk-return characteristics (5-year, annualised)}
+
+\begin{center}
+\small
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Asset} & \textbf{Return} & \textbf{Volatility} & \textbf{Sharpe} & \textbf{Max} & \textbf{Corr.\ with} \\
+ & & & & \textbf{drawdown} & \textbf{FTSE 100} \\
+\midrule
+FTSE All-Share & 7.2\% & 14.5\% & 0.19 & $-$22\% & 0.95 \\
+MSCI World & 10.8\% & 15.9\% & 0.40 & $-$25\% & 0.82 \\
+UK Gilts & $-$2.1\% & 12.8\% & $-$0.52 & $-$38\% & $-$0.15 \\
+UK Corp Bonds & 0.4\% & 9.7\% & $-$0.42 & $-$26\% & 0.25 \\
+Gold & 10.2\% & 15.4\% & 0.37 & $-$18\% & 0.05 \\
+Bitcoin (BTC) & 48.5\% & 63.4\% & 0.69 & $-$77\% & 0.35 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\smallskip
+\noindent\textit{Note: 5-year period ending December 2024. Risk-free rate assumed at 4.5\%. Figures are illustrative of the magnitudes; focus on relative comparisons.}
+
+\medskip
+\noindent\textbf{Table 2: Simulated portfolio impact of a 2\% BTC allocation}
+
+\begin{center}
+\small
+\begin{tabular}{lcc}
+\toprule
+& \textbf{Current portfolio} & \textbf{With 2\% BTC} \\
+\midrule
+Expected return (ann.) & 5.1\% & 5.9\% \\
+Portfolio volatility (ann.) & 9.8\% & 10.5\% \\
+Sharpe ratio & 0.06 & 0.13 \\
+Max drawdown (5yr) & $-$19\% & $-$21\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\smallskip
+\noindent\textit{Note: ``With 2\% BTC'' assumes reallocation from cash. Based on historical data; past performance is not indicative of future results. Correlation assumed stable, which may not hold in a crisis.}
+
+\section*{The Compliance Officer's Memo}
+
+The fund's compliance officer, Sarah Chen, has submitted the following concerns to the investment committee:
+
+\begin{quote}
+\textit{I have three reservations about the proposed Bitcoin allocation:}
+
+\textit{First, \textbf{fiduciary duty}. Trustees of a defined-benefit pension scheme have a legal obligation to act prudently and in the best interests of scheme members. The Pensions Regulator expects investment strategies to be appropriate for the scheme's liability profile. Bitcoin's 77\% maximum drawdown and extreme volatility are difficult to reconcile with prudent management of retirement savings. I note that the Pensions Regulator has not issued specific guidance on cryptocurrency, which itself creates regulatory uncertainty.}
+
+\textit{Second, \textbf{custody concentration}. The proposed ETF (IBIT) uses Coinbase Custody as its sole custodian for the underlying Bitcoin. If Coinbase experienced a security breach, operational failure, or regulatory action, the fund's entire Bitcoin position would be at risk. This is a single point of failure that we do not accept in any other part of the portfolio.}
+
+\textit{Third, \textbf{market integrity}. Despite improvements, the underlying Bitcoin spot market remains subject to wash trading, spoofing, and manipulation, particularly on unregulated offshore exchanges. While the ETF itself trades on Nasdaq, the fund's NAV is ultimately determined by the price of Bitcoin on these markets. The SEC's own approval noted it does not endorse Bitcoin as an asset.}
+\end{quote}
+
+\section*{ETF Options}
+
+If the committee approves an allocation, the following spot Bitcoin ETFs are available:
+
+\begin{center}
+\small
+\begin{tabular}{llccc}
+\toprule
+\textbf{Ticker} & \textbf{Issuer} & \textbf{Expense ratio} & \textbf{AUM (bn)} & \textbf{Custodian} \\
+\midrule
+IBIT & BlackRock & 0.25\% & \$53 & Coinbase Custody \\
+FBTC & Fidelity & 0.25\% & \$18 & Fidelity Digital Assets \\
+ARKB & ARK / 21Shares & 0.21\% & \$4.5 & Coinbase Custody \\
+GBTC & Grayscale & 1.50\% & \$22 & Coinbase Custody \\
+BTC (mini) & Grayscale & 0.15\% & \$3.5 & Coinbase Custody \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\smallskip
+\noindent\textit{Note: AUM figures as of early 2025, approximate. All are US-listed; the fund would need to consider cross-listing availability, FX hedging costs, and UK regulatory treatment.}
+
+\section*{Questions to Consider}
+
+\begin{enumerate}[leftmargin=*]
+\item Does the risk-return data support the consultant's case? Are there reasons to doubt that historical performance will continue?
+
+\item How do you weigh the compliance officer's concerns about fiduciary duty, custody, and market integrity? Are they deal-breakers or manageable risks?
+
+\item If you approve the allocation, which ETF would you choose and why? What role do fees, custodian diversification, and AUM play in your decision?
+
+\item If you reject the allocation, what would need to change for you to reconsider? What conditions or milestones would you set?
+
+\item A scheme member---a retired teacher---asks why the fund is investing retirement savings in Bitcoin. How do you explain and justify the decision?
+\end{enumerate}
+
+\section*{Further Reading (Optional)}
+
+\begin{itemize}[leftmargin=*]
+\item CFA Institute (2024), ``Cryptoassets: Beyond the Hype''---overview of institutional considerations
+\item The Pensions Regulator, ``Investment guidance for defined benefit pension schemes'' (current edition)
+\item BlackRock (2024), iShares Bitcoin Trust prospectus (S-1 filing)---sections on risk factors and custody
+\end{itemize}
+
+\newpage
+
+%==============================================================================
+% PART B: TA DISCUSSION GUIDE
+%==============================================================================
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{DISCUSSION GUIDE FOR TEACHING ASSISTANT}\\[0.3em] This section is for TA use only. Do not distribute to students.}}
+\end{center}
+
+\section*{Session Timeline}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Time} & \textbf{Activity} \\
+\midrule
+0:00--0:08 & Context setting: define the scenario and clarify the fiduciary context \\
+0:08--0:22 & Discussion Question 1: Evaluating the risk-return case \\
+0:22--0:36 & Discussion Question 2: The compliance officer's objections \\
+0:36--0:48 & Discussion Question 3: Choosing the ETF / conditions for approval \\
+0:48--0:55 & Discussion Question 4: Explaining to the retired teacher \\
+0:55--1:00 & Vote and synthesis \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Discussion Questions with Guidance}
+
+\subsection*{Question 1: Does the risk-return data support the case?}
+
+\textit{``The consultant says a 2\% Bitcoin allocation would raise expected returns from 5.1\% to 5.9\%, which would close the funding gap. Is this convincing?''}
+
+\medskip
+\noindent\underline{Arguments that the data supports the case:}
+\begin{itemize}[leftmargin=*]
+\item The Sharpe ratio doubles (0.06 to 0.13)---a meaningful improvement in risk-adjusted terms
+\item The return pickup (0.8pp) would bring the portfolio above its 5.5\% target
+\item The increase in volatility is modest (9.8\% to 10.5\%) relative to the return gain
+\item The max drawdown only increases by 2pp (19\% to 21\%)---manageable at a 2\% allocation
+\item A 2\% allocation is small enough that even a total loss would not endanger the fund
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments that the data is misleading:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Past returns will not repeat}: Bitcoin's 48\% annualised return over 5 years was driven by a specific set of circumstances (ETF approval, halving cycle, post-pandemic liquidity). It would be unreasonable to assume this continues.
+\item \textbf{Volatility is understated}: Standard deviation does not capture tail risk. A 77\% drawdown on a 2\% allocation means losing \pounds 49 million---not catastrophic, but politically difficult for a pension fund. How do you explain that to members?
+\item \textbf{Correlation is not stable}: The 0.35 correlation is a 5-year average. As covered in the Week 7 lecture, BTC-equity correlation spiked to 0.5--0.7 during 2022---precisely when diversification was most needed.
+\item \textbf{Sharpe ratio caveats}: As discussed in lecture, Sharpe ratios assume normal distributions. Bitcoin's fat-tailed returns make the Sharpe misleadingly high. The Sortino ratio or maximum drawdown may be more appropriate risk measures.
+\item \textbf{The simulation assumes stable correlation}: If correlation increases during a crisis, the portfolio-level drawdown will be worse than the -21\% shown.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: The historical data is not wrong, but extrapolating it is dangerous. A responsible analysis would present multiple scenarios (base case, bear case, crisis scenario) rather than a single point estimate. Push students to think about what happens in the \textit{worst} case, not the average case---pension funds must plan for adversity.
+
+\subsection*{Question 2: How serious are the compliance officer's concerns?}
+
+\textit{``Sarah Chen raised three objections: fiduciary duty, custody concentration, and market integrity. Are these deal-breakers or manageable risks?''}
+
+\medskip
+\noindent\underline{Fiduciary duty:}
+\begin{itemize}[leftmargin=*]
+\item This is the most serious concern. UK pension trustees have a legal duty of prudence
+\item The key question: Is a 2\% allocation to a regulated ETF ``imprudent''? Arguments on both sides:
+\item \textbf{It's prudent}: Small allocation, regulated product, managed by BlackRock, provides diversification, institutional precedent exists
+\item \textbf{It's imprudent}: Underlying asset has no cash flows, extreme drawdown history, unresolved regulatory status, no Pensions Regulator guidance
+\item Practical test: Would the Trustees be comfortable defending this decision to the Pensions Regulator or in court if the investment lost 50\%+?
+\end{itemize}
+
+\medskip
+\noindent\underline{Custody concentration:}
+\begin{itemize}[leftmargin=*]
+\item Legitimate concern: Coinbase custodies Bitcoin for the majority of spot ETFs
+\item \textbf{Mitigation}: Choose FBTC (Fidelity) instead of IBIT---Fidelity Digital Assets is the custodian, providing diversification away from Coinbase
+\item Alternatively, split between IBIT and FBTC to diversify custodians
+\item Note: This is a solvable problem. It should not be a deal-breaker if the committee wants to proceed.
+\end{itemize}
+
+\medskip
+\noindent\underline{Market integrity:}
+\begin{itemize}[leftmargin=*]
+\item Valid but partially mitigated: The ETF trades on Nasdaq (regulated), and ETF NAV is based on reference prices that filter out manipulated venues
+\item Surveillance-sharing agreements exist between ETF issuers and exchanges
+\item However: the underlying spot market remains less regulated than equities. Wash trading and spoofing on offshore exchanges could still affect reference prices
+\item This risk is real but declining over time as regulation (MiCA, SEC enforcement) improves
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: None of these objections is trivially dismissible. The fiduciary duty question is the hardest---it depends on whether the Trustees believe a 2\% allocation to a regulated ETF falls within the bounds of prudent management. There is no established precedent in UK pension regulation.
+
+\subsection*{Question 3: Which ETF and what conditions?}
+
+\textit{``If you approve the allocation, which ETF do you choose? If you reject it, what would need to change for you to reconsider?''}
+
+\medskip
+\noindent\underline{ETF selection (if approved):}
+\begin{itemize}[leftmargin=*]
+\item \textbf{IBIT (BlackRock)}: Largest AUM, most liquid, but Coinbase custody
+\item \textbf{FBTC (Fidelity)}: Different custodian (Fidelity Digital Assets), same fee, strong brand
+\item \textbf{Split IBIT + FBTC}: Diversifies custodian risk---the most prudent approach
+\item \textbf{Avoid GBTC}: 1.50\% fee is unjustifiable when 0.15--0.25\% alternatives exist
+\item Additional considerations: Cross-listing in London or Europe? FX hedging costs (USD exposure)? UK tax treatment for pension schemes?
+\end{itemize}
+
+\medskip
+\noindent\underline{Conditions for approval (if rejected or deferred):}
+\begin{itemize}[leftmargin=*]
+\item UK Pensions Regulator issues guidance on crypto allocations
+\item FCA approves a UK-listed spot Bitcoin ETF (removing cross-border complexity)
+\item Bitcoin volatility declines further (e.g., 30-day vol consistently below 40\%)
+\item Custody diversification improves (more qualified custodians enter the market)
+\item A longer track record of ETF performance and tracking error
+\item Clearer regulatory classification (security vs.\ commodity) globally
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Setting conditions for future reconsideration is a legitimate and professional outcome. It acknowledges the opportunity without taking premature risk. Many investment committees use this approach for novel asset classes.
+
+\subsection*{Question 4: Explaining to the retired teacher}
+
+\textit{``A scheme member---a retired teacher---asks why the fund is investing retirement savings in Bitcoin. How do you explain and justify the decision?''}
+
+\medskip
+\noindent\underline{Good explanation:}
+\begin{itemize}[leftmargin=*]
+\item ``We're investing a very small portion---2p out of every pound---in a new type of asset through a fund managed by BlackRock, one of the world's largest investment managers.''
+\item ``The goal is to slightly improve the fund's returns to help ensure we can pay your pension in full. The rest of the portfolio---98\%---remains in traditional assets like shares and bonds.''
+\item ``Even if this investment lost all its value, which is extremely unlikely for a major ETF, the impact on your pension would be minimal.''
+\item ``We've considered the risks carefully and have put safeguards in place, including using a regulated fund and diversifying how the assets are stored.''
+\end{itemize}
+
+\medskip
+\noindent\underline{What to avoid:}
+\begin{itemize}[leftmargin=*]
+\item Technical jargon (Sharpe ratios, correlation, hash functions)
+\item Promotional language (``Bitcoin is the future of money'')
+\item Dismissiveness (``You wouldn't understand'')
+\item Overconfidence (``It's guaranteed to make money'')
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: The ability to explain complex investment decisions to non-expert stakeholders is a critical professional skill. If you can't explain why you're doing something in plain language, you may not fully understand it yourself. This also tests whether the decision \textit{feels} right---if the Trustees are uncomfortable explaining it to members, that discomfort is informative.
+
+\subsection*{Extension Question (if time permits)}
+
+\textit{``Would your answer change if this were a defined-contribution scheme (where individual members bear the risk) rather than a defined-benefit scheme (where the fund bears the risk)?''}
+
+\medskip
+In a DC scheme, risk is borne by individual members. This changes the calculus:
+\begin{itemize}[leftmargin=*]
+\item Members might \textit{choose} to allocate some of their pot to Bitcoin---it could be offered as an option alongside traditional funds
+\item Informed consent is possible: members can read a risk warning and decide for themselves
+\item The fiduciary duty is to provide \textit{appropriate options}, not to make allocation decisions for members
+\item Many US 401(k) plans are beginning to offer crypto options (Fidelity was an early mover)
+\item Counter-argument: Many DC members are financially unsophisticated. Offering volatile options without adequate education could harm members who don't understand the risk.
+\end{itemize}
+
+\section*{Concluding Vote}
+
+In the final 5 minutes, ask the class to vote:
+
+\begin{center}
+\begin{tabular}{lp{8cm}}
+\toprule
+\textbf{Option} & \textbf{Description} \\
+\midrule
+A: Approve & Allocate 2\% to BTC via spot ETF now \\
+B: Approve with conditions & Approve at 1\% initially, review in 12 months \\
+C: Defer & Reject now but set specific conditions for reconsideration \\
+D: Reject & No allocation; crypto is not appropriate for a pension fund \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Ask a few students to justify their vote, especially those who disagree with the majority. There is no ``correct'' answer---what matters is the quality of the reasoning.
+
+\section*{Synthesis Points (Final 5 minutes)}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{ETFs have made crypto investable, but ``investable'' $\neq$ ``appropriate for everyone.''} A regulated product doesn't eliminate the risks of the underlying asset. Pension funds have different obligations than hedge funds or retail investors.
+
+\item \textbf{Historical returns are seductive but unreliable.} The consultant's case rests heavily on past performance. A 48\% annualised return is extraordinary and almost certainly not repeatable. Allocation decisions must account for a wide range of future scenarios.
+
+\item \textbf{Fiduciary duty imposes a high bar.} For pension trustees, the question isn't ``could this make money?'' but ``is this consistent with our duty of prudence?'' This is a stricter standard than most investment decisions.
+
+\item \textbf{Practical issues matter: custody, fees, jurisdiction, FX.} The decision is not just ``Bitcoin yes or no''---it's about implementation. Custodian diversification, fee comparison, and cross-border considerations are part of responsible allocation.
+
+\item \textbf{Communication is part of the decision.} If you can't explain an investment to beneficiaries in clear language, reconsider whether you should be making it.
+\end{enumerate}
+
+\section*{Connection to Lecture Material}
+
+Link back to Week 7 and 8 lecture concepts:
+\begin{itemize}[leftmargin=*]
+\item Risk-return characteristics: volatility, drawdowns, Sharpe ratio limitations (Week 7)
+\item Correlation dynamics: time-varying, crisis-period increases (Week 7)
+\item Spot ETF structure, creation/redemption, fee comparison (Week 8)
+\item Institutional adoption: custody solutions, custodian concentration risk (Week 8)
+\item Market integrity: wash trading, spoofing, regulatory gaps (Week 8)
+\item Regulatory frameworks: SEC approval, MiCA, Howey test (Week 8)
+\end{itemize}
+
+\section*{Notes for TA}
+
+\begin{itemize}[leftmargin=*]
+\item This tutorial integrates content from both lectures (Weeks 7 and 8). If students haven't fully absorbed the ETF mechanics, spend a few extra minutes at the start explaining how spot ETFs work and why they matter.
+\item The fiduciary duty question is UK-specific. If students are unfamiliar with pension fund governance, briefly explain: Trustees are legally responsible for acting in members' best interests. ``Prudent'' does not mean ``no risk''---pension funds routinely invest in equities, which are also volatile---but it does mean the risk must be justified and appropriate.
+\item The compliance officer's memo is intentionally strong. Students should take it seriously and not dismiss it. Even if they ultimately vote to approve, they should acknowledge that each concern requires a specific mitigation.
+\item The ``retired teacher'' question is designed to test communication skills. Consider having students pair up and role-play: one explains, the other plays the sceptical member. This is directly useful for interviews and professional settings.
+\item The closing vote is important---it forces commitment. Tally the votes on the board and briefly discuss whether the class leaned toward approve/defer/reject and why.
+\end{itemize}
+
+\vfill
+\begin{flushright}
+\textit{End of Tutorial 7 Materials}
+\end{flushright}
+
+\end{document}

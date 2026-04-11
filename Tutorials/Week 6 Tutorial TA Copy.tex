@@ -1,0 +1,415 @@
+% Tutorial 5: USDC Depeg - ECOM215
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\usepackage[T1]{fontenc}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+
+\usepackage{array, xcolor}
+\usepackage{colortbl}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{AccentGreen}{RGB}{46, 139, 87}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\lhead{}
+\chead{}
+\rhead{\footnotesize ECOM215: Tutorial 5 --- USDC Depeg}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\title{Tutorial 5: The USDC Depeg\\[0.3em] \Large When ``Safe'' Isn't Safe\\[1em] \normalsize ECOM215: Blockchain Economics and Digital Assets}
+\author{Week 6 $\vert$ Stablecoins and Central Bank Digital Currencies}
+\date{Semester B, 2025/2026}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{CASE BRIEF FOR STUDENTS}\\[0.3em] Please read before the tutorial. Estimated reading time: 15 minutes.}}
+\end{center}
+
+\section*{Background}
+
+By early 2023, USD Coin (USDC) had established itself as the ``safe'' stablecoin. Unlike Tether (USDT), which faced persistent questions about its reserves, USDC was issued by Circle---a US-regulated company with monthly attestations from major accounting firms. Its reserves were held in cash and short-dated US Treasury bills at regulated financial institutions.
+
+USDC was the backbone of DeFi. It served as the primary stablecoin for lending protocols, DEX liquidity pools, and cross-border payments. Its market capitalisation exceeded \$40 billion. It was, by design, boring and reliable.
+
+Then, on a Friday evening in March 2023, USDC dropped to \$0.87.
+
+\section*{The Silicon Valley Bank Collapse}
+
+\textbf{Silicon Valley Bank (SVB)} was a mid-sized US bank specialising in technology startups and venture capital. It was the 16th largest bank in the United States.
+
+\medskip
+\noindent\textbf{What went wrong at SVB:}
+\begin{itemize}[leftmargin=*]
+\item SVB held large amounts of long-dated government bonds and mortgage-backed securities
+\item When interest rates rose sharply in 2022, these bonds lost value (bond prices fall when rates rise)
+\item SVB had \$17 billion in unrealised losses on its bond portfolio
+\item On March 8, 2023, SVB announced it needed to raise \$2.25 billion to shore up its balance sheet
+\item Depositors panicked; \$42 billion was withdrawn in a single day
+\item On March 10 (Friday), regulators seized SVB---the second-largest bank failure in US history
+\end{itemize}
+
+\section*{The USDC Connection}
+
+On the evening of Friday, March 10, Circle disclosed that \textbf{\$3.3 billion of USDC's cash reserves}---approximately 8\% of total reserves---were held at Silicon Valley Bank.
+
+% [FIGURE SUGGESTION: USDC price chart March 10-13, 2023, showing drop to ~$0.87]
+% Source: CoinGecko, TradingView
+
+\medskip
+\noindent\textbf{The immediate market reaction:}
+\begin{itemize}[leftmargin=*]
+\item USDC began trading below \$1 within minutes of the announcement
+\item By Saturday morning, USDC had dropped to \$0.87--\$0.90 on major exchanges
+\item Crypto markets broadly sold off; Bitcoin dropped 8\%
+\item DeFi protocols faced stress as USDC collateral lost value
+\item DAI, which uses USDC as partial backing, also briefly lost its peg
+\end{itemize}
+
+\medskip
+\noindent\textbf{The key question}: If Circle couldn't access \$3.3 billion of its reserves, could it honour redemptions at \$1?
+
+\section*{48 Hours of Uncertainty}
+
+\noindent\textbf{Friday evening, March 10:}
+\begin{itemize}[leftmargin=*]
+\item Circle's disclosure was transparent but alarming
+\item Traditional banking was closed for the weekend---no clarity on whether SVB deposits would be recovered
+\item USDC redemptions require banking infrastructure; weekend = no redemptions possible
+\item Holders could only sell on secondary markets, driving prices down
+\end{itemize}
+
+\medskip
+\noindent\textbf{Saturday, March 11:}
+\begin{itemize}[leftmargin=*]
+\item USDC traded between \$0.87 and \$0.95 across different venues
+\item Arbitrage was impossible without redemption access
+\item Rumours and speculation dominated crypto social media
+\item Some DeFi protocols paused operations; others faced liquidation pressure
+\end{itemize}
+
+\medskip
+\noindent\textbf{Sunday, March 12:}
+\begin{itemize}[leftmargin=*]
+\item US Treasury, Federal Reserve, and FDIC issued joint statement
+\item \textbf{All SVB depositors would be made whole}---including uninsured deposits above \$250,000
+\item Circle confirmed it would have full access to its SVB funds
+\item USDC began recovering toward \$1
+\end{itemize}
+
+\medskip
+\noindent\textbf{Monday, March 13:}
+\begin{itemize}[leftmargin=*]
+\item Banking resumed; Circle processed redemptions normally
+\item USDC returned to \$1 peg
+\item Crisis over---but lessons remained
+\end{itemize}
+
+\section*{Why Did the ``Safe'' Stablecoin Depeg?}
+
+\textbf{1. Counterparty risk from banking partners}
+\begin{itemize}[leftmargin=*]
+\item USDC's reserves were held in banks, not directly in Treasuries
+\item Bank deposits above \$250,000 are not FDIC-insured
+\item Circle had \$3.3B at SVB---all uninsured
+\end{itemize}
+
+\medskip
+\noindent\textbf{2. Weekend liquidity mismatch}
+\begin{itemize}[leftmargin=*]
+\item Crypto markets trade 24/7; banks operate on business days
+\item Redemptions were impossible over the weekend
+\item Arbitrage (buy cheap USDC, redeem for \$1) couldn't function
+\item Market price reflected uncertainty, not fundamentals
+\end{itemize}
+
+\medskip
+\noindent\textbf{3. Transparency as a double-edged sword}
+\begin{itemize}[leftmargin=*]
+\item Circle disclosed the SVB exposure promptly---arguably the right thing to do
+\item But the disclosure triggered the panic
+\item Tether (less transparent) saw inflows as a ``safe haven'' during the crisis
+\end{itemize}
+
+\section*{The Government Backstop}
+
+The US government's decision to guarantee all SVB deposits---not just the FDIC-insured \$250,000---was extraordinary.
+
+\medskip
+\noindent\textbf{The rationale:}
+\begin{itemize}[leftmargin=*]
+\item Prevent contagion to other regional banks
+\item Protect payroll and operations of thousands of companies
+\item Maintain financial stability
+\end{itemize}
+
+\medskip
+\noindent\textbf{The controversy:}
+\begin{itemize}[leftmargin=*]
+\item Was this a bailout? (Officials insisted it was not---shareholders and bondholders lost everything)
+\item Moral hazard: Does this encourage risky behaviour by banks and depositors?
+\item Should crypto companies benefit from government safety nets they often criticise?
+\end{itemize}
+
+\medskip
+\noindent\textbf{For USDC}: The government backstop saved Circle from a potential crisis. Without it, USDC might have faced a genuine solvency problem.
+
+\section*{Aftermath and Changes}
+
+\textbf{Circle's response:}
+\begin{itemize}[leftmargin=*]
+\item Diversified banking relationships (no single bank holds large share)
+\item Increased allocation to Treasury bills (held at BNY Mellon)
+\item Reduced reliance on cash deposits
+\item Launched ``Circle Reserve Fund'' with BlackRock
+\end{itemize}
+
+\medskip
+\noindent\textbf{Market impact:}
+\begin{itemize}[leftmargin=*]
+\item USDC market cap declined from \$43B to \$25B over following months
+\item Tether (USDT) market cap increased---perceived as less connected to US banking
+\item Some DeFi protocols diversified stablecoin holdings
+\end{itemize}
+
+\medskip
+\noindent\textbf{Regulatory implications:}
+\begin{itemize}[leftmargin=*]
+\item Renewed focus on stablecoin reserve requirements
+\item Questions about whether stablecoins should have direct central bank accounts
+\item Debate over 24/7 redemption requirements
+\end{itemize}
+
+\section*{Key Facts Summary}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Item} & \textbf{Detail} \\
+\midrule
+Date & March 10--13, 2023 \\
+USDC market cap & $\sim$\$43 billion \\
+SVB exposure & \$3.3 billion ($\sim$8\% of reserves) \\
+USDC low price & $\sim$\$0.87 \\
+Duration of depeg & $\sim$48 hours \\
+Resolution & US government guaranteed all SVB deposits \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Questions to Consider}
+
+\begin{enumerate}[leftmargin=*]
+\item Was Circle's immediate disclosure the right decision? What are the trade-offs between transparency and stability?
+
+\item Should stablecoin issuers be allowed to hold reserves in commercial banks? What alternatives exist?
+
+\item The government backstop saved USDC. Is it appropriate for crypto to benefit from traditional financial safety nets?
+
+\item How should stablecoin reserves be structured to avoid this type of risk?
+
+\item Does this case change your view of ``fiat-backed'' stablecoins as the ``safe'' option?
+\end{enumerate}
+
+\section*{Further Reading (Optional)}
+
+\begin{itemize}[leftmargin=*]
+\item Circle's March 10 and March 11 public statements
+\item Joint statement by Treasury, Federal Reserve, and FDIC (March 12, 2023)
+\item ``Lessons from the USDC Depeg''---Chainalysis blog
+\end{itemize}
+
+\newpage
+
+%==============================================================================
+% PART B: TA DISCUSSION GUIDE
+%==============================================================================
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{DISCUSSION GUIDE FOR TEACHING ASSISTANT}\\[0.3em] This section is for TA use only. Do not distribute to students.}}
+\end{center}
+
+\section*{Session Timeline}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Time} & \textbf{Activity} \\
+\midrule
+0:00--0:08 & Context setting: summarise the SVB collapse and USDC connection \\
+0:08--0:20 & Discussion Question 1: Transparency trade-offs \\
+0:20--0:32 & Discussion Question 2: Reserve structure \\
+0:32--0:44 & Discussion Question 3: Government backstops \\
+0:44--0:52 & Discussion Question 4: What is ``safe''? \\
+0:52--1:00 & Synthesis and key takeaways \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Discussion Questions with Guidance}
+
+\subsection*{Question 1: Was immediate disclosure the right call?}
+
+\textit{``Circle disclosed its SVB exposure on Friday evening, triggering the depeg. Was this the right decision? Would delaying until Monday have been better?''}
+
+\medskip
+\noindent\underline{Arguments for immediate disclosure:}
+\begin{itemize}[leftmargin=*]
+\item Legal and ethical obligation to inform holders of material risk
+\item If news leaked through other channels, trust would be destroyed
+\item Transparency is Circle's brand differentiator---silence would undermine it
+\item Markets will eventually learn; better to control the narrative
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments for delaying:}
+\begin{itemize}[leftmargin=*]
+\item Weekend timing meant no redemptions possible---panic with no relief valve
+\item By Monday, government response might have been known, reducing panic
+\item Disclosure without solution can cause unnecessary harm
+\item Ironically, Tether's opacity shielded it from scrutiny
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Transparency is valuable but creates its own dynamics. In a 24/7 market with weekend banking closures, timing of disclosure matters enormously. There's no clearly ``correct'' answer here.
+
+\subsection*{Question 2: How should stablecoin reserves be structured?}
+
+\textit{``USDC was considered safe because it held cash and Treasuries. But the cash was in a bank that failed. How should reserves be structured to avoid this?''}
+
+\medskip
+\noindent\underline{Options to discuss:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{100\% Treasury bills}: Safe from bank failure, but requires custody infrastructure
+\item \textbf{Direct central bank accounts}: Safest possible, but Fed doesn't offer this to non-banks
+\item \textbf{Multiple bank diversification}: Spreads risk, but increases complexity
+\item \textbf{Government money market funds}: Low risk, regulated, liquid
+\item \textbf{Full reserve banking license}: Become a bank, but heavy regulation
+\end{itemize}
+
+\medskip
+\noindent\underline{Trade-offs:}
+\begin{itemize}[leftmargin=*]
+\item Safety vs.\ yield (Treasuries pay interest; spreading across banks is operationally complex)
+\item Centralisation vs.\ resilience (fewer partners = simpler but riskier)
+\item Regulatory access (some safe options require licenses stablecoin issuers don't have)
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: There is no perfectly safe option within existing infrastructure. Even ``risk-free'' assets require custody, which introduces counterparty risk. This is why some argue stablecoins need direct central bank access or should become regulated banks.
+
+\subsection*{Question 3: Should crypto benefit from government safety nets?}
+
+\textit{``The US government's decision to guarantee all SVB deposits saved USDC. Is it appropriate for crypto---which often positions itself as an alternative to traditional finance---to benefit from government backstops?''}
+
+\medskip
+\noindent\underline{Arguments that it's appropriate:}
+\begin{itemize}[leftmargin=*]
+\item Circle followed the rules; it used the banking system as designed
+\item Backstop was for all depositors, not specifically for crypto
+\item Stablecoins serve real economic functions (payments, DeFi); their failure would harm people
+\item Crypto companies pay taxes and employ people---they're part of the economy
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments that it's problematic:}
+\begin{itemize}[leftmargin=*]
+\item Crypto's value proposition includes avoiding government intervention
+\item Moral hazard: Crypto companies may take more risk expecting bailouts
+\item If crypto wants to be ``outside the system,'' it shouldn't benefit from system protections
+\item Creates unfair advantage over truly decentralised alternatives
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: This exposes a fundamental tension. Stablecoins like USDC are deeply integrated with traditional finance---they're not really ``outside the system.'' The question is whether this integration should be formalised through regulation or remains an awkward hybrid.
+
+\subsection*{Question 4: What does ``safe'' mean for stablecoins?}
+
+\textit{``Before March 2023, USDC was considered the safest major stablecoin. Does this event change your assessment? What should investors look for?''}
+
+\medskip
+\noindent\underline{Points to explore:}
+\begin{itemize}[leftmargin=*]
+\item ``Safe'' is relative, not absolute---all financial instruments have risks
+\item USDC's risk was counterparty (bank failure), not fraud or design flaw
+\item The depeg was brief and fully resolved---arguably the system worked
+\item But: Resolution depended on extraordinary government intervention
+\item Transparency helped Circle recover trust, even if it caused short-term pain
+\end{itemize}
+
+\medskip
+\noindent\underline{What to look for in stablecoin safety:}
+\begin{itemize}[leftmargin=*]
+\item Reserve composition and quality
+\item Custodian and banking partner diversification
+\item Regulatory status and jurisdiction
+\item Track record through stress events
+\item Transparency and audit quality
+\item Redemption mechanisms and liquidity
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: No stablecoin is perfectly safe. The USDC case shows that even well-designed, transparent, regulated stablecoins face risks from the financial infrastructure they depend on. Due diligence requires understanding the full chain of dependencies.
+
+\subsection*{Extension Question (if time permits)}
+
+\textit{``Tether gained market share during and after the USDC crisis, despite being less transparent. What does this tell us about market preferences?''}
+
+\medskip
+This raises interesting questions about the value of transparency. USDT's opacity meant it didn't have to disclose exposure; investors fled to it as a ``known unknown'' rather than USDC's ``known risk.'' Is this rational? What does it imply for optimal disclosure policy?
+
+\section*{Synthesis Points (Final 8 minutes)}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Fiat-backed stablecoins inherit traditional banking risks.} USDC's problem wasn't its design---it was the failure of a bank where it held reserves. This is counterparty risk, not crypto risk.
+
+\item \textbf{24/7 crypto markets clash with banking hours.} The weekend timing was critical. Without functioning redemptions, arbitrage couldn't restore the peg, and market prices reflected fear.
+
+\item \textbf{Transparency creates its own dynamics.} Circle's disclosure was arguably correct, but it triggered the very panic it informed people about. Opacity (Tether) was paradoxically rewarded.
+
+\item \textbf{Government safety nets matter.} The US government backstop resolved the crisis. Without it, USDC might have faced real solvency problems. Crypto is less ``independent'' of traditional finance than often claimed.
+
+\item \textbf{``Safe'' is relative.} All stablecoins---fiat-backed, crypto-backed, algorithmic---have risks. The question is which risks you're exposed to and whether you understand them.
+\end{enumerate}
+
+\section*{Connection to Lecture Material}
+
+Link back to Week 5 lecture concepts:
+\begin{itemize}[leftmargin=*]
+\item Fiat-backed stablecoin mechanics (mint/redeem arbitrage)
+\item Reserve composition and quality
+\item Bank run dynamics and the ``run risk'' of stablecoins
+\item Comparison with Terra/Luna (different failure mode---counterparty vs.\ design)
+\end{itemize}
+
+\section*{Notes for TA}
+
+\begin{itemize}[leftmargin=*]
+\item This case is more recent and may be less familiar than Terra/Luna. Ensure students understand the SVB context before diving into USDC specifics.
+\item The timeline matters: Friday disclosure $\rightarrow$ weekend with no redemptions $\rightarrow$ Sunday government announcement $\rightarrow$ Monday recovery. Walk through this if needed.
+\item The government backstop question can get political. Keep focus on the economics and trade-offs.
+\end{itemize}
+
+\vfill
+\begin{flushright}
+\textit{End of Tutorial 5 Materials}
+\end{flushright}
+
+\end{document}

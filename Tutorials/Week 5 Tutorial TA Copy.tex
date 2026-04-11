@@ -1,0 +1,405 @@
+% Tutorial 4: Terra/Luna Collapse - ECOM215
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\usepackage[T1]{fontenc}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+
+\usepackage{array, xcolor}
+\usepackage{colortbl}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\definecolor{ImperialBlue}{RGB}{0, 62, 116}
+\definecolor{AccentGreen}{RGB}{46, 139, 87}
+\hypersetup{colorlinks,breaklinks,linkcolor=clemsonorange,urlcolor=clemsonorange,anchorcolor=clemsonorange,citecolor=black}
+
+\lhead{}
+\chead{}
+\rhead{\footnotesize ECOM215: Tutorial 4 --- Terra/Luna Collapse}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\title{Tutorial 4: Terra/Luna Collapse\\[0.3em] \Large Anatomy of a Death Spiral\\[1em] \normalsize ECOM215: Blockchain Economics and Digital Assets}
+\author{Week 5 $\vert$ Decentralised Finance (DeFi)}
+\date{Semester B, 2025/2026}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1em}
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{CASE BRIEF FOR STUDENTS}\\[0.3em] Please read before the tutorial. Estimated reading time: 15 minutes.}}
+\end{center}
+
+\section*{Background}
+
+In early May 2022, the Terra blockchain was one of the most celebrated projects in cryptocurrency. Its native stablecoin, UST (TerraUSD), had grown to become the third-largest stablecoin with a market capitalisation of approximately \$18 billion. The associated token, LUNA, had a market cap of around \$40 billion, making it a top-10 cryptocurrency.
+
+One week later, both were worthless. Approximately \$60 billion in value was destroyed in what became the largest collapse in cryptocurrency history.
+
+This case examines what Terra was, how it worked, why it failed, and what lessons it offers for understanding DeFi risks.
+
+\section*{How Terra Worked}
+
+Unlike fiat-backed stablecoins (USDC, USDT) that hold dollar reserves, UST was an \textbf{algorithmic stablecoin}. It maintained its \$1 peg through a mechanism linking it to LUNA:
+
+\medskip
+\noindent\textbf{The Core Mechanism:}
+\begin{itemize}[leftmargin=*]
+\item To \textbf{mint} 1 UST: Burn \$1 worth of LUNA
+\item To \textbf{redeem} 1 UST: Burn the UST, receive \$1 worth of LUNA
+\end{itemize}
+
+\medskip
+\noindent\textbf{How the peg was supposed to work:}
+\begin{itemize}[leftmargin=*]
+\item If UST trades above \$1: Arbitrageurs mint new UST (by burning LUNA), sell UST on the market, pocket the difference. This increases UST supply, pushing price back to \$1.
+\item If UST trades below \$1: Arbitrageurs buy cheap UST on the market, redeem for \$1 worth of LUNA, sell the LUNA. This decreases UST supply, pushing price back to \$1.
+\end{itemize}
+
+The system had no external collateral. UST's value depended entirely on the ability to redeem it for LUNA---and LUNA's value depended largely on demand for UST.
+
+\section*{The Anchor Protocol: 20\% Yields}
+
+A critical part of Terra's ecosystem was \textbf{Anchor Protocol}, a lending platform that offered approximately \textbf{20\% APY} on UST deposits.
+
+\medskip
+\noindent\textbf{Why this mattered:}
+\begin{itemize}[leftmargin=*]
+\item 20\% yield on a ``stablecoin'' was extraordinarily attractive
+\item At its peak, over 70\% of all UST was deposited in Anchor
+\item This created massive demand for UST, supporting LUNA's price
+\end{itemize}
+
+\medskip
+\noindent\textbf{Where did the yield come from?}
+\begin{itemize}[leftmargin=*]
+\item Borrowers paid interest (but borrowing demand was insufficient)
+\item Staking rewards from collateral
+\item \textbf{Subsidies from Terra's reserves}---the yield was not sustainable
+\end{itemize}
+
+The 20\% rate was essentially a customer acquisition cost, paid from a ``yield reserve'' that was being depleted. By early 2022, the reserve was shrinking and Anchor announced plans to move to a variable rate.
+
+\section*{The Collapse: May 7--13, 2022}
+
+% [FIGURE SUGGESTION: UST and LUNA price charts May 7-13, 2022]
+% Source: CoinGecko, TradingView, or the figure already in Week 4 slides
+
+\noindent\textbf{Saturday, May 7:}
+\begin{itemize}[leftmargin=*]
+\item Large withdrawals from Anchor (approximately \$2 billion over the weekend)
+\item UST begins trading slightly below \$1 (around \$0.98)
+\item Unclear whether this was an intentional attack or organic selling
+\end{itemize}
+
+\medskip
+\noindent\textbf{Sunday--Monday, May 8--9:}
+\begin{itemize}[leftmargin=*]
+\item UST drops to \$0.90, triggering panic
+\item Holders rush to redeem UST for LUNA
+\item Each redemption mints new LUNA, increasing LUNA supply
+\item LUNA price falls from \$80 to \$60
+\end{itemize}
+
+\medskip
+\noindent\textbf{Tuesday--Wednesday, May 10--11:}
+\begin{itemize}[leftmargin=*]
+\item Death spiral accelerates
+\item UST drops to \$0.30
+\item LUNA supply explodes: from 350 million to over 6 \textit{trillion} tokens
+\item LUNA price collapses: \$60 $\rightarrow$ \$1 $\rightarrow$ \$0.01 $\rightarrow$ \$0.0001
+\end{itemize}
+
+\medskip
+\noindent\textbf{Friday, May 13:}
+\begin{itemize}[leftmargin=*]
+\item Terra blockchain halted twice
+\item UST trading at \$0.10--\$0.15
+\item LUNA effectively worthless
+\item Combined losses: approximately \$60 billion
+\end{itemize}
+
+\section*{The Death Spiral Mechanism}
+
+The collapse illustrated a \textbf{reflexive death spiral}:
+
+\begin{enumerate}[leftmargin=*]
+\item UST loses peg slightly
+\item Holders redeem UST for LUNA (minting new LUNA)
+\item Increased LUNA supply pushes LUNA price down
+\item Now \$1 of LUNA is worth less, so more LUNA must be minted per UST redeemed
+\item LUNA price falls further
+\item Confidence in UST collapses (if LUNA is worthless, UST redemptions are worthless)
+\item Everyone tries to exit simultaneously
+\item System cannot absorb the selling pressure
+\end{enumerate}
+
+The fundamental problem: \textbf{circular backing}. UST was backed by LUNA, but LUNA's value depended on UST demand. When confidence broke, both collapsed together.
+
+\section*{Warning Signs That Were Ignored}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Unsustainable yields}: 20\% APY with no clear source of returns
+\item \textbf{Concentration risk}: 70\%+ of UST in a single protocol (Anchor)
+\item \textbf{No external collateral}: Nothing outside the system to absorb shocks
+\item \textbf{Previous stress}: UST had briefly lost its peg in May 2021
+\item \textbf{Academic warnings}: Researchers had identified the death spiral risk
+\item \textbf{Size mismatch}: UST market cap (\$18B) approaching LUNA market cap (\$40B)---less ``buffer''
+\end{itemize}
+
+\section*{The Aftermath}
+
+\textbf{Immediate consequences:}
+\begin{itemize}[leftmargin=*]
+\item Tens of thousands of investors lost substantial savings
+\item Some retail investors had put life savings into Anchor for the 20\% yield
+\item Contagion spread: Crypto hedge funds (Three Arrows Capital) and lenders (Celsius, Voyager) collapsed in subsequent weeks
+\end{itemize}
+
+\medskip
+\noindent\textbf{Legal and regulatory:}
+\begin{itemize}[leftmargin=*]
+\item Do Kwon (Terra founder) charged with fraud by US SEC and South Korean authorities
+\item Arrested in Montenegro (March 2023) while travelling on false documents
+\item Extradition proceedings ongoing
+\item Accelerated regulatory focus on stablecoins globally
+\end{itemize}
+
+\medskip
+\noindent\textbf{Industry response:}
+\begin{itemize}[leftmargin=*]
+\item Algorithmic stablecoins largely discredited
+\item Greater scrutiny of yield sources (``Where does the yield come from?'')
+\item MiCA regulation (EU) explicitly addresses algorithmic stablecoin risks
+\end{itemize}
+
+\section*{Key Facts Summary}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Item} & \textbf{Detail} \\
+\midrule
+Date of collapse & May 7--13, 2022 \\
+UST market cap (peak) & $\sim$\$18 billion \\
+LUNA market cap (peak) & $\sim$\$40 billion \\
+Total value destroyed & $\sim$\$60 billion \\
+LUNA supply change & 350 million $\rightarrow$ 6+ trillion \\
+LUNA price change & \$80 $\rightarrow$ \$0.0001 \\
+Anchor yield & $\sim$20\% APY \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Questions to Consider}
+
+\begin{enumerate}[leftmargin=*]
+\item Why did so many people invest in a system with such obvious risks? What role did the 20\% yield play?
+
+\item Could the collapse have been prevented once it started? What interventions might have worked?
+
+\item How is Terra/Luna different from a traditional bank run? How is it similar?
+
+\item Should algorithmic stablecoins be banned, regulated, or allowed to fail?
+
+\item What due diligence should investors perform before depositing funds in DeFi protocols?
+\end{enumerate}
+
+\section*{Further Reading (Optional)}
+
+\begin{itemize}[leftmargin=*]
+\item ``The Fall of Terra: A Timeline'' --- The Block Research
+\item Nansen research report on Terra wallet flows
+\item SEC complaint against Terraform Labs (February 2023)
+\end{itemize}
+
+\newpage
+
+%==============================================================================
+% PART B: TA DISCUSSION GUIDE
+%==============================================================================
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{DISCUSSION GUIDE FOR TEACHING ASSISTANT}\\[0.3em] This section is for TA use only. Do not distribute to students.}}
+\end{center}
+
+\section*{Session Timeline}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Time} & \textbf{Activity} \\
+\midrule
+0:00--0:08 & Context setting: summarise the mechanism and collapse \\
+0:08--0:20 & Discussion Question 1: Why did people invest? \\
+0:20--0:32 & Discussion Question 2: Could it have been stopped? \\
+0:32--0:44 & Discussion Question 3: Bank run parallels \\
+0:44--0:52 & Discussion Question 4: Regulatory response \\
+0:52--1:00 & Synthesis and key takeaways \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Discussion Questions with Guidance}
+
+\subsection*{Question 1: Why did people invest despite the risks?}
+
+\textit{``The circular backing and unsustainable yields were visible to anyone who looked. Why did so many people---including sophisticated investors---put money into Terra?''}
+
+\medskip
+\noindent\textbf{Points that may emerge:}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Yield hunger}: In a low-interest-rate environment, 20\% on a ``stablecoin'' was irresistible
+\item \textbf{Social proof}: Major VCs (Jump, Three Arrows) invested; ``smart money'' validated it
+\item \textbf{Complexity as camouflage}: The mechanism was complicated enough that many didn't understand the risks
+\item \textbf{Short-term thinking}: Many knew it was risky but thought they could exit before collapse
+\item \textbf{Normalisation}: UST had existed for years and survived a prior stress test (May 2021)
+\item \textbf{Motivated reasoning}: People wanted to believe; confirmation bias filtered out warnings
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: High yields without clear sources should always trigger scepticism. ``Where does the yield come from?'' is the fundamental due diligence question in DeFi.
+
+\subsection*{Question 2: Could the collapse have been stopped?}
+
+\textit{``Once UST started losing its peg on May 7, was the collapse inevitable? What interventions might have worked?''}
+
+\medskip
+\noindent\underline{Potential interventions:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Bitcoin reserves}: Luna Foundation Guard had $\sim$\$3B in BTC reserves; they deployed them but it was insufficient
+\item \textbf{Circuit breakers}: Pause redemptions temporarily to prevent panic spiral
+\item \textbf{External bailout}: A large institution could have provided liquidity (none did)
+\item \textbf{Mint caps}: Limit how much LUNA could be minted per day (but this breaks the peg mechanism)
+\end{itemize}
+
+\medskip
+\noindent\underline{Why interventions failed or wouldn't work:}
+\begin{itemize}[leftmargin=*]
+\item \$3B reserves vs \$18B UST market cap---insufficient buffer
+\item Pausing redemptions destroys confidence in the peg entirely
+\item No ``lender of last resort'' in DeFi (unlike central banks for traditional banks)
+\item The mechanism itself was the problem---any fix undermines the core design
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: Once a death spiral starts in a system with circular backing, it may be impossible to stop. The design was fundamentally fragile, not just poorly managed.
+
+\subsection*{Question 3: How is this like (and unlike) a bank run?}
+
+\textit{``Traditional banks can also experience runs. How is Terra/Luna similar to a bank run? How is it different?''}
+
+\medskip
+\noindent\underline{Similarities:}
+\begin{itemize}[leftmargin=*]
+\item Confidence-driven: Both collapse when depositors lose faith
+\item Self-fulfilling: The act of withdrawing causes further losses
+\item Speed matters: Slow withdrawals are manageable; panic is not
+\item Contagion: Both can spread to connected institutions
+\end{itemize}
+
+\medskip
+\noindent\underline{Differences:}
+\begin{itemize}[leftmargin=*]
+\item \textbf{No deposit insurance}: Banks have FDIC/government backstop; DeFi does not
+\item \textbf{No lender of last resort}: Central banks provide emergency liquidity; no equivalent in DeFi
+\item \textbf{24/7 markets}: Bank runs historically took days; Terra collapsed in hours
+\item \textbf{Transparency}: Everyone could watch reserves drain in real-time (accelerated panic)
+\item \textbf{Circular backing}: Banks hold external assets (loans, bonds); Terra's backing was internal
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: DeFi has recreated traditional financial risks (runs, leverage, contagion) without the safety infrastructure (insurance, central banks, regulation) that evolved over centuries to manage them.
+
+\subsection*{Question 4: What should regulators do about algorithmic stablecoins?}
+
+\textit{``After Terra, regulators worldwide have proposed rules for stablecoins. Should algorithmic stablecoins be banned? Regulated? Left alone to fail?''}
+
+\medskip
+\noindent\underline{Arguments for banning:}
+\begin{itemize}[leftmargin=*]
+\item Retail investors cannot assess the risks
+\item No algorithmic stablecoin has achieved long-term stability at scale
+\item Systemic risk if they grow large enough
+\item Consumer protection mandate
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments for regulation (not banning):}
+\begin{itemize}[leftmargin=*]
+\item Innovation shouldn't be prohibited, just controlled
+\item Require clear disclosures, risk warnings, investor caps
+\item Reserve requirements or capital buffers
+\item Let sophisticated investors participate with informed consent
+\end{itemize}
+
+\medskip
+\noindent\underline{Arguments for allowing failure:}
+\begin{itemize}[leftmargin=*]
+\item Caveat emptor---investors should do due diligence
+\item Market discipline: Failures teach lessons
+\item Regulation may not prevent fraud and gives false sense of security
+\item DeFi is global; national bans just push activity elsewhere
+\end{itemize}
+
+\medskip
+\noindent\textbf{Key insight}: MiCA (EU) essentially requires stablecoins to have reserves, which effectively prohibits pure algorithmic models. The US approach remains unclear. There's genuine tension between innovation and protection.
+
+\subsection*{Extension Question (if time permits)}
+
+\textit{``Do Kwon is facing fraud charges. But the mechanism was public---anyone could read the smart contracts. Is it fraud if everything was transparent?''}
+
+\medskip
+This raises interesting questions about disclosure vs.\ fraud. The SEC alleges misrepresentation about the stability mechanism and sustainability of yields, not just that the system failed.
+
+\section*{Synthesis Points (Final 8 minutes)}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Circular backing is fundamentally fragile.} When asset A is backed by asset B, and asset B's value depends on demand for asset A, you have a system that can collapse reflexively.
+
+\item \textbf{Unsustainable yields are a red flag.} 20\% APY with no clear source of returns should trigger immediate scepticism. ``Where does the yield come from?'' is essential due diligence.
+
+\item \textbf{DeFi has recreated traditional financial risks without traditional safeguards.} Bank runs, leverage, contagion---all present, but without deposit insurance, lenders of last resort, or regulatory oversight.
+
+\item \textbf{Transparency can accelerate panic.} Real-time visibility into reserve depletion may have made the run faster, not slower.
+
+\item \textbf{Contagion is real.} Terra's collapse triggered a cascade (Three Arrows, Celsius, Voyager) that wiped out hundreds of billions across the crypto ecosystem.
+\end{enumerate}
+
+\section*{Connection to Lecture Material}
+
+Link back to Week 4 lecture concepts:
+\begin{itemize}[leftmargin=*]
+\item DeFi risks: smart contract, economic design, liquidity, composability
+\item Liquidation cascades and reflexivity
+\item The ``decentralisation illusion''---Terra had centralised points of failure
+\item Flash loans and market manipulation (not directly involved here, but related attack vectors)
+\end{itemize}
+
+\section*{Notes for TA}
+
+\begin{itemize}[leftmargin=*]
+\item Students may ask ``who attacked Terra?'' The evidence suggests large-scale selling, but whether it was a coordinated attack or organic panic remains debated. You don't need to resolve this.
+\item Do Kwon may be a polarising figure for some crypto enthusiasts. Keep discussion focused on the mechanism and economics, not personality.
+\end{itemize}
+
+\vfill
+\begin{flushright}
+\textit{End of Tutorial 4 Materials}
+\end{flushright}
+
+\end{document}
