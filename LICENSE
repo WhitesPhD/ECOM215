@@ -1,0 +1,100 @@
+ECOM215 — Blockchain Economics and Digital Assets
+Copyright (c) 2026 Daniele Bianchi
+
+This work is licensed under the Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International License
+(CC BY-NC-ND 4.0).
+
+To view a copy of this license, visit
+https://creativecommons.org/licenses/by-nc-nd/4.0/
+or send a letter to Creative Commons, PO Box 1866, Mountain View,
+CA 94042, USA.
+
+--------------------------------------------------------------------
+SUMMARY (not a substitute for the full legal code)
+--------------------------------------------------------------------
+
+You are free to:
+
+  Share — copy and redistribute the material in any medium or
+  format, for non-commercial purposes, provided you follow the
+  terms below.
+
+Under the following terms:
+
+  Attribution — You must give appropriate credit to the author
+  (Daniele Bianchi, ECOM215, Queen Mary, University of London),
+  provide a link to the license, and indicate if any changes were
+  made. You may do so in any reasonable manner, but not in any way
+  that suggests the licensor endorses you or your use.
+
+  NonCommercial — You may not use the material for commercial
+  purposes. Using it as assigned reading in a paid course at
+  another institution is not permitted without prior written
+  permission.
+
+  NoDerivatives — If you remix, transform, or build upon the
+  material, you may not distribute the modified material. You may
+  not publish an edited, translated, or adapted version of these
+  lectures, notes, tutorials, or the chat widget while still
+  attributing the original author.
+
+  No additional restrictions — You may not apply legal terms or
+  technological measures that legally restrict others from doing
+  anything the license permits.
+
+Notices:
+
+  You do not have to comply with the license for elements of the
+  material in the public domain or where your use is permitted by
+  an applicable exception or limitation.
+
+  No warranties are given. The license may not give you all of the
+  permissions necessary for your intended use. Other rights such
+  as publicity, privacy, or moral rights may limit how you use the
+  material.
+
+--------------------------------------------------------------------
+THIRD-PARTY CONTENT
+--------------------------------------------------------------------
+
+This repository includes figures and data visualisations sourced
+from third parties, including (non-exhaustively):
+
+  - Glassnode (glassnode.com)
+  - The Block (theblock.co)
+  - BIS Innovation Hub
+  - Atlantic Council CBDC Tracker
+  - Coinglass, Kaiko, Etherscan, DeFiLlama, CoinGecko
+
+Those figures retain their original copyrights and licenses. They
+are reproduced here strictly for non-commercial educational use
+under fair dealing / fair use provisions and are not covered by
+the CC BY-NC-ND license above. Any reuse of those figures should
+be cleared with the original source.
+
+--------------------------------------------------------------------
+CHAT WIDGET DEPENDENCIES
+--------------------------------------------------------------------
+
+The chat widget at /chat/ calls third-party APIs (Anthropic or
+OpenAI) using API keys the user supplies themselves. The author
+and this repository do not receive, store, or process any user
+API keys. Use of those APIs is governed by the respective
+provider's terms of service.
+
+--------------------------------------------------------------------
+NOT FINANCIAL, LEGAL, OR INVESTMENT ADVICE
+--------------------------------------------------------------------
+
+All content in this repository is provided for educational
+purposes as part of a university course. Nothing contained in
+these lectures, notes, tutorials, or the chat widget constitutes
+financial, investment, legal, tax, or regulatory advice. The
+author makes no representations as to the accuracy, completeness,
+or timeliness of any information presented, and accepts no
+liability for decisions taken on the basis of this material.
+
+--------------------------------------------------------------------
+Full legal code: https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
+--------------------------------------------------------------------
