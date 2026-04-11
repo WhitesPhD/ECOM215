@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ECOM215 — Course Chat</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/marked@14.1.2/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <style>
   :root {
     --imperial: #003e74;
@@ -183,6 +186,86 @@
     background: var(--bot-bg);
     color: var(--bot-fg);
     border-bottom-left-radius: 4px;
+  }
+  /* Rendered Markdown bubbles need normal whitespace handling so block
+     elements (headings, lists, tables) lay out correctly. The plain-text
+     pre-wrap rule is kept for user/system bubbles above. */
+  .msg.assistant .bubble.markdown { white-space: normal; }
+  .msg.assistant .bubble.markdown > *:first-child { margin-top: 0; }
+  .msg.assistant .bubble.markdown > *:last-child { margin-bottom: 0; }
+  .msg.assistant .bubble.markdown h1,
+  .msg.assistant .bubble.markdown h2,
+  .msg.assistant .bubble.markdown h3,
+  .msg.assistant .bubble.markdown h4 {
+    margin: 14px 0 6px;
+    font-weight: 600;
+    color: var(--imperial);
+    line-height: 1.3;
+  }
+  .msg.assistant .bubble.markdown h1 { font-size: 1.25em; }
+  .msg.assistant .bubble.markdown h2 { font-size: 1.15em; }
+  .msg.assistant .bubble.markdown h3 { font-size: 1.05em; }
+  .msg.assistant .bubble.markdown h4 { font-size: 1em; }
+  .msg.assistant .bubble.markdown p { margin: 8px 0; }
+  .msg.assistant .bubble.markdown ul,
+  .msg.assistant .bubble.markdown ol { margin: 8px 0; padding-left: 22px; }
+  .msg.assistant .bubble.markdown li { margin: 3px 0; }
+  .msg.assistant .bubble.markdown li > p { margin: 2px 0; }
+  .msg.assistant .bubble.markdown hr {
+    border: none;
+    border-top: 1px solid #d8dce3;
+    margin: 14px 0;
+  }
+  .msg.assistant .bubble.markdown strong { font-weight: 600; }
+  .msg.assistant .bubble.markdown em { font-style: italic; }
+  .msg.assistant .bubble.markdown code {
+    background: #e6e8ed;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+  .msg.assistant .bubble.markdown pre {
+    background: #e6e8ed;
+    padding: 10px 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 10px 0;
+  }
+  .msg.assistant .bubble.markdown pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.9em;
+  }
+  .msg.assistant .bubble.markdown table {
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 0.95em;
+  }
+  .msg.assistant .bubble.markdown th,
+  .msg.assistant .bubble.markdown td {
+    border: 1px solid #d8dce3;
+    padding: 5px 10px;
+    text-align: left;
+  }
+  .msg.assistant .bubble.markdown th {
+    background: #eef1f5;
+    font-weight: 600;
+  }
+  .msg.assistant .bubble.markdown blockquote {
+    margin: 10px 0;
+    padding: 4px 0 4px 12px;
+    border-left: 3px solid #c9cfd8;
+    color: #4a5160;
+  }
+  .msg.assistant .bubble.markdown a {
+    color: var(--imperial);
+    text-decoration: underline;
+  }
+  .msg.assistant .bubble.markdown .katex-display {
+    margin: 10px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
   .msg .sources {
     margin-top: 8px;
@@ -773,11 +856,90 @@
     return typeLabel + weekPart + (sectionPart ? " — " + sectionPart : "");
   }
 
+  // Render assistant replies as Markdown with embedded KaTeX math.
+  // Math blocks are extracted before `marked` runs so the Markdown parser
+  // cannot corrupt them (e.g. `*` inside math being read as emphasis), then
+  // re-inserted as pre-rendered KaTeX HTML via a placeholder swap.
+  function renderAssistantHTML(text) {
+    if (!window.marked || !window.katex) return null;
+
+    // Step 1: protect escaped dollars (`\$`) so they don't participate as
+    // inline-math delimiters. Claude often writes `$\$5,656$` (math mode
+    // containing an escaped dollar, rendered by KaTeX as "$5,656"); the
+    // naive regex otherwise eats the inner `\$` as a closing delimiter and
+    // chews up the surrounding prose.
+    const DLR = "\uE000DLR\uE000";
+    const DLR_RE = /\uE000DLR\uE000/g;
+    let src = text.replace(/\\\$/g, DLR);
+
+    // Step 2: extract math blocks. Inside math content, restore DLR back
+    // to `\$` so KaTeX still renders it as a literal dollar sign.
+    const blocks = [];
+    const placeholder = (i) => "\uE001MATH" + i + "\uE002";
+    const pushMath = (body, display) => {
+      blocks.push({
+        math: body.replace(DLR_RE, () => "\\$"),
+        display,
+      });
+      return placeholder(blocks.length - 1);
+    };
+    // Order matters: longest / most specific delimiters first.
+    src = src.replace(/\$\$([\s\S]+?)\$\$/g, (_m, body) => pushMath(body, true));
+    src = src.replace(/\\\[([\s\S]+?)\\\]/g, (_m, body) => pushMath(body, true));
+    src = src.replace(/\\\(([\s\S]+?)\\\)/g, (_m, body) => pushMath(body, false));
+    // Inline `$…$` — require a non-space right after the opening `$` so we
+    // don't eat literal dollar amounts like "$5 and $10".
+    src = src.replace(/\$([^\s$][^$\n]*?)\$/g, (_m, body) => pushMath(body, false));
+
+    // Step 3: any DLR tokens that survived (i.e. escaped dollars that were
+    // in prose, not in math) become literal `$` in the outer text.
+    src = src.replace(DLR_RE, () => "$");
+
+    let html;
+    try {
+      html = window.marked.parse(src);
+    } catch (_) {
+      return null;
+    }
+
+    // Re-insert math blocks, rendered by KaTeX.
+    html = html.replace(/\uE001MATH(\d+)\uE002/g, (_m, idx) => {
+      const block = blocks[parseInt(idx, 10)];
+      if (!block) return "";
+      try {
+        return window.katex.renderToString(block.math, {
+          throwOnError: false,
+          displayMode: block.display,
+          output: "html",
+        });
+      } catch (_) {
+        // Fall back to escaped raw LaTeX so the student at least sees the
+        // source rather than a broken render.
+        const esc = (block.math || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+        return block.display ? "<pre>" + esc + "</pre>" : "<code>" + esc + "</code>";
+      }
+    });
+    return html;
+  }
+
   function addMessage(role, text, sources) {
     const container = $("#messages");
     const msg = el("div", { class: "msg " + role });
     const bubble = el("div", { class: "bubble" });
-    bubble.textContent = text;
+    if (role === "assistant") {
+      const html = renderAssistantHTML(text);
+      if (html != null) {
+        bubble.classList.add("markdown");
+        bubble.innerHTML = html;
+      } else {
+        bubble.textContent = text;
+      }
+    } else {
+      bubble.textContent = text;
+    }
     msg.appendChild(bubble);
 
     if (sources && sources.length) {

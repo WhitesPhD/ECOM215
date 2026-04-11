@@ -123,12 +123,33 @@ DROP_COMMAND_ARITY = {
 }
 
 # Environments whose content we drop outright (figures, tikz, tables that
-# carry no useful prose).
+# carry no useful prose). Math environments (align, equation, gather, …) are
+# NOT dropped — they are extracted and restored verbatim so the model can
+# read the derivations.
 DROP_ENVIRONMENTS = {
-    "tikzpicture", "figure", "wrapfigure", "pspicture", "equation",
-    "align", "align*", "equation*", "eqnarray", "eqnarray*",
+    "tikzpicture", "figure", "wrapfigure", "pspicture",
     "thebibliography", "filecontents",
 }
+
+# Math environments whose content we preserve verbatim. Claude/GPT read
+# LaTeX math fine, so there is no point stripping it to "[math]".
+MATH_ENVIRONMENTS = (
+    "align", "align*", "equation", "equation*",
+    "gather", "gather*", "multline", "multline*",
+    "eqnarray", "eqnarray*", "aligned", "gathered",
+)
+
+# Matches display math delimited by environments, \[...\], $$...$$, or $...$.
+# Applied in order; longer/more specific patterns first.
+_MATH_ENV_ALT = "|".join(re.escape(e) for e in MATH_ENVIRONMENTS)
+RE_MATH_PATTERNS = [
+    re.compile(r"\\begin\{(" + _MATH_ENV_ALT + r")\}.*?\\end\{\1\}", re.DOTALL),
+    re.compile(r"\\\[.*?\\\]", re.DOTALL),
+    re.compile(r"\$\$.*?\$\$", re.DOTALL),
+    re.compile(r"(?<!\\)\$[^$\n]+?\$"),
+]
+
+MATH_PLACEHOLDER_RE = re.compile(r"\x00MATH(\d+)\x00")
 
 
 def strip_comments(text: str) -> str:
@@ -241,14 +262,44 @@ def strip_list_markers(text: str) -> str:
     return text
 
 
-def strip_math(text: str) -> str:
-    """Replace inline and display math with a placeholder [math]."""
-    # Display math \\[ ... \\] and $$ ... $$
-    text = re.sub(r"\\\[.*?\\\]", " [math] ", text, flags=re.DOTALL)
-    text = re.sub(r"\$\$.*?\$\$", " [math] ", text, flags=re.DOTALL)
-    # Inline math $ ... $
-    text = re.sub(r"(?<!\\)\$[^$]*\$", " [math] ", text, flags=re.DOTALL)
-    return text
+def extract_math(text: str) -> tuple[str, list[str]]:
+    """Replace math blocks with ``\\x00MATH<n>\\x00`` placeholders and return
+    ``(text_with_placeholders, math_blocks)``. The original LaTeX for each
+    block is preserved so it can be re-inserted after the surrounding text
+    has been cleaned, keeping derivations readable to the downstream LLM."""
+    blocks: list[str] = []
+
+    def _sub(match: re.Match[str]) -> str:
+        idx = len(blocks)
+        blocks.append(match.group(0))
+        return f"\x00MATH{idx}\x00"
+
+    for pattern in RE_MATH_PATTERNS:
+        text = pattern.sub(_sub, text)
+    return text, blocks
+
+
+def restore_math(text: str, blocks: list[str]) -> str:
+    """Swap ``\\x00MATH<n>\\x00`` placeholders back for the original LaTeX."""
+    if not blocks:
+        return text
+
+    def _sub(match: re.Match[str]) -> str:
+        idx = int(match.group(1))
+        if idx >= len(blocks):
+            return ""
+        raw = blocks[idx]
+        # Normalise the `{,}` thousands-separator trick (`4{,}000` → `4,000`)
+        # so numbers read cleanly. We deliberately leave custom emphasis
+        # commands like `\highlight{...}` untouched — an LLM reads them
+        # fine as raw LaTeX, and a naive strip breaks on nested braces.
+        raw = raw.replace("{,}", ",")
+        # Collapse internal whitespace so the placeholder doesn't introduce
+        # gratuitous blank lines into the surrounding prose.
+        raw = re.sub(r"\s+", " ", raw).strip()
+        return " " + raw + " "
+
+    return MATH_PLACEHOLDER_RE.sub(_sub, text)
 
 
 def normalise_whitespace(text: str) -> str:
@@ -259,8 +310,16 @@ def normalise_whitespace(text: str) -> str:
 
 
 def latex_to_text(latex: str) -> str:
-    """Best-effort conversion of a LaTeX fragment to readable plain text."""
+    """Best-effort conversion of a LaTeX fragment to readable plain text.
+
+    Math blocks (``align*``, ``equation``, ``\\[...\\]``, ``$...$``, …) are
+    extracted up front and re-inserted verbatim at the end, so derivations
+    survive the surrounding prose cleanup intact."""
     text = strip_comments(latex)
+    # Pull math out before any cleanup runs — math content would otherwise
+    # be mangled by `unwrap_text_commands`, the `\\[a-zA-Z]+` sweep, and the
+    # `{` / `}` strip at the bottom of this function.
+    text, math_blocks = extract_math(text)
     # Strip the leading \section{...} / \subsection{...} declaration; the
     # title is already captured on the chunk's metadata.
     text = re.sub(
@@ -269,7 +328,6 @@ def latex_to_text(latex: str) -> str:
         text,
     )
     text = strip_environments(text, DROP_ENVIRONMENTS)
-    text = strip_math(text)
     text = strip_list_markers(text)
     text = unwrap_text_commands(text)
     # Collapse leftover LaTeX escapes
@@ -284,6 +342,7 @@ def latex_to_text(latex: str) -> str:
     text = text.replace("---", "—").replace("--", "–")
     text = text.replace("``", "“").replace("''", "”")
     text = re.sub(r"\s+([,.;:!?])", r"\1", text)
+    text = restore_math(text, math_blocks)
     return normalise_whitespace(text)
 
 
@@ -331,20 +390,82 @@ def split_sections(tex: str) -> list[RawSection]:
     return sections
 
 
-# For Beamer decks without sections, fall back to frames.
-def split_frames(tex: str) -> list[tuple[str, str]]:
+# Frame-level chunking for Beamer decks. We walk the body linearly and emit
+# one chunk per `\begin{frame}...\end{frame}`, tagging each with the
+# most-recent `\section` / `\subsection` so retrieval keeps the parent
+# context as metadata without merging all frames under a section into a
+# single giant chunk.
+
+RE_BEAMER_EVENT = re.compile(
+    r"\\(section|subsection)\*?\s*\{([^}]*)\}"
+    r"|\\begin\{frame\}(?:\[[^\]]*\])?\s*(?:\{([^}]*)\})?",
+)
+RE_FRAME_END = re.compile(r"\\end\{frame\}")
+RE_FRAMETITLE_CMD = re.compile(r"\\frametitle\s*\{([^}]*)\}")
+
+
+@dataclass
+class BeamerFrame:
+    section: str | None  # most recent \section, if any
+    subsection: str | None  # most recent \subsection, if any
+    title: str  # frame title (possibly empty)
+    body: str  # full `\begin{frame}...\end{frame}` text
+
+
+def split_beamer_frames(tex: str) -> list[BeamerFrame]:
+    """Walk a Beamer .tex body and return one entry per frame, annotated
+    with the enclosing `\\section` / `\\subsection`."""
     m_begin = RE_BEGIN_DOC.search(tex)
     m_end = RE_END_DOC.search(tex)
-    body = tex[(m_begin.end() if m_begin else 0) : (m_end.start() if m_end else len(tex))]
-    titles = list(RE_FRAME_TITLE.finditer(body))
-    if not titles:
-        return []
-    chunks: list[tuple[str, str]] = []
-    for i, m in enumerate(titles):
-        start = m.start()
-        end = titles[i + 1].start() if i + 1 < len(titles) else len(body)
-        chunks.append((m.group(1).strip(), body[start:end]))
-    return chunks
+    body = tex[
+        (m_begin.end() if m_begin else 0) : (m_end.start() if m_end else len(tex))
+    ]
+
+    frames: list[BeamerFrame] = []
+    current_section: str | None = None
+    current_subsection: str | None = None
+
+    pos = 0
+    while pos < len(body):
+        m = RE_BEAMER_EVENT.search(body, pos)
+        if m is None:
+            break
+        if m.group(1) is not None:
+            # \section or \subsection declaration
+            level = m.group(1)
+            title = m.group(2).strip()
+            if level == "section":
+                current_section = title
+                current_subsection = None
+            else:
+                current_subsection = title
+            pos = m.end()
+            continue
+
+        # `\begin{frame}` — find matching `\end{frame}`.
+        frame_title = (m.group(3) or "").strip()
+        end_m = RE_FRAME_END.search(body, m.end())
+        if end_m is None:
+            break
+        frame_body = body[m.start() : end_m.end()]
+
+        # Some frames use `\frametitle{...}` instead of the brace form.
+        if not frame_title:
+            ft = RE_FRAMETITLE_CMD.search(frame_body)
+            if ft:
+                frame_title = ft.group(1).strip()
+
+        frames.append(
+            BeamerFrame(
+                section=current_section,
+                subsection=current_subsection,
+                title=frame_title,
+                body=frame_body,
+            )
+        )
+        pos = end_m.end()
+
+    return frames
 
 
 # ---------------------------------------------------------------------------
@@ -495,6 +616,71 @@ def build_chunks_for_file(tex_path: Path, source_type: str) -> list[Chunk]:
     rel_pdf = str(pdf_path.relative_to(SOURCE_ROOT))
 
     chunks: list[Chunk] = []
+
+    # Beamer decks get one chunk per frame (with the enclosing \section /
+    # \subsection carried as metadata), so derivations don't get truncated
+    # by the per-chunk char clip in the chat UI. Non-Beamer files (Notes,
+    # Tutorials) still chunk at the \section / \subsection level.
+    is_beamer = "\\begin{frame}" in tex_clean
+
+    if is_beamer:
+        frames = split_beamer_frames(tex_clean)
+        frame_titles = [f.title for f in frames]
+        for i, frame in enumerate(frames):
+            title_clean = latex_to_text(frame.title) or frame.title or f"Frame {i + 1}"
+            section_clean = latex_to_text(frame.section) if frame.section else None
+            subsection_clean = (
+                latex_to_text(frame.subsection) if frame.subsection else None
+            )
+            tex_text = latex_to_text(frame.body)
+
+            # Boundary for the PDF slice: the next frame title that has one.
+            next_title = None
+            for j in range(i + 1, len(frames)):
+                if frame_titles[j]:
+                    next_title = frame_titles[j]
+                    break
+            pdf_text = slice_pdf_by_title(pdf_dump, title_clean, next_title)
+
+            # `section` and `subsection` mirror the article-mode convention:
+            # the deepest heading is the subsection label, the parent the
+            # section label. For a frame inside a section, that means
+            # section=<\section title>, subsection=<frame title>.
+            if section_clean:
+                section_label = section_clean
+                subsection_label: str | None = subsection_clean or title_clean
+            else:
+                section_label = title_clean
+                subsection_label = subsection_clean
+
+            chunk_id = "-".join(
+                filter(
+                    None,
+                    [
+                        source_type,
+                        f"week-{week}" if week is not None else None,
+                        f"f{i + 1:03d}",
+                        slugify(title_clean),
+                    ],
+                )
+            )
+            chunks.append(
+                Chunk(
+                    id=chunk_id,
+                    source_type=source_type,
+                    week=week,
+                    title_full=doc_title,
+                    section=section_label,
+                    subsection=subsection_label,
+                    tex_path=rel_tex,
+                    pdf_path=rel_pdf,
+                    tex_text=tex_text,
+                    pdf_text=pdf_text,
+                    token_estimate=estimate_tokens(tex_text),
+                )
+            )
+        return chunks
+
     sections = split_sections(tex_clean)
 
     if sections:
@@ -508,7 +694,7 @@ def build_chunks_for_file(tex_path: Path, source_type: str) -> list[Chunk]:
             if sec.level == "section":
                 current_section = title_clean
                 section_label = title_clean
-                subsection_label: str | None = None
+                subsection_label = None
             else:  # subsection
                 section_label = current_section or title_clean
                 subsection_label = title_clean
@@ -538,41 +724,6 @@ def build_chunks_for_file(tex_path: Path, source_type: str) -> list[Chunk]:
                     title_full=doc_title,
                     section=section_label,
                     subsection=subsection_label,
-                    tex_path=rel_tex,
-                    pdf_path=rel_pdf,
-                    tex_text=tex_text,
-                    pdf_text=pdf_text,
-                    token_estimate=estimate_tokens(tex_text),
-                )
-            )
-    else:
-        # Beamer-style: no \section — fall back to frames.
-        frames = split_frames(tex_clean)
-        frame_titles = [t for t, _ in frames]
-        for i, (title, body) in enumerate(frames):
-            title_clean = latex_to_text(title) or title
-            tex_text = latex_to_text(body)
-            next_title = frame_titles[i + 1] if i + 1 < len(frames) else None
-            pdf_text = slice_pdf_by_title(pdf_dump, title_clean, next_title)
-            chunk_id = "-".join(
-                filter(
-                    None,
-                    [
-                        source_type,
-                        f"week-{week}" if week is not None else None,
-                        f"f{i + 1:03d}",
-                        slugify(title_clean),
-                    ],
-                )
-            )
-            chunks.append(
-                Chunk(
-                    id=chunk_id,
-                    source_type=source_type,
-                    week=week,
-                    title_full=doc_title,
-                    section=title_clean,
-                    subsection=None,
                     tex_path=rel_tex,
                     pdf_path=rel_pdf,
                     tex_text=tex_text,
