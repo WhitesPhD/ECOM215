@@ -1171,7 +1171,12 @@
   async function callAnthropic(cfg, systemPrompt, convo) {
     const body = {
       model: cfg.model,
-      max_tokens: 1024,
+      // 4096 gives the model room to walk through a full derivation,
+      // produce a comparison table, and still end its paragraph. The
+      // previous 1024 ceiling was cutting longer answers off mid-
+      // sentence (e.g. a thorough "how does PoS work" answer that
+      // covers validators, slashing, finality, and criticisms).
+      max_tokens: 4096,
       system: systemPrompt,
       messages: convo.map((m) => ({ role: m.role, content: m.content })),
     };
