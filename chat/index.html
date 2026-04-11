@@ -521,16 +521,21 @@
   // Config
   // ============================================================
 
-  const TOP_K = 6;
+  const TOP_K = 8;
   const MAX_CHARS_PER_CHUNK = 2400;  // clip each chunk in the prompt
   const MAX_HISTORY_TURNS = 6;        // keep last N user/assistant turns
   const RETRIEVAL_CONTEXT_TURNS = 2;  // user turns to concat for retrieval
                                       // (current + immediately prior; more
                                       // than that lets the oldest topic
                                       // dominate after a topic change)
-  const QUERY_STRENGTH_THRESHOLD = 6.0;  // top-chunk score below which we
-                                         // fall back to context-augmented
-                                         // retrieval (see ask() below)
+  const CONTEXT_WIN_MARGIN = 1.3;     // augmented retrieval wins only if
+                                      // its top score beats the alone
+                                      // retrieval by this factor. Keeps
+                                      // the alone result for topic changes
+                                      // ("Proof of Stake" after "constant
+                                      // product") while letting pronoun
+                                      // follow-ups ("tell me more") fall
+                                      // back to the prior-turn context.
   const PDF_BASE = "../";             // pdf_path is relative to the repo root
 
   const PROVIDER_DEFAULTS = {
@@ -704,12 +709,24 @@
     });
   }
 
+  // Tokens that should collapse to a single canonical form at both index
+  // and query time. These are equivalences — a chunk mentioning "BTC"
+  // should contribute to the same term-frequency bucket as one mentioning
+  // "Bitcoin", and a query for either should hit both. We handle these
+  // via canonicalisation rather than via TOKEN_ALIASES (which adds an
+  // extra token to the query) because extra tokens inflate the hit count
+  // and break TF-based ranking.
+  const TOKEN_CANONICAL = {
+    btc: "bitcoin",
+    eth: "ethereum",
+  };
+
   // Canonicalise US ↔ UK spelling to a single form so queries written in
   // either English variant hit the same index. The course material is
   // UK-spelt ("decentralised", "organised", "utilised", …) so we map the
   // US `-ize` family to `-ise`. Applied to both the index and the query.
   function canonicalise(token) {
-    return token
+    const spelled = token
       .replace(/izations$/, "isations")
       .replace(/ization$/, "isation")
       .replace(/izing$/, "ising")
@@ -718,6 +735,7 @@
       .replace(/ized$/, "ised")
       .replace(/izes$/, "ises")
       .replace(/ize$/, "ise");
+    return TOKEN_CANONICAL[spelled] || spelled;
   }
 
   // Single-token acronym expansions. When a query token matches a key, the
@@ -743,14 +761,9 @@
     dao:      ["decentralised", "autonomous", "organisation"],
     daos:     ["decentralised", "autonomous", "organisation"],
     tvl:      ["total", "value", "locked"],
-    // Bidirectional chain / asset aliases. The course text mixes the
-    // acronym and the spelled-out form (e.g. one frame says "ETH", the
-    // next says "Ethereum"), so a student query using either should
-    // retrieve both.
-    eth:      ["ethereum"],
-    ethereum: ["eth"],
-    btc:      ["bitcoin"],
-    bitcoin:  ["btc"],
+    // eth ↔ ethereum and btc ↔ bitcoin are handled by TOKEN_CANONICAL
+    // above (both forms collapse to a single token) so they don't need
+    // alias-expansion here. Acronym-to-phrase expansions still do.
     evm:      ["ethereum", "virtual", "machine"],
     dapp:     ["decentralised", "application"],
     dapps:    ["decentralised", "application"],
@@ -817,14 +830,22 @@
 
   function buildIndex(chunks) {
     const docFreq = new Map();
-    const chunkTokens = chunks.map((c) => {
+    // Per-chunk term frequency: Map<token, count>. The scorer uses this
+    // to reward chunks that mention the query terms many times, so a
+    // frame that is genuinely *about* Bitcoin beats one that mentions
+    // Bitcoin once in passing.
+    const chunkTokenCounts = chunks.map((c) => {
       const text = [
         c.section, c.subsection, c.title_full, c.tex_text, c.pdf_text
       ].filter(Boolean).join(" ");
-      return new Set(tokenize(text));
+      const counts = new Map();
+      for (const t of tokenize(text)) {
+        counts.set(t, (counts.get(t) || 0) + 1);
+      }
+      return counts;
     });
-    for (const set of chunkTokens) {
-      for (const t of set) docFreq.set(t, (docFreq.get(t) || 0) + 1);
+    for (const counts of chunkTokenCounts) {
+      for (const t of counts.keys()) docFreq.set(t, (docFreq.get(t) || 0) + 1);
     }
     const N = chunks.length;
     const idf = new Map();
@@ -832,7 +853,7 @@
       // BM25-style IDF (always positive with the +1 offset).
       idf.set(t, Math.log((N - df + 0.5) / (df + 0.5) + 1));
     }
-    return { chunkTokens, idf };
+    return { chunkTokenCounts, idf };
   }
 
   // Returns `{ results, topScore }` — results is an array of chunks
@@ -842,7 +863,7 @@
   function searchChunks(query) {
     const empty = { results: [], topScore: 0 };
     if (!index) return empty;
-    const { chunkTokens, idf } = index;
+    const { chunkTokenCounts, idf } = index;
     const qTokens = expandQueryTokens(query, tokenize(query));
     if (!qTokens.size) return empty;
     const scored = [];
@@ -852,9 +873,15 @@
       if (filters.weeks.size && !filters.weeks.has(String(c.week))) continue;
       let score = 0;
       let hits = 0;
+      const counts = chunkTokenCounts[i];
       for (const t of qTokens) {
-        if (chunkTokens[i].has(t)) {
-          score += idf.get(t) || 0;
+        const tf = counts.get(t) || 0;
+        if (tf > 0) {
+          // BM25-lite: sublinear TF damping via log(1 + tf). A chunk
+          // that mentions the term 8 times ranks above one that mentions
+          // it once, but the growth flattens so a chunk can't dominate
+          // by spam-repeating a single keyword.
+          score += (idf.get(t) || 0) * (1 + Math.log(1 + tf));
           hits++;
         }
       }
@@ -1115,10 +1142,13 @@
     return [
       "You are a teaching assistant for ECOM215 (Blockchain Economics and Digital Assets) at Queen Mary, University of London. You answer student questions using the course material excerpts below.",
       "",
+      "The course is organised by topic, not by definitions. Broad questions like \"What is Bitcoin?\" or \"What is Ethereum?\" usually do NOT have a single excerpt titled \"What is X\" — instead the answer has to be SYNTHESISED across several excerpts that each cover one facet (consensus, block rewards, comparison to other chains, asset-class treatment, ETFs, etc.). This is expected, and a good answer pulls the relevant facets together into a coherent explanation.",
+      "",
       "Rules:",
-      "- Ground every factual claim in the excerpts. Do not invent facts, do not draw on outside knowledge, and do not speculate.",
-      "- Do NOT open with meta-disclaimers like \"Based on the course material…\", \"From the excerpts provided…\", or \"I can only provide limited information…\". Just answer the question directly.",
-      "- If the excerpts only partially cover the question, give the partial answer first and note the gap at the end in one short sentence (e.g. \"The material doesn't cover X directly; see Week N for more.\").",
+      "- Ground every factual claim in the excerpts. Do not invent facts, do not draw on outside knowledge, and do not speculate beyond what the excerpts support.",
+      "- When the excerpts don't contain a single self-contained definition, synthesise an answer by combining the relevant facts from multiple excerpts. Cite each source inline. This is the expected path for broad \"What is X?\" questions — it is NOT a reason to refuse or disclaim.",
+      "- Do NOT open with meta-disclaimers. Specifically, do NOT start replies with phrases like \"Based on the course material…\", \"From the excerpts provided…\", \"The course material does not contain a dedicated explanation of…\", \"I can only provide limited information about…\", or \"While the excerpts touch on X, there is no…\". Just answer the question directly.",
+      "- If a specific sub-question is genuinely outside the excerpts, note that in one short sentence at the end (e.g. \"The excerpts don't cover X in detail — see Week N for more.\"), not as an opener.",
       "- Reproduce numeric worked examples, formulas, and derivations verbatim when the student asks about them — don't paraphrase the algebra.",
       "- Cite sources inline using their bracketed number, e.g. [1] or [2][3]. Do NOT append a sources list at the end; the UI renders source links separately.",
       "- Prefer clear, self-contained prose. Use Markdown headings, lists, tables, and LaTeX math ($…$ for inline, $$…$$ for display) where they aid clarity.",
@@ -1207,28 +1237,29 @@
     addMessage("user", question);
     history.push({ role: "user", content: question });
 
-    // Try the query on its own first. If it matches a chunk strongly
-    // enough (top score above QUERY_STRENGTH_THRESHOLD), use those
-    // results — the question stands alone and we don't want prior-turn
-    // vocabulary polluting retrieval after a topic change. If the top
-    // score is weak — which happens on pronoun-heavy follow-ups like
-    // "explain that more" or "tell me more" — fall back to a query that
-    // concatenates the last few user turns, so the follow-up inherits
-    // the topic of the preceding question.
+    // Always retrieve on the current question. If there is prior user
+    // history, also retrieve on a query that concatenates the last few
+    // user turns ("context-augmented"), and pick whichever is stronger.
+    // Tie-break in favour of the alone result: the augmented query
+    // wins only when it beats the alone top score by CONTEXT_WIN_MARGIN.
+    // Rationale — pronoun-heavy follow-ups ("tell me more", "why") have
+    // very low alone scores and the augmented retrieval trivially wins,
+    // while genuine topic changes ("Proof of Stake" right after a
+    // "constant product" question) produce high alone scores and the
+    // augmented retrieval, even though numerically higher, stays below
+    // the margin and the fresh topic is preserved.
     let search = searchChunks(question);
-    if (
-      search.topScore < QUERY_STRENGTH_THRESHOLD &&
-      history.filter((m) => m.role === "user").length > 1
-    ) {
+    const priorUserTurns = history.filter((m) => m.role === "user").length - 1;
+    if (priorUserTurns > 0) {
       const contextQuery = history
         .filter((m) => m.role === "user")
         .slice(-RETRIEVAL_CONTEXT_TURNS)
         .map((m) => m.content)
         .join(" ");
       const augmented = searchChunks(contextQuery);
-      // Only take the augmented results if they're actually stronger;
-      // a very generic prior turn could score even worse.
-      if (augmented.topScore > search.topScore) search = augmented;
+      if (augmented.topScore > search.topScore * CONTEXT_WIN_MARGIN) {
+        search = augmented;
+      }
     }
     const retrieved = search.results;
     const systemPrompt = retrieved.length > 0
