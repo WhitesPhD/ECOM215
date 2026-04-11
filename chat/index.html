@@ -132,6 +132,9 @@
     border-top: 1px solid var(--border);
     margin-top: 12px;
   }
+  #sidebar .status:empty {
+    display: none;
+  }
 
   /* ---------- Chat area ---------- */
   #chat {
@@ -539,8 +542,10 @@
     chunks = arr;
     index = buildIndex(chunks);
     renderFilters();
-    $("#status").textContent = chunks.length + " chunks loaded"
-      + (sourceLabel ? " (" + sourceLabel + ")" : "");
+    // Clear the sidebar status on success; students don't need to see chunk
+    // counts or source URLs. The element stays in the DOM so error messages
+    // can still populate it later.
+    $("#status").textContent = "";
     updateSendButton();
   }
 
