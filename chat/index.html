@@ -986,9 +986,19 @@
     src = src.replace(/\$\$([\s\S]+?)\$\$/g, (_m, body) => pushMath(body, true));
     src = src.replace(/\\\[([\s\S]+?)\\\]/g, (_m, body) => pushMath(body, true));
     src = src.replace(/\\\(([\s\S]+?)\\\)/g, (_m, body) => pushMath(body, false));
-    // Inline `$…$` — require a non-space right after the opening `$` so we
-    // don't eat literal dollar amounts like "$5 and $10".
-    src = src.replace(/\$([^\s$][^$\n]*?)\$/g, (_m, body) => pushMath(body, false));
+    // Inline `$…$`. Two guards stop this from eating prose dollar amounts:
+    //   (a) the char right after the opening `$` must not be whitespace or
+    //       another `$`, so "$ foo" / "$$" don't start a match;
+    //   (b) the char right after the closing `$` must be whitespace,
+    //       punctuation, or end-of-input — which is how real inline math
+    //       is typographically written ("$k$.", "$k$,", "$k$ holds"), and
+    //       is almost never true for a literal currency amount followed by
+    //       another digit ("$4,000 ... $2,000" — the second `$` is
+    //       followed by `2`, so the regex refuses to close there).
+    src = src.replace(
+      /\$([^\s$][^$\n]*?)\$(?=[\s.,;:!?)\]}'’"\-]|$)/g,
+      (_m, body) => pushMath(body, false),
+    );
 
     // Step 3: any DLR tokens that survived (i.e. escaped dollars that were
     // in prose, not in math) become literal `$` in the outer text.
